@@ -1,142 +1,123 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import "../css files patient/fitness.css";
+const Fitness = () => {
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [credits, setCredits] = useState(100);
+    const [events, setEvents] = useState([
+        {
+            id: 1,
+            title: "Morning Yoga Session",
+            description: "Start your day with a refreshing yoga session. Perfect for all levels.",
+            date: "2024-03-20",
+            time: "06:00 AM",
+            credits: 10,
+            location: "Central Park",
+            instructor: "Sarah Johnson",
+            maxParticipants: 20,
+            currentParticipants: 15
+        },
+        {
+            id: 2,
+            title: "HIIT Workout",
+            description: "High-intensity interval training to boost your metabolism and burn calories.",
+            date: "2024-03-21",
+            time: "05:00 PM",
+            credits: 15,
+            location: "Fitness Center",
+            instructor: "Mike Thompson",
+            maxParticipants: 15,
+            currentParticipants: 10
+        },
+        {
+            id: 3,
+            title: "Meditation Class",
+            description: "Learn mindfulness techniques to reduce stress and improve focus.",
+            date: "2024-03-22",
+            time: "07:00 PM",
+            credits: 5,
+            location: "Wellness Studio",
+            instructor: "Lisa Chen",
+            maxParticipants: 25,
+            currentParticipants: 18
+        }
+    ]);
 
-const eventsData = [
-  {
-    id: 1,
-    name: "Decathlon Fitness Fest 2025",
-    date: "March 25, 2025",
-    time: "8:00 AM - 4:00 PM",
-    location: "Decathlon Sports Arena, New Delhi",
-    type: "Fitness Festival",
-    description:
-      "A full-day event featuring fitness challenges, expert talks, and hands-on workshops with Decathlon trainers.",
-  },
-  {
-    id: 2,
-    name: "Run for Health: Decathlon Marathon",
-    date: "March 27, 2025",
-    time: "6:00 AM - 12:00 PM",
-    location: "Lodhi Garden, Delhi",
-    type: "Marathon",
-    description:
-      "Join us for a 10K and half-marathon run, powered by Decathlon, promoting fitness and healthy living.",
-  },
-  {
-    id: 3,
-    name: "Strength & Conditioning Workshop",
-    date: "March 30, 2025",
-    time: "10:00 AM - 3:00 PM",
-    location: "Decathlon Training Center, Gurgaon",
-    type: "Workshop",
-    description:
-      "A hands-on session with professional trainers focusing on endurance, strength-building, and injury prevention.",
-  },
-  {
-    id: 4,
-    name: "Cycling for a Cause",
-    date: "April 3, 2025",
-    time: "5:30 AM - 10:00 AM",
-    location: "India Gate to Gurgaon",
-    type: "Cycling Event",
-    description:
-      "An exciting cycling event organized by Decathlon to promote fitness and sustainability.",
-  },
-  {
-    id: 5,
-    name: "Yoga & Mindfulness Retreat",
-    date: "April 7, 2025",
-    time: "7:00 AM - 12:00 PM",
-    location: "Decathlon Community Park, Delhi",
-    type: "Wellness Event",
-    description:
-      "A rejuvenating yoga and meditation session led by top wellness experts to promote mental and physical well-being.",
-  },
-  {
-    id: 6,
-    name: "Functional Training Bootcamp",
-    date: "April 10, 2025",
-    time: "6:30 AM - 11:00 AM",
-    location: "Decathlon Fitness Zone, Noida",
-    type: "Bootcamp",
-    description:
-      "An intensive outdoor training session focusing on agility, mobility, and strength-building exercises led by Decathlon fitness experts.",
-  },
-];
+    const handleEventClick = (event) => {
+        setSelectedEvent(event);
+    };
 
-const MedicalEvents = () => {
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [credits, setCredits] = useState(0);
+    const handleCloseModal = () => {
+        setSelectedEvent(null);
+    };
 
-  const handleRegister = (event) => {
-    setCredits(credits + 10);
-    alert(
-      `You have registered for: ${event.name}\nYou earned 10 CME credits! 🏅`
-    );
-  };
+    const handleRegister = (event) => {
+        if (credits >= event.credits) {
+            setCredits(credits - event.credits);
+            const updatedEvents = events.map(e => {
+                if (e.id === event.id) {
+                    return { ...e, currentParticipants: e.currentParticipants + 1 };
+                }
+                return e;
+            });
+            setEvents(updatedEvents);
+            handleCloseModal();
+        } else {
+            alert("Not enough credits to register for this event!");
+        }
+    };
 
-  return (
-    <div className="events-container">
-      <h1>Exciting Upcoming Events</h1>
-      <p>Stay updated with the latest activities and workshops.</p>
+    return (
+        <div className="events-container">
+            <h1>Fitness Events</h1>
+            <p>Join our community events and stay active!</p>
+            
+            <div className="credits-display">
+                <span className="credits-text">Available Credits: {credits}</span>
+            </div>
 
-      <div className="credits-display">
-        <strong className="credits-text">
-          🏅 CME Credits Earned: {credits}
-        </strong>
-      </div>
+            <div className="events-list">
+                {events.map(event => (
+                    <div 
+                        key={event.id} 
+                        className="event-card"
+                        onClick={() => handleEventClick(event)}
+                    >
+                        <h2>{event.title}</h2>
+                        <p>{event.description}</p>
+                        <p>📅 {event.date}</p>
+                        <p>⏰ {event.time}</p>
+                        <p>📍 {event.location}</p>
+                        <p>👤 {event.instructor}</p>
+                        <p>🎫 {event.credits} credits</p>
+                        <p>👥 {event.currentParticipants}/{event.maxParticipants} participants</p>
+                    </div>
+                ))}
+            </div>
 
-      <div className="events-list">
-        {eventsData.map((event) => (
-          <div key={event.id} className="event-card">
-            <h2>{event.name}</h2>
-            <p>
-              <strong>Date:</strong> {event.date}
-            </p>
-            <p>
-              <strong>Time:</strong> {event.time}
-            </p>
-            <p>
-              <strong>Location:</strong> {event.location}
-            </p>
-            <p>
-              <strong>Type:</strong> {event.type}
-            </p>
-            <button
-              className="register-button"
-              onClick={() => handleRegister(event)}
-            >
-              Register
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {selectedEvent && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={() => setSelectedEvent(null)}>
-              &times;
-            </span>
-            <h2>{selectedEvent.name}</h2>
-            <p>
-              <strong>Date:</strong> {selectedEvent.date}
-            </p>
-            <p>
-              <strong>Time:</strong> {selectedEvent.time}
-            </p>
-            <p>
-              <strong>Location:</strong> {selectedEvent.location}
-            </p>
-            <p>
-              <strong>Type:</strong> {selectedEvent.type}
-            </p>
-            <p>{selectedEvent.description}</p>
-          </div>
+            {selectedEvent && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <span className="close" onClick={handleCloseModal}>&times;</span>
+                        <h2>{selectedEvent.title}</h2>
+                        <p>{selectedEvent.description}</p>
+                        <p>📅 Date: {selectedEvent.date}</p>
+                        <p>⏰ Time: {selectedEvent.time}</p>
+                        <p>📍 Location: {selectedEvent.location}</p>
+                        <p>👤 Instructor: {selectedEvent.instructor}</p>
+                        <p>🎫 Credits Required: {selectedEvent.credits}</p>
+                        <p>👥 Available Spots: {selectedEvent.maxParticipants - selectedEvent.currentParticipants}</p>
+                        <button 
+                            className="register-button"
+                            onClick={() => handleRegister(selectedEvent)}
+                            disabled={credits < selectedEvent.credits || selectedEvent.currentParticipants >= selectedEvent.maxParticipants}
+                        >
+                            <span>Register Now</span>
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
-export default MedicalEvents;
+export default Fitness;
