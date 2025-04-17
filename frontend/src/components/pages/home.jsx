@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaFacebook, FaHeartbeat, FaInstagram, FaLinkedin, FaTwitter, FaStar } from "react-icons/fa";
 import { ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import "./home.css";
 
 const Home = () => {
+  const { t } = useTranslation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
@@ -76,40 +78,22 @@ const Home = () => {
 
   const featuresData = [
     {
-      title: "QR-Based Patient Card",
-      description:
-        "Instantly access medical records via QR code. Quick retrieval during emergencies. Ensures efficient patient care.",
-      image: "qrcode.png",
+      image: "qrcode.png"
     },
     {
-      title: "AI-Driven Predictive Analytics",
-      description:
-        "Predicts health risks using patient history. Enables early preventive care. Enhances treatment outcomes.",
-      image: "predictive.png",
+      image: "predictive.png"
     },
     {
-      title: "AI Medical Assistant",
-      description:
-        "Offers symptom analysis and medication reminders. Provides instant health advice. Supports continuous monitoring.",
-      image: "chatbot.png",
+      image: "chatbot.png"
     },
     {
-      title: "Real-Time Data Sharing",
-      description:
-        "Securely exchanges medical data. Facilitates faster diagnosis. Improves coordination between healthcare providers.",
-      image: "datasharing.png",
+      image: "datasharing.png"
     },
     {
-      title: "Smart Appointment Scheduling",
-      description:
-        "Simplifies booking and rescheduling. Sends automated reminders. Reduces wait times and scheduling conflicts.",
-      image: "scheduling.png",
+      image: "scheduling.png"
     },
     {
-      title: "Emergency SOS Alerts",
-      description:
-        "Sends instant alerts with location and medical details. Ensures quick assistance. Enhances personal safety.",
-      image: "sos.png",
+      image: "sos.png"
     },
   ];
 
@@ -143,34 +127,29 @@ const Home = () => {
       >
         <div className="overlay"></div>
         <div className="content">
-          <h1>
-            AI-Powered Healthcare: Faster Access, Smarter Diagnosis, Better
-            Lives!
-          </h1>
+          <h1>{t('hero.title')}</h1>
           <p>
-            <strong>Arogyam</strong> harnesses the power of AI to provide
-            instant medical access, smart diagnostics, and real-time health
-            monitoring.
+            <strong>Arogyam</strong> {t('hero.description')}
           </p>
           <a href="#features" className="cta-button">
-            Explore Features
+            {t('hero.ctaButton')}
           </a>
         </div>
       </div>
 
       {/* Features Section */}
       <section id="features" className="features-section">
-        <h2 className="features-heading">Our Features</h2>
+        <h2 className="features-heading">{t('features.heading')}</h2>
         <div className="features-container">
           {featuresData.map((feature, index) => (
             <div key={index} className="feature-card">
               <img
                 src={feature.image}
-                alt={feature.title}
+                alt={`Feature ${index + 1}`}
                 className="feature-image"
               />
-              <h3 className="feature-title">{feature.title}</h3>
-              <p className="feature-description">{feature.description}</p>
+              <h3 className="feature-title">{t(`features.items.${index}.title`)}</h3>
+              <p className="feature-description">{t(`features.items.${index}.description`)}</p>
             </div>
           ))}
         </div>
@@ -180,16 +159,15 @@ const Home = () => {
       <div className="chatbot-container">
         <div className="chatbot-card">
           <h2>
-            <span className="highlight">AroVeda</span>
+            <span className="highlight">{t('chatbot.title')}</span>
           </h2>
-          <h4>Your Virtual Healthcare Assistant</h4>
+          <h4>{t('chatbot.subtitle')}</h4>
           <p>
-            Your trusted virtual healthcare companion, guiding you toward
-            wellness with every conversation.
+            {t('chatbot.description')}
           </p>
           <button onClick={handleClick} className="get-started-button">
             <FaHeartbeat size={20} className="icon-left" />
-            <span>Discover Wellness</span>
+            <span>{t('chatbot.button')}</span>
             <ChevronRight size={20} className="icon-right" />
           </button>
         </div>
@@ -197,7 +175,7 @@ const Home = () => {
 
       {/* Testimonials Section */}
       <section id="testimonials" className="testimonials-section">
-        <h2 className="testimonials-heading">See What Our Users Say!</h2>
+        <h2 className="testimonials-heading">{t('testimonials.heading')}</h2>
         <div className="testimonials-container">
           {testimonials.map((testimonial, index) => (
             <div key={index} className="testimonial-card">
@@ -219,27 +197,23 @@ const Home = () => {
       </section>
 
       <section className="appointment-section">
-        <h2 className="appointment-heading">BOOK AN APPOINTMENT</h2>
+        <h2 className="appointment-heading">{t('appointment.heading')}</h2>
         <div className="appointment-container">
           {/* Main Content */}
           <div className="appointment-content">
             {/* Left Side - Text Section */}
             <div className="text-section">
               <h3 className="subheading">
-                Expert Consultation at Your Convenience
+                {t('appointment.subheading')}
               </h3>
               <p className="description">
-                Schedule an appointment with our experienced professionals and
-                get the guidance you need. Whether it's a health check-up, a
-                business consultation, or a service appointment, we ensure a
-                seamless experience tailored to your needs.
+                {t('appointment.description1')}
               </p>
               <p className="description">
-                Select your preferred date and time, and let us take care of the
-                rest.
+                {t('appointment.description2')}
               </p>
               <a href="/signin" className="learn-more">
-                Schedule Now
+                {t('appointment.button')}
               </a>
             </div>
 
@@ -251,64 +225,53 @@ const Home = () => {
         </div>
       </section>
 
-      <footer class="footer">
-        <div class="footer-container">
-          <div class="footer-section company">
-            <h2>Company</h2>
+      <footer className="footer">
+        <div className="footer-container">
+          <div className="footer-section company">
+            <h2>{t('footer.company.title')}</h2>
             <p>
-              Empowering businesses with innovation and technology. Providing
-              reliable solutions for a better future.
+              {t('footer.company.description')}
             </p>
           </div>
 
-          <div class="footer-section links">
-            <h2>Quick Links</h2>
+          <div className="footer-section links">
+            <h2>{t('footer.quickLinks.title')}</h2>
             <ul>
-              <li>
-                <a href="#">Home</a>
-              </li>
-              <li>
-                <a href="#">About Us</a>
-              </li>
-              <li>
-                <a href="#">Services</a>
-              </li>
-              <li>
-                <a href="#">Contact</a>
-              </li>
-              <li>
-                <a href="#">Privacy Policy</a>
-              </li>
+              {t('footer.quickLinks.links', { returnObjects: true }).map((link, index) => (
+                <li key={index}>
+                  <a href="#">{link}</a>
+                </li>
+              ))}
             </ul>
           </div>
 
-          <div class="footer-section social">
-            <h2>Follow Us</h2>
-            <div class="social-icons">
+          <div className="footer-section social">
+            <h2>{t('footer.followUs.title')}</h2>
+            <div className="social-icons">
               <a href="#">
-                <i class="fab fa-facebook"></i>
+                <i className="fab fa-facebook"></i>
               </a>
               <a href="#">
-                <i class="fab fa-twitter"></i>
+                <i className="fab fa-twitter"></i>
               </a>
               <a href="#">
-                <i class="fab fa-instagram"></i>
+                <i className="fab fa-instagram"></i>
               </a>
               <a href="#">
-                <i class="fab fa-linkedin"></i>
+                <i className="fab fa-linkedin"></i>
               </a>
             </div>
           </div>
 
-          <div class="footer-section contact">
-            <h2>Contact Us</h2>
-            <p>Email: support@example.com</p>
-            <p>Phone: +123 456 7890</p>
+          <div className="footer-section contact">
+            <h2>{t('footer.contactUs.title')}</h2>
+            <p>{t('footer.contactUs.email')}</p>
+            <p>{t('footer.contactUs.phone')}</p>
           </div>
         </div>
 
-        <div class="footer-bottom">
-          <p>&copy; 2025 YourCompany | All Rights Reserved</p>
+        <div className="footer-bottom">
+          <p>{t('footer.copyright')}</p>
         </div>
       </footer>
     </div>

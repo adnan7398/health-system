@@ -1,0 +1,74 @@
+{
+  "hero": {
+    "title": "AI-Powered Healthcare: Faster Access, Smarter Diagnosis, Better Lives!",
+    "description": "Arogyam harnesses the power of AI to provide instant medical access, smart diagnostics, and real-time health monitoring.",
+    "ctaButton": "Explore Features"
+  },
+  "features": {
+    "heading": "Our Features",
+    "items": [
+      {
+        "title": "QR-Based Patient Card",
+        "description": "Instantly access medical records via QR code. Quick retrieval during emergencies. Ensures efficient patient care."
+      },
+      {
+        "title": "AI-Driven Predictive Analytics",
+        "description": "Predicts health risks using patient history. Enables early preventive care. Enhances treatment outcomes."
+      },
+      {
+        "title": "AI Medical Assistant",
+        "description": "Offers symptom analysis and medication reminders. Provides instant health advice. Supports continuous monitoring."
+      },
+      {
+        "title": "Real-Time Data Sharing",
+        "description": "Securely exchanges medical data. Facilitates faster diagnosis. Improves coordination between healthcare providers."
+      },
+      {
+        "title": "Smart Appointment Scheduling",
+        "description": "Simplifies booking and rescheduling. Sends automated reminders. Reduces wait times and scheduling conflicts."
+      },
+      {
+        "title": "Emergency SOS Alerts",
+        "description": "Sends instant alerts with location and medical details. Ensures quick assistance. Enhances personal safety."
+      }
+    ]
+  },
+  "chatbot": {
+    "title": "AroVeda",
+    "subtitle": "Your Virtual Healthcare Assistant",
+    "description": "Your trusted virtual healthcare companion, guiding you toward wellness with every conversation.",
+    "button": "Discover Wellness"
+  },
+  "testimonials": {
+    "heading": "See What Our Users Say!"
+  },
+  "appointment": {
+    "heading": "BOOK AN APPOINTMENT",
+    "subheading": "Expert Consultation at Your Convenience",
+    "description1": "Schedule an appointment with our experienced professionals and get the guidance you need. Whether it's a health check-up, a business consultation, or a service appointment, we ensure a seamless experience tailored to your needs.",
+    "description2": "Select your preferred date and time, and let us take care of the rest.",
+    "button": "Schedule Now"
+  },
+  "footer": {
+    "company": {
+      "title": "Company",
+      "description": "Empowering businesses with innovation and technology. Providing reliable solutions for a better future."
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "links": ["Home", "About Us", "Services", "Contact", "Privacy Policy"]
+    },
+    "followUs": {
+      "title": "Follow Us"
+    },
+    "contactUs": {
+      "title": "Contact Us",
+      "email": "Email: support@example.com",
+      "phone": "Phone: +123 456 7890"
+    },
+    "copyright": "© 2025 YourCompany | All Rights Reserved"
+  },
+  "languageSelector": {
+    "label": "Language"
+  }
+} 

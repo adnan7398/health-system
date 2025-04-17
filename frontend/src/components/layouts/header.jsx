@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 
 import "../../components/pages/home.css";
+import LanguageSelector from "../language/LanguageSelector";
 
 const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -116,6 +117,8 @@ const Header = () => {
 
       {/* Authentication Buttons */}
       <div className="auth-buttons">
+        <LanguageSelector />
+        
         {isAuthenticated ? (
           <button onClick={handleLogout} className="auth-button logout-button">
             Logout

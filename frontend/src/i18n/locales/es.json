@@ -1,0 +1,74 @@
+{
+  "hero": {
+    "title": "Salud Impulsada por IA: ¡Acceso Más Rápido, Diagnóstico Más Inteligente, Mejores Vidas!",
+    "description": "Arogyam aprovecha el poder de la IA para proporcionar acceso médico instantáneo, diagnósticos inteligentes y monitoreo de salud en tiempo real.",
+    "ctaButton": "Explorar Características"
+  },
+  "features": {
+    "heading": "Nuestras Características",
+    "items": [
+      {
+        "title": "Tarjeta de Paciente Basada en QR",
+        "description": "Acceda instantáneamente a registros médicos mediante código QR. Recuperación rápida durante emergencias. Garantiza una atención eficiente al paciente."
+      },
+      {
+        "title": "Análisis Predictivo Impulsado por IA",
+        "description": "Predice riesgos de salud utilizando el historial del paciente. Permite atención preventiva temprana. Mejora los resultados del tratamiento."
+      },
+      {
+        "title": "Asistente Médico de IA",
+        "description": "Ofrece análisis de síntomas y recordatorios de medicación. Proporciona consejos de salud instantáneos. Apoya el monitoreo continuo."
+      },
+      {
+        "title": "Compartición de Datos en Tiempo Real",
+        "description": "Intercambia datos médicos de forma segura. Facilita diagnósticos más rápidos. Mejora la coordinación entre proveedores de atención médica."
+      },
+      {
+        "title": "Programación Inteligente de Citas",
+        "description": "Simplifica la reserva y reprogramación. Envía recordatorios automáticos. Reduce tiempos de espera y conflictos de programación."
+      },
+      {
+        "title": "Alertas SOS de Emergencia",
+        "description": "Envía alertas instantáneas con ubicación y detalles médicos. Asegura asistencia rápida. Mejora la seguridad personal."
+      }
+    ]
+  },
+  "chatbot": {
+    "title": "AroVeda",
+    "subtitle": "Su Asistente Virtual de Salud",
+    "description": "Su compañero virtual de confianza para la salud, guiándolo hacia el bienestar con cada conversación.",
+    "button": "Descubrir Bienestar"
+  },
+  "testimonials": {
+    "heading": "¡Vea lo que Dicen Nuestros Usuarios!"
+  },
+  "appointment": {
+    "heading": "RESERVE UNA CITA",
+    "subheading": "Consulta de Expertos a Su Conveniencia",
+    "description1": "Programe una cita con nuestros profesionales experimentados y obtenga la orientación que necesita. Ya sea un chequeo de salud, una consulta de negocios o una cita de servicio, garantizamos una experiencia perfecta adaptada a sus necesidades.",
+    "description2": "Seleccione su fecha y hora preferidas, y déjenos encargarnos del resto.",
+    "button": "Agendar Ahora"
+  },
+  "footer": {
+    "company": {
+      "title": "Empresa",
+      "description": "Potenciando negocios con innovación y tecnología. Proporcionando soluciones confiables para un futuro mejor."
+    },
+    "quickLinks": {
+      "title": "Enlaces Rápidos",
+      "links": ["Inicio", "Sobre Nosotros", "Servicios", "Contacto", "Política de Privacidad"]
+    },
+    "followUs": {
+      "title": "Síguenos"
+    },
+    "contactUs": {
+      "title": "Contáctenos",
+      "email": "Correo: support@example.com",
+      "phone": "Teléfono: +123 456 7890"
+    },
+    "copyright": "© 2025 SuEmpresa | Todos los Derechos Reservados"
+  },
+  "languageSelector": {
+    "label": "Idioma"
+  }
+} 
