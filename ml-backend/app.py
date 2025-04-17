@@ -1,15 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import fitz  # PyMuPDF for text-based PDF extraction
-import pytesseract  # OCR for scanned PDFs
-from pdf2image import convert_from_path  # Convert PDF to images for OCR
+import fitz  
+import pytesseract  
+from pdf2image import convert_from_path  
 from transformers import pipeline
 import os
 
 app = Flask(__name__)
 CORS(app)
-
-# Initialize the Hugging Face summarization pipeline
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
 UPLOAD_FOLDER = "uploads"
