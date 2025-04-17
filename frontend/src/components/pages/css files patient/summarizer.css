@@ -1,0 +1,114 @@
+/* General Styling */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    width: 100%;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+/* Heading Styling */
+.main-container h2 {
+    text-align: center;
+    font-size: 3rem;
+    color: #333;
+    margin-bottom: 20px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    margin-left: 20rem;
+    margin-top: 1.5rem;
+}
+
+/* Content Layout */
+.summarizer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    max-width: 1200px;
+    height: 80vh;
+    position: relative;
+
+    margin-left: 25rem;
+    gap: 4rem;
+}
+
+/* Image Container - Left */
+.image-container {
+    width: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* Form Section - Right */
+.form-section {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    margin-top: -20rem;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 24vh;
+    margin-left: 3rem;
+}
+
+.form-section p {
+    font-size: 20px;
+    font-style: italic;
+}
+
+input[type="file"] {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    background: linear-gradient(135deg, #008080 0%, #006666 50%, #004466 100%);
+
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn:hover {
+    background: rgb(96, 96, 239);
+    color: white;
+}
+
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Summary Box */
+.summary-box {
+    margin-top: 20px;
+    padding: 15px;
+    width: 80%;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+}

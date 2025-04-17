@@ -1,0 +1,167 @@
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 87.5vh;
+  background: linear-gradient(135deg, #ccffe6, #99ffcc);
+  padding: 20px;
+}
+
+/* Left and Right Sections */
+.left-section,
+.right-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.left-section {
+  height: 100vh;
+  margin-bottom: 4rem;
+
+}
+
+.right-section {
+  margin-bottom: 4rem;
+  /* Remove excessive margin */
+}
+
+/* Info Box */
+.info-box {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  width: 650px;
+  text-align: center;
+  font-family: "Arial", sans-serif;
+}
+
+.info-box h1 {
+  color: #008080;
+  font-size: 3rem;
+  font-weight: bold;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.benefits-list {
+  list-style-type: none;
+  padding: 0;
+  text-align: left;
+}
+
+.benefits-list li {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.card-logo {
+  width: 300px;
+  margin-top: 10px;
+  filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
+  margin-left: 9rem;
+}
+
+/* Right Section */
+.right-section {
+  flex: 1;
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Arogyam Card */
+.arogyam-card {
+  width: 500px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  padding: 20px;
+  font-family: "Arial", sans-serif;
+  transition: 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card Header */
+.card-head {
+  background: linear-gradient(135deg, #008080 0%, #006666 50%, #004466 100%);
+  color: white;
+  padding: 8px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  font-weight: bold;
+  font-size: 22px;
+  box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.2);
+  width: 100%;
+}
+
+.card-head h2 {
+
+  color: white;
+  padding: 15px;
+
+  font-weight: bold;
+  font-size: 2.3rem;
+  font-family: 'Times New Roman', Times, serif;
+
+
+}
+
+/* User Info (Centered) */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Centers horizontally */
+  justify-content: center;
+  /* Centers vertically */
+  text-align: center;
+  /* Ensures text is centered */
+  width: 100%;
+  /* Full width for alignment */
+}
+
+.user-info p {
+  margin: 8px 0;
+  font-size: 20px;
+  font-weight: 500;
+
+}
+
+/* QR Section */
+.qr-section {
+  margin-top: 17px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Centers horizontally */
+  justify-content: center;
+  /* Centers vertically */
+  text-align: center;
+  /* Ensures text is centered */
+}
+
+.qr-section h3 {
+  font-size: 16px;
+  color: #555;
+}
+
+.loading {
+  color: #888;
+  font-size: 16px;
+}
+
+/* Hover Effect */
+.arogyam-card:hover {
+  transform: scale(1.02);
+}

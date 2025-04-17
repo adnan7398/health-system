@@ -1,0 +1,122 @@
+/* Main Container */
+.appointment-component {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+
+  overflow: hidden;
+}
+
+/* Left Sidebar Styling */
+.left {
+  width: 380px;
+
+  padding: 20px;
+  color: white;
+  position: absolute;
+  left: 0;
+  margin-top: -1.3rem;
+  margin-left: -0.3rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Main Form Section */
+.main-form {
+  flex: 1;
+  margin-left: 250px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 300vh;
+
+
+
+}
+
+/* Heading */
+.main-form h2 {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+/* Message & Auth Key */
+.message {
+  color: #ff0000;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.auth-key {
+  color: #004d4d;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* Select Dropdown */
+.main-form select {
+  width: 100%;
+  width: 400px;
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #004d4d;
+  border-radius: 5px;
+  background: white;
+  margin-bottom: 20px;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Button (No Hover Effect) */
+.main-form button {
+  width: 100%;
+  max-width: 400px;
+  padding: 12px;
+  background-color: #006666;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .left {
+    width: 200px;
+  }
+
+  .main-form {
+    margin-left: 200px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .appointment-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .left {
+    width: 100%;
+    position: relative;
+    padding: 10px;
+  }
+
+  .main-form {
+    margin-left: 0;
+    padding: 20px;
+  }
+}

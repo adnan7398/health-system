@@ -1,0 +1,10 @@
+.doctor-dashboard {
+  display: flex;
+  height: 100vh;
+}
+
+.dashboard-content {
+  flex: 1;
+  margin-left: 250px; /* Matches sidebar width */
+  padding: 20px;
+}

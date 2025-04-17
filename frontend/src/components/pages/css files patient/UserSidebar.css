@@ -1,0 +1,57 @@
+.sidebar.open {
+  right: 0;
+  position: absolute;
+  top: 115px;
+
+  width: 50vh;
+  height: 110vh;
+  background: linear-gradient(135deg, #008080 0%, #006666 50%, #004466 100%);
+  box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  transition: right 0.3s ease-in-out;
+  z-index: 1000;
+  color: white;
+}
+
+
+.sidebar-content img {
+  width: 50vh;
+  margin-top: 3rem;
+
+}
+
+.sidebar-content h2 {
+  color: white;
+  margin-top: 3rem;
+  margin-left: 5rem;
+  font-size: 2.4rem;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.sidebar-content p {
+  color: white;
+
+  margin-left: 7rem;
+  font-size: 1.3rem;
+
+}
+
+.qrcode-container {
+
+
+  margin-top: 10px;
+  color: white;
+  margin-left: 5rem;
+
+}
+
+.qrcode-container h3 {
+
+
+  font-family: 'Times New Roman', Times, serif;
+  color: white;
+  font-size: 2.4rem;
+
+
+
+}

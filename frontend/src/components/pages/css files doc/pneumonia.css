@@ -1,0 +1,29 @@
+.container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.preview {
+    width: 200px;
+    height: auto;
+    margin-top: 10px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #1abc9c;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.result {
+    margin-top: 20px;
+    color: #e74c3c;
+    font-size: 20px;
+}

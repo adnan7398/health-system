@@ -1,0 +1,96 @@
+/* alldoctors.css */
+
+.doctors-container {
+    display: flex;
+    height: 100vh;
+    background: #f8f9fa;
+}
+
+.left-sider {
+    width: 380px;
+    margin-top: -1.3rem;
+    margin-left: -1.3rem;
+    padding: 20px;
+    color: white;
+}
+
+.Main-content {
+    flex: 1;
+    height: 100vh;
+    width: 176vh;
+    position: absolute;
+
+    margin-left: 24rem;
+
+
+}
+
+/* Title */
+.Main-content h2 {
+    font-size: 4.5rem;
+    color: black;
+    text-align: center;
+    margin-bottom: 25px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    margin-top: 3rem;
+
+
+}
+
+/* Appointment Grid */
+.doctors-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 25px;
+
+}
+
+/* Appointment card styling */
+.doctor-card {
+    margin-left: 4rem;
+    padding: 25px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 5px solid #006666;
+    border-top: 5px solid #006666;
+    transition: transform 0.2s ease-in-out;
+    width: 40vh;
+}
+
+.doctor-card:hover {
+    transform: scale(1.02);
+}
+
+.doctor-card h3 {
+    font-size: 1.7rem;
+    color: black;
+}
+
+.doctor-card p {
+    font-size: 25px;
+    color: #444;
+    margin: 5px 0;
+}
+
+.appointment-card strong {
+    color: #000;
+}
+
+/* Get More button */
+.doctor-card .doctor-btn {
+    width: 100%;
+    background: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.doctor-card .doctor-btn:hover {
+    background: #0056b3;
+}

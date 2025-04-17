@@ -1,0 +1,135 @@
+.scanner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 20px;
+}
+
+.scanner-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scanner-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.scanner-content {
+  flex: 1;
+  text-align: center;
+}
+
+
+.scanner-content h2 {
+  text-align: center;
+  padding: 15px;
+  color: black;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.scanner {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.file-upload {
+  margin-top: 15px;
+}
+
+.qr-code-link {
+  display: inline-block;
+  background-color: #008080;
+  color: white;
+  padding: 12px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+  margin-bottom: 15px;
+}
+
+.qr-code-link:hover {
+  background-color: #006666;
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .scanner-wrapper {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .scanner-image,
+  .scanner-content {
+    width: 100%;
+    text-align: center;
+  }
+
+  .scanner {
+    max-width: 100%;
+  }
+}
+
+
+
+/* Style for the Stop Scanning button */
+button#html5-qrcode-button-camera-stop {
+  background-color: #007bff !important;
+  /* Blue */
+  color: white !important;
+  font-size: 16px;
+  padding: 10px 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+button#html5-qrcode-button-camera-start {
+  background-color: #007bff !important;
+  /* Blue */
+  color: white !important;
+  font-size: 16px;
+  padding: 10px 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* Style for the Request Camera Permissions button */
+button#html5-qrcode-button-camera-permission {
+  background-color: #007bff !important;
+  /* Blue */
+  color: white !important;
+  font-size: 16px;
+  padding: 10px 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* Style for "Scan an Image" Button */
+button#html5-qrcode-button-file-selection {
+  background-color: #007bff !important;
+  /* Blue */
+  color: white !important;
+  font-size: 16px;
+  padding: 10px 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  margin-top: 5rem !important;
+  /* ✅ Adds margin-top */
+}

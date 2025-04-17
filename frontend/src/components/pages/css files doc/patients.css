@@ -1,0 +1,59 @@
+.patient-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.patient-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 columns */
+    gap: 20px;
+    /* Spacing between cards */
+    justify-content: center;
+}
+
+.patient-card {
+
+    border-radius: 10px;
+    padding: 15px;
+    background: linear-gradient(135deg, #008080 0%, #006666 50%, #004466 100%);
+    /* Take full width of the grid column */
+    width: 400px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    margin-left: 8rem;
+    margin-top: 2rem;
+    /* Centering each card */
+}
+
+.patient-card h3 {
+    margin-bottom: 5px;
+    color: white;
+}
+
+.patient-card h4 {
+
+    color: white;
+}
+
+.patient-card p {
+    margin: 5px 0;
+    color: white;
+}
+
+.patient-card strong {
+    color: white;
+}
+
+/* Responsive: 2 in a row on medium screens, 1 in a row on small screens */
+@media (max-width: 900px) {
+    .patient-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .patient-list {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
