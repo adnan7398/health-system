@@ -1,16 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import {
-  FaFacebook,
-  FaHeartbeat,
-  FaInstagram,
-  FaLinkedin,
-  FaTwitter,
-} from "react-icons/fa";
-
+import { FaFacebook, FaHeartbeat, FaInstagram, FaLinkedin, FaTwitter, FaStar } from "react-icons/fa";
 import { ChevronRight } from "lucide-react";
-
 import "./home.css";
 
 const Home = () => {
@@ -122,6 +113,27 @@ const Home = () => {
     },
   ];
 
+  const testimonials = [
+    {
+      name: "Alice Johnson",
+      feedback:
+        "Arogyam transformed the way I manage my health. Instant access to my medical records has been a lifesaver!",
+      rating: 5,
+    },
+    {
+      name: "Mark Benson",
+      feedback:
+        "The AI medical assistant is truly helpful! It gives me instant advice on my symptoms.",
+      rating: 4,
+    },
+    {
+      name: "Sophia Patel",
+      feedback:
+        "The QR-based patient card is a game-changer. My doctor gets all my medical history instantly!",
+      rating: 5,
+    },
+  ];
+
   return (
     <div className="home">
       <div dangerouslySetInnerHTML={{ __html: qrCode }} />
@@ -140,14 +152,31 @@ const Home = () => {
             instant medical access, smart diagnostics, and real-time health
             monitoring.
           </p>
-          <a href="#about" className="cta-button">
-            Know More
+          <a href="#features" className="cta-button">
+            Explore Features
           </a>
         </div>
       </div>
 
-      {/*chatbot container*/}
+      {/* Features Section */}
+      <section id="features" className="features-section">
+        <h2 className="features-heading">Our Features</h2>
+        <div className="features-container">
+          {featuresData.map((feature, index) => (
+            <div key={index} className="feature-card">
+              <img
+                src={feature.image}
+                alt={feature.title}
+                className="feature-image"
+              />
+              <h3 className="feature-title">{feature.title}</h3>
+              <p className="feature-description">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
+      {/* Chatbot Section */}
       <div className="chatbot-container">
         <div className="chatbot-card">
           <h2>
@@ -166,80 +195,11 @@ const Home = () => {
         </div>
       </div>
 
-      {/* About Section */}
-      <section id="about" className="about-section">
-        <div className="about-image">
-          <img src="/logo.png" alt="Profile" />
-        </div>
-        <div className="about-content">
-          <h2>Arogyam</h2>
-          <h4>
-            AI-Powered Healthcare System for Smart Diagnosis & Patient Care
-          </h4>
-          <p>
-            <strong>Arogyam</strong> is an AI-powered healthcare solution
-            designed to bridge the gap in medical assistance by leveraging smart
-            diagnostics, real-time data access, and predictive analytics. It
-            provides instant medical access through a QR-based patient card,
-            AI-driven symptom analysis, and real-time data sharing for faster
-            emergency response.
-          </p>
-          <p>
-            The system enhances hospital efficiency with AI-powered patient flow
-            management, reducing wait times and optimizing treatment
-            prioritization. It also offers AI-driven early disease detection,
-            personalized health insights, and a smart appointment scheduler for
-            seamless patient-doctor interactions. By integrating AI medical
-            assistants, chatbot support, and IoT-enabled monitoring, Arogyam
-            ensures timely, accurate, and efficient healthcare delivery. Its
-            scalable and innovative approach revolutionizes patient care, making
-            healthcare more accessible and effective for all.
-          </p>
-          <p></p>
-        </div>
-      </section>
-      {/*features section*/}
-      <section id="features" className="features-section">
-        <h2 className="features-heading">Our Features</h2>
-        <div className="features-container">
-          {featuresData.map((feature, index) => (
-            <div key={index} className="feature-card">
-              <img
-                src={feature.image}
-                alt={feature.title}
-                className="feature-image"
-              />
-              <h3 className="feature-title">{feature.title}</h3>
-              <p className="feature-description">{feature.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Testimonials Section */}
       <section id="testimonials" className="testimonials-section">
         <h2 className="testimonials-heading">See What Our Users Say!</h2>
         <div className="testimonials-container">
-          {[
-            {
-              name: "Alice Johnson",
-              feedback:
-                "Arogyam transformed the way I manage my health. Instant access to my medical records has been a lifesaver!",
-              rating: 5, // Rating out of 5
-            },
-            {
-              name: "Mark Benson",
-              feedback:
-                "The AI medical assistant is truly helpful! It gives me instant advice on my symptoms.",
-              rating: 4, // Rating out of 5
-            },
-            {
-              name: "Sophia Patel",
-              feedback:
-                "The QR-based patient card is a game-changer. My doctor gets all my medical history instantly!",
-              rating: 5, // Rating out of 5
-            },
-          ].map((testimonial, index) => (
+          {testimonials.map((testimonial, index) => (
             <div key={index} className="testimonial-card">
               <img
                 src={`https://i.pravatar.cc/150?img=${index + 5}`}
@@ -248,10 +208,11 @@ const Home = () => {
               />
               <h3 className="testimonial-name">{testimonial.name}</h3>
               <div className="testimonial-rating">
-                {"★".repeat(testimonial.rating)}
-                {"☆".repeat(5 - testimonial.rating)}
+                {[...Array(testimonial.rating)].map((_, i) => (
+                  <FaStar key={i} color="#ffc107" />
+                ))}
               </div>
-              <p className="testimonial-feedback">"{testimonial.feedback}"</p>
+              <p className="testimonial-feedback">{testimonial.feedback}</p>
             </div>
           ))}
         </div>

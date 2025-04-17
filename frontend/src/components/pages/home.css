@@ -13,8 +13,8 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
-
 
 /* Navbar */
 .navbar {
@@ -62,8 +62,6 @@ body {
     margin-top: 12px;
 }
 
-
-
 /* Navbar Icons */
 .navbar ul li svg {
     font-size: 24px;
@@ -95,20 +93,18 @@ body {
     color: white;
 }
 
-
-
-
-/* Hero Section */
+/* Hero Section - Improved Responsiveness */
 .hero-container {
     background-size: cover;
     background-position: center;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     text-align: center;
     color: white;
+    padding: 2rem;
 }
 
 .overlay {
@@ -119,40 +115,46 @@ body {
     height: 100%;
     background: linear-gradient(135deg, #008080 0%, #006666 50%, #004466 100%);
     opacity: 0.15;
-
-
 }
 
 .content {
     position: relative;
-    padding: 60px;
-    width: 1300px;
-
-    margin-top: -150px;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    z-index: 1;
 }
 
 .content h1 {
     font-weight: 900;
-    font-size: 3.5rem;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
     font-family: 'Times New Roman', Times, serif;
 }
 
 .content p {
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    line-height: 1.6;
+    margin-bottom: 2rem;
 }
 
 .cta-button {
-    margin-top: 90px;
-    padding: 20px 25px;
+    display: inline-block;
+    padding: 1rem 2rem;
     background: linear-gradient(135deg, #4caf50 0%, #43a047 50%, #388e3c 100%);
     color: white;
     text-decoration: none;
-    font-weight: bolder;
+    font-weight: bold;
     border-radius: 5px;
-    transition: 0.3s;
-    font-size: 1.2rem;
-    margin-left: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    margin-top: 2rem;
+}
 
+.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
 .cta-button1 {
@@ -167,7 +169,6 @@ body {
     font-size: 1.2rem;
     margin-left: 12px;
 }
-
 
 .disease-selector {
     display: flex;
@@ -213,8 +214,6 @@ body {
     pointer-events: none;
 }
 
-
-
 /*about section*/
 .about-section {
     background-color: white;
@@ -226,8 +225,6 @@ body {
     margin-left: 15vh;
     width: 180vh
 }
-
-
 
 .about-image {
     flex: 1;
@@ -296,72 +293,56 @@ body {
     }
 }
 
-
+/* Chatbot Container - Improved Responsiveness */
 .chatbot-container {
-    position: fixed;
-    bottom: 20px;
-
-    right: 20px;
-
-    z-index: 1000;
-
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
 
-
 .chatbot-card {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
     background: white;
-
-
     border-radius: 15px;
-    padding: 20px;
-    width: 450px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     text-align: center;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    height: 35vh;
 }
 
 .chatbot-card h2 {
-    font-size: 3rem;
-    font-weight: bolder;
-    color: #000;
-    font-family: 'Times New Roman', Times, serif;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    margin-bottom: 1rem;
 }
 
 .chatbot-card h4 {
-    font-size: 20px;
-    font-weight: bold;
-    color: black;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    color: #666;
+    margin-bottom: 1.5rem;
 }
 
-
-
 .chatbot-card p {
-    font-size: 15px;
-    color: rgb(39, 38, 38);
-    margin-bottom: 15px;
+    font-size: clamp(0.9rem, 1.2vw, 1rem);
+    line-height: 1.6;
+    margin-bottom: 2rem;
 }
 
 .get-started-button {
-    display: flex;
-    justify-content: center;
+    display: inline-flex;
     align-items: center;
-    background: #032a53;
-    /* Blue Color */
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #008080 0%, #006666 100%);
     color: white;
-    font-weight: 700;
-    padding: 15px 20px;
-    border-radius: 30px;
-    text-decoration: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
-    width: 30vh;
-    margin-left: 4.4rem;
+    border: none;
+    border-radius: 5px;
+    font-size: clamp(0.9rem, 1.2vw, 1rem);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .get-started-button:hover {
-    background: #0056b3;
-    transform: scale(1.05);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
 .icon-left {
@@ -374,178 +355,118 @@ body {
     margin-left: 10px;
 }
 
-/* Features Section */
+/* Features Section - Improved Responsiveness */
 .features-section {
-    text-align: center;
-    padding: 50px 20px;
-    background: linear-gradient(135deg, #008080 0%, #006666 50%, #004466 100%);
+    padding: 4rem 2rem;
+    background: white;
 }
 
 .features-heading {
-    font-size: 6rem;
-    color: white;
-    text-shadow: 2px 2px 5px rgba(6, 6, 6, 0.3);
-    margin-bottom: 2rem;
-    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    margin-bottom: 3rem;
+    color: #333;
 }
 
-/* Grid Layout */
 .features-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
-    justify-content: center;
-    align-items: center;
-    width: 1200px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
     margin: 0 auto;
-
 }
 
-/* Glassmorphism Feature Card */
 .feature-card {
-    background: rgba(255, 255, 255, 0.2);
-    /* Semi-transparent white */
-    padding: 20px;
+    background: white;
+    padding: 2rem;
     border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
     text-align: center;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    backdrop-filter: blur(10px);
-    /* Blur effect */
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    /* Soft border */
-    width: 40vh;
 }
 
-/* Hover Effect for More 3D Feel */
 .feature-card:hover {
-    transform: translateY(-10px) scale(1.05);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
 }
 
-/* Feature Image */
 .feature-image {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 15px;
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    margin-bottom: 1.5rem;
+    border-radius: 10px;
 }
 
-/* Title & Description */
 .feature-title {
-    font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #fff;
-    /* White text for contrast */
+    font-size: clamp(1.2rem, 1.5vw, 1.5rem);
+    margin-bottom: 1rem;
+    color: #333;
 }
 
 .feature-description {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: clamp(0.9rem, 1.1vw, 1rem);
+    line-height: 1.6;
+    color: #666;
 }
 
-/* Soft Glow on Hover */
-.feature-card:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-}
-
+/* Testimonials Section - Improved Responsiveness */
 .testimonials-section {
-    background-color: #f9f9f9;
-    /* Light background for contrast */
-    padding: 40px 20px;
-    /* Padding around the section */
-    text-align: center;
-    /* Center text alignment */
-    perspective: 1000px;
-    /* Perspective for 3D effect */
-
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
 
 .testimonials-heading {
-    font-size: 3.5rem;
-    /* Larger font for the heading */
-    margin-bottom: 20px;
-    /* Space below the heading */
+    text-align: center;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    margin-bottom: 3rem;
     color: #333;
-    font-family: 'Times New Roman', Times, serif;
-    font-weight: bold;
-    /* Darker color for better visibility */
-    text-shadow: 2px 2px 5px rgba(244, 238, 238, 0.3);
-    margin-bottom: 4.5rem;
 }
 
 .testimonials-container {
-    display: flex;
-    /* Use flexbox for horizontal layout */
-    justify-content: center;
-    /* Center items horizontally */
-    gap: 20px;
-    /* Space between testimonials */
-
-    height: 30vh;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .testimonial-card {
-    background-color: white;
-    /* Card background color */
-    border-radius: 10px;
-    /* Rounded corners */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    /* Subtle shadow */
-    padding: 20px;
-    /* Padding inside the card */
-    width: 500px;
-    /* Maximum width for cards */
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-align: center;
     transition: transform 0.3s;
-    /* Smooth transform on hover */
-    transform-style: preserve-3d;
-    /* Preserve 3D for child elements */
 }
 
 .testimonial-card:hover {
-    transform: rotateY(5deg) translateZ(10px);
-    /* Slight rotation and lift on hover */
+    transform: translateY(-10px);
 }
 
 .testimonial-profile {
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    /* Circular profile image */
-    width: 60px;
-    /* Fixed width for profile images */
-    height: 60px;
-    /* Fixed height for profile images */
-    margin-bottom: 15px;
-    /* Space below profile image */
+    margin-bottom: 1rem;
+    object-fit: cover;
 }
 
 .testimonial-name {
-    font-size: 1.2em;
-    /* Slightly larger font for names */
-    margin-bottom: 10px;
-    /* Space below name */
-    color: #555;
-    /* Medium gray color */
+    font-size: clamp(1.1rem, 1.3vw, 1.3rem);
+    margin-bottom: 0.5rem;
+    color: #333;
 }
 
-/* ⭐ Star Rating Styling */
 .testimonial-rating {
-    font-size: 1.4em;
-    /* Larger font for visibility */
-    color: #ffcc00;
-    /* Gold color for stars */
-    margin-bottom: 10px;
-    /* Space below rating */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-    /* Slight shadow for depth */
+    color: #ffc107;
+    margin-bottom: 1rem;
 }
 
 .testimonial-feedback {
-    font-style: italic;
-    /* Italics for feedback */
-    color: #777;
-    /* Lighter gray for feedback text */
+    font-size: clamp(0.9rem, 1.1vw, 1rem);
+    line-height: 1.6;
+    color: #666;
 }
 
 /* Full-width black background */
@@ -577,10 +498,7 @@ body {
     border-radius: 15px;
     background: rgba(255, 255, 255, 0.2);
 
-
     /* Glassmorphism Effect */
-
-
 
     /* Border & Shadows */
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -595,8 +513,6 @@ body {
     transform: scale(1.04) translateY(-5px);
     box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.3);
 }
-
-
 
 /* Title Styling */
 .appointment-container h2 {
@@ -630,8 +546,6 @@ body {
 
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
-
-
 
 /* Left Side - Text */
 .text-section {
@@ -701,13 +615,6 @@ body {
         text-align: center;
     }
 }
-
-
-
-
-
-
-
 
 /* Footer Styling */
 .footer {
@@ -802,5 +709,41 @@ body {
 
     .social-icons {
         justify-content: center;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .content {
+        padding: 1rem;
+    }
+
+    .features-container,
+    .testimonials-container {
+        grid-template-columns: 1fr;
+    }
+
+    .feature-card,
+    .testimonial-card {
+        padding: 1.5rem;
+    }
+
+    .chatbot-card {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .content h1 {
+        font-size: 2rem;
+    }
+
+    .content p {
+        font-size: 1rem;
+    }
+
+    .cta-button,
+    .get-started-button {
+        padding: 0.8rem 1.5rem;
     }
 }
