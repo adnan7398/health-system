@@ -7,6 +7,8 @@ import {
   FaRobot,
   FaRunning,
   FaWeight,
+  FaUserMd,
+  FaHospital,
 } from "react-icons/fa";
 
 import "../../components/pages/home.css";
@@ -15,6 +17,7 @@ import LanguageSelector from "../language/LanguageSelector";
 const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,42 +51,91 @@ const Header = () => {
     }, 100);
   };
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <nav className="navbar">
       <div className="logo">
-        <img src="/logo1.png" alt="Logo" />
+        <img src="/logo1.png" alt="Arogyam Logo" />
         <h1>Arogyam</h1>
       </div>
 
-      <ul>
+      {/* Mobile menu toggle */}
+      <div className="menu-toggle" onClick={toggleMenu}>
+        <div className={`hamburger ${isMenuOpen ? 'active' : ''}`}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <ul className={isMenuOpen ? "open" : ""}>
         <li>
           <a
             href="/"
             onClick={(e) => {
               e.preventDefault();
-              isAuthenticated ? navigate("/scanner") : navigate("/signin");
+              navigate("/");
+              setIsMenuOpen(false);
             }}
           >
-            <FaHome /> QR Scanner
+            <FaHome /> Home
           </a>
         </li>
 
         <li>
-          <a href="/calorieconvertor">
-            <FaWeight /> Calorie Calculator
+          <a
+            href="/scanner"
+            onClick={(e) => {
+              e.preventDefault();
+              isAuthenticated ? navigate("/scanner") : navigate("/signin");
+              setIsMenuOpen(false);
+            }}
+          >
+            <FaQrcode /> Health Card
           </a>
         </li>
+
         <li>
-          <a href="/fitness">
-            <FaRunning /> Get Fit
+          <a 
+            href="/calorieconvertor"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/calorieconvertor");
+              setIsMenuOpen(false);
+            }}
+          >
+            <FaWeight /> Health Metrics
+          </a>
+        </li>
+        
+        <li>
+          <a 
+            href="/fitness"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/fitness");
+              setIsMenuOpen(false);
+            }}
+          >
+            <FaRunning /> Fitness Plans
           </a>
         </li>
 
         {/* Conditional Navigation */}
         {userRole === "doctor" ? (
           <li>
-            <a href="/doctor/dashboard">
-              <FaRobot /> Doctor Dashboard
+            <a 
+              href="/doctordashboard"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/doctordashboard");
+                setIsMenuOpen(false);
+              }}
+            >
+              <FaUserMd /> Doctor Portal
             </a>
           </li>
         ) : (
@@ -94,21 +146,23 @@ const Header = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   isAuthenticated ? navigate("/chatbot") : navigate("/signin");
+                  setIsMenuOpen(false);
                 }}
               >
-                <FaRobot /> Assistant
+                <FaRobot /> Health Assistant
               </a>
             </li>
 
             <li>
               <a
-                href="#"
+                href="/register"
                 onClick={(e) => {
                   e.preventDefault();
                   isAuthenticated ? navigate("/register") : navigate("/signup");
+                  setIsMenuOpen(false);
                 }}
               >
-                <FaQrcode /> QR Generator
+                <FaHospital /> Medical Records
               </a>
             </li>
           </>
@@ -130,10 +184,23 @@ const Header = () => {
               className={`auth-button sign-in-button ${
                 userRole === "doctor" ? "hidden" : ""
               }`}
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/signin");
+                setIsMenuOpen(false);
+              }}
             >
               Patient Login
             </a>
-            <a href="/doctor/signin" className="auth-button sign-in-button">
+            <a 
+              href="/doctor/signin" 
+              className="auth-button sign-in-button"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/doctor/signin");
+                setIsMenuOpen(false);
+              }}
+            >
               Doctor Login
             </a>
           </>

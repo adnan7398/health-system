@@ -11,6 +11,7 @@ const Auth = () => {
     password: "",
   });
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -21,11 +22,12 @@ const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    setLoading(true);
 
     const endpoint = isSignup ? "/signup" : "/signin";
 
     try {
-      const response = await fetch(`http://localhost:3000${endpoint}`, {
+      const response = await fetch(`/api${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -42,15 +44,34 @@ const Auth = () => {
 
       if (response.ok && !isSignup) {
         localStorage.setItem("token", data.token);
+        
+        // Save the userId if it exists in the response
+        if (data.userId) {
+          localStorage.setItem("userId", data.userId);
+        } else {
+          // If userId is not in the response, extract it from the token
+          try {
+            const tokenPayload = JSON.parse(atob(data.token.split('.')[1]));
+            if (tokenPayload.id) {
+              localStorage.setItem("userId", tokenPayload.id);
+            }
+          } catch (error) {
+            console.error("Error parsing token:", error);
+          }
+        }
+        
         navigate("/scanner");
       }
     } catch (error) {
       setMessage("Something went wrong! Try again.");
+      console.error("Login error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSocialLogin = (provider) => {
-    window.location.href = `http://localhost:3000/auth/${provider}`;
+    window.location.href = `/api/auth/${provider}`;
   };
 
   return (
@@ -101,18 +122,22 @@ const Auth = () => {
               value={formData.password}
               onChange={handleChange}
             />
-            <button type="submit">{isSignup ? "Sign Up" : "Login"}</button>
+            <button type="submit" disabled={loading}>
+              {loading ? "Processing..." : isSignup ? "Sign Up" : "Login"}
+            </button>
           </form>
           <div className="social-login">
             <button
               onClick={() => handleSocialLogin("google")}
               className="google-btn"
+              disabled={loading}
             >
               Sign in with Google
             </button>
             <button
               onClick={() => handleSocialLogin("linkedin")}
               className="linkedin-btn"
+              disabled={loading}
             >
               Sign in with LinkedIn
             </button>

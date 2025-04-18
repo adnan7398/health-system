@@ -1,167 +1,156 @@
+/* Root variables for consistent styling */
+:root {
+  --primary-color: #008080;
+  --primary-light: #66b2b2;
+  --primary-dark: #006666;
+  --secondary-color: #004466;
+  --text-color: #333;
+  --light-gray: #f5f9f9;
+  --border-color: #e0e0e0;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --danger-color: #dc3545;
+  --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Sidebar styles */
 .sidebar {
-  width: 260px;
+  width: 250px;
   height: 100vh;
-  background: linear-gradient(180deg, #15616d, white);
-  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: linear-gradient(135deg, #008080 0%, #006666 50%, #004466 100%);
+  color: #fff;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 25px;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-  font-family: "Poppins", sans-serif;
-  height: 150vh;
+  z-index: 1000;
 }
 
+/* Profile picture container */
 .profile-pic-container {
-  width: 110px;
-  height: 110px;
+  width: 120px;
+  height: 120px;
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  overflow: hidden;
-  border: 3px solid #ffffff;
-  margin-bottom: 12px;
+  margin: 20px auto;
+  border: 4px solid white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background-image: url("https://cdn-icons-png.flaticon.com/512/6915/6915987.png");
+  background-size: cover;
+  background-position: center;
 }
 
-.profile-pic {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
+/* Doctor name styling */
 .doctor-name {
-  font-size: 30px;
-  font-weight: 800;
-  margin-bottom: 5px;
+  font-size: 1.2rem;
+  color: #ffffff;
   text-align: center;
-
-
-
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 25px;
-
-  font-family: "Poppins", sans-serif;
-
-}
-
-.profile-pic-container {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 3px solid #ffffff;
-  margin-bottom: 12px;
-}
-
-.profile-pic {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.doctor-name {
-  font-size: 20px;
+  margin: 10px 0;
   font-weight: 600;
-
-  text-align: center;
-  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+/* Doctor specialization styling */
 .doctor-specialization {
-  font-size: 18px;
-  font-weight: 600;
-  color: white;
-
-}
-
-.doctor-hospital,
-.doctor-experience {
-  font-size: 20px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 6px 0;
-  opacity: 0.9;
-}
-
-
-
-.error-message {
-  color: #ff6b6b;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
   text-align: center;
-  margin-top: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 8px 15px;
+  border-radius: 30px;
+  margin: 10px auto;
+  max-width: 90%;
+  font-weight: 500;
 }
 
-.sidebar:hover {
-  box-shadow: 3px 0 15px rgba(0, 0, 0, 0.3);
+/* Doctor hospital styling */
+.doctor-hospital {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 8px 15px;
+  border-radius: 30px;
+  margin: 10px auto;
+  max-width: 90%;
+  font-weight: 500;
 }
 
-@media (max-width: 768px) {
+/* Doctor experience styling */
+.doctor-experience {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 8px 15px;
+  border-radius: 30px;
+  margin: 10px auto;
+  max-width: 90%;
+  font-weight: 500;
+}
+
+/* Error message styling */
+.error-message {
+  font-size: 0.9rem;
+  color: #ff6b6b;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
   .sidebar {
     width: 220px;
     padding: 15px;
   }
-
+  
+  .profile-pic-container {
+    width: 100px;
+    height: 100px;
+    margin: 15px auto;
+  }
+  
   .doctor-name {
-    font-size: 18px;
+    font-size: 1.1rem;
   }
-
-  .doctor-specialization {
-    font-size: 40px;
-    font-weight: 500;
-    color: #f4d03f;
-    margin-bottom: 12px;
-  }
-
+  
+  .doctor-specialization,
   .doctor-hospital,
   .doctor-experience {
-    font-size: 24px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 6px 0;
-    opacity: 0.9;
+    font-size: 0.9rem;
+    padding: 6px 12px;
   }
+}
 
-  .doctor-hospital::before {
-    content: "🏥";
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    padding: 10px;
   }
-
-  .doctor-experience::before {
-    content: "💼";
+  
+  .profile-pic-container {
+    width: 80px;
+    height: 80px;
+    margin: 10px auto;
   }
-
-  .error-message {
-    color: #ff6b6b;
-    font-size: 14px;
-    font-weight: 500;
-    text-align: center;
-    margin-top: 15px;
+  
+  .doctor-name {
+    font-size: 1rem;
   }
-
-  .sidebar:hover {
-    box-shadow: 3px 0 15px rgba(0, 0, 0, 0.3);
-  }
-
-  @media (max-width: 768px) {
-    .sidebar {
-      width: 220px;
-      padding: 15px;
-    }
-
-    .doctor-name {
-      font-size: 18px;
-    }
-
-    .doctor-specialization {
-      font-size: 14px;
-    }
+  
+  .doctor-specialization,
+  .doctor-hospital,
+  .doctor-experience {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    margin: 5px auto;
   }
 }

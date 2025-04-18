@@ -1,0 +1,4 @@
+flask
+numpy
+tflearn
+tensorflow==1.14  # or whatever version you trained on

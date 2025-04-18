@@ -9,12 +9,15 @@ import {
   FaChevronDown,
   FaMicrophoneAlt,
   FaBloggerB,
+  FaHospital
 } from "react-icons/fa";
 import "../../pages/home.css";
 
 const DoctorHeader = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedDisease, setSelectedDisease] = useState("");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,71 +33,79 @@ const DoctorHeader = () => {
     navigate("/");
   };
 
-  const handleNavigation = (event) => {
-    const selectedValue = event.target.value;
-    setSelectedDisease(selectedValue);
+  const handleNavigation = (path) => {
+    navigate(path);
+    setIsMenuOpen(false);
+  };
 
-    if (selectedValue === "breastcancer") {
-      // Add navigation or functionality for breast cancer here
-    } else if (selectedValue === "pcod") {
-      navigate("/pcod");
-    } else if (selectedValue === "heart-disease") {
-      navigate("/heartdisease");
-    }
+  const handleDiseaseChange = (disease) => {
+    setSelectedDisease(disease);
+    setIsDropdownOpen(false);
+    navigate(`/${disease}`);
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
     <nav className="navbar">
       <div className="logo">
-        <img src="/logo1.png" alt="Logo" />
+        <img src="/logo1.png" alt="Arogyam Logo" />
         <h1>Arogyam</h1>
       </div>
 
-      <ul>
+      {/* Mobile menu toggle */}
+      <div className="menu-toggle" onClick={toggleMenu}>
+        <div className={`hamburger ${isMenuOpen ? 'active' : ''}`}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <ul className={isMenuOpen ? "open" : ""}>
         <li>
-          <a href="/DoctorDashboard">
+          <a onClick={() => handleNavigation("/doctordashboard")}>
             <FaHome /> Dashboard
           </a>
         </li>
         <li>
-          <a href="/appointment">
+          <a onClick={() => handleNavigation("/appointment")}>
             <FaRegListAlt /> Appointments
           </a>
         </li>
         <li>
-          <a href="/patient">
+          <a onClick={() => handleNavigation("/patient")}>
             <FaUsersCog /> My Patients
           </a>
         </li>
         <li>
-          <a href="/conference">
+          <a onClick={() => handleNavigation("/conference")}>
             <FaMicrophoneAlt /> Conferences
           </a>
         </li>
 
-        {/* Disease Selector */}
-        <div className="disease-selector">
-          <FaStethoscope className="disease-icon" />
-          <label htmlFor="disease">Select Disease:</label>
-          <div className="dropdown-container">
-            <select
-              id="disease"
-              value={selectedDisease}
-              onChange={handleNavigation}
-              className="disease-dropdown"
-            >
-              <option value="">-- Select --</option>
-
-              <option value="pcod">PCOD</option>
-              <option value="heart-disease">Heart Disease</option>
-            </select>
-            <FaChevronDown className="dropdown-arrow" />
+        {/* Disease Selector - Dropdown */}
+        <li className="dropdown-nav-item">
+          <a onClick={toggleDropdown} className="dropdown-toggle">
+            <FaStethoscope /> Disease Prediction <FaChevronDown />
+          </a>
+          <div className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}>
+            <a onClick={() => handleDiseaseChange("pcod")}>PCOD</a>
+            <a onClick={() => handleDiseaseChange("heartdisease")}>Heart Disease</a>
+            <a onClick={() => handleDiseaseChange("pneumonia")}>Pneumonia</a>
+            <a onClick={() => handleDiseaseChange("breastcancer")}>Breast Cancer</a>
           </div>
-        </div>
+        </li>
 
         <li>
-          <a href="/blogging">
-            <FaBloggerB /> Blogs
+          <a onClick={() => handleNavigation("/blogging")}>
+            <FaBloggerB /> Health Blog
           </a>
         </li>
       </ul>
@@ -106,7 +117,9 @@ const DoctorHeader = () => {
             <FaSignOutAlt /> Logout
           </button>
         ) : (
-          <a href="/doctor/signin" className="auth-button sign-in-button">
+          <a 
+            onClick={() => handleNavigation("/doctor/signin")} 
+            className="auth-button sign-in-button">
             Doctor Login
           </a>
         )}

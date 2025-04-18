@@ -6,6 +6,7 @@
     flex-direction: column;
     align-items: center;
     padding-top: 20px;
+    background: linear-gradient(135deg, #008080 0%, #006666 50%, #004466 100%);
 }
 
 /* Sidebar Links */
@@ -17,6 +18,7 @@
 
 .sidebar-links li {
     width: 100%;
+    margin-bottom: 5px;
 }
 
 /* Sidebar Links */
@@ -25,46 +27,52 @@
     align-items: center;
     text-decoration: none;
     color: white;
-    font-size: 18px;
+    font-size: 16px;
     padding: 12px 20px;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
     gap: 15px;
     border-radius: 5px;
+    margin: 0 8px;
 }
 
 .sidebar-links a:hover {
-    background-color: #f0f0f0;
-    /* Light grey on hover */
-    color: black;
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.sidebar-links a.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-left: 4px solid white;
 }
 
 /* Icons */
 .icon {
-    font-size: 22px;
+    font-size: 20px;
     color: white !important;
 }
-
 
 .logout-btn {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    width: 100%;
+    width: calc(100% - 16px);
     padding: 12px 20px;
     border: none;
-    background: none;
-
+    background: rgba(255, 255, 255, 0.1);
     color: white;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
     cursor: pointer;
     gap: 15px;
+    border-radius: 5px;
+    margin: 30px 8px 0;
+    transition: all 0.3s ease;
 }
 
-/* No hover effect */
+/* Hover effect */
 .logout-btn:hover {
-    background: none;
-    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
 }
 
 /* Main Content Area */

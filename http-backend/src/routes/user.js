@@ -79,7 +79,12 @@ userRouter.post("/signin", async function (req, res) {
             }, process.env.JWT_SECRET);
             res.json({
                 message: "You successfully logged in",
-                token: token
+                token: token,
+                userId: response._id.toString()
+            });
+        } else {
+            res.status(403).json({
+                message: "Wrong username or password"
             });
         }
     } catch (error) {

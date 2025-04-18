@@ -13,7 +13,7 @@ doctorRouter.post("/doctor/signup", async function (req, res) {
         email: z.string().min(3).max(50).email(),
         firstName: z.string().min(3).max(100),
         lastName: z.string().min(2).max(20),
-        bio: z.string().min(10),
+        bio: z.string(),
         experience: z.string(),
         hospital: z.string().min(2).max(100),
         specialization: z.string().min(2).max(100),
@@ -149,5 +149,78 @@ doctorRouter.get("/doctor", async (req, res) => {
     }
 });
 
+doctorRouter.get("/doctor-availability", async (req, res) => {
+    try {
+        const { doctorId, date } = req.query;
+        
+        if (!doctorId || !date) {
+            return res.status(400).json({ message: "Doctor ID and date are required" });
+        }
+        
+        // Check if the doctor exists
+        const doctor = await DoctorModel.findById(doctorId);
+        if (!doctor) {
+            return res.status(404).json({ message: "Doctor not found" });
+        }
+        
+        // Prepare the date to check for existing appointments
+        const selectedDate = new Date(date);
+        const dateStr = selectedDate.toISOString().split('T')[0];
+        
+        // Get existing appointments for this doctor on this date
+        const existingAppointments = await AppointmentModel.find({
+            doctorId,
+            date: dateStr
+        }).select('time');
+        
+        // Extract the times that are already booked
+        const bookedTimes = existingAppointments.map(appt => appt.time);
+        
+        // Generate available time slots from 9 AM to 5 PM
+        const availableTimeSlots = [];
+        const dayOfWeek = selectedDate.getDay();
+        
+        // Don't schedule on weekends (0 = Sunday, 6 = Saturday)
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+            // Create slots every 30 minutes from 9 AM to 5 PM
+            for (let hour = 9; hour < 17; hour++) {
+                const morningTime = `${hour}:00 ${hour < 12 ? 'AM' : 'PM'}`;
+                const afternoonTime = `${hour}:30 ${hour < 12 ? 'AM' : 'PM'}`;
+                
+                // Only add times that haven't been booked
+                if (!bookedTimes.includes(morningTime)) {
+                    availableTimeSlots.push(morningTime);
+                }
+                
+                if (!bookedTimes.includes(afternoonTime)) {
+                    availableTimeSlots.push(afternoonTime);
+                }
+            }
+        }
+        
+        if (availableTimeSlots.length > 0) {
+            return res.json({
+                available: true,
+                availableTimeSlots,
+                doctor: `${doctor.firstName} ${doctor.lastName}`,
+                specialization: doctor.specialization
+            });
+        } else {
+            return res.json({
+                available: false,
+                message: dayOfWeek === 0 || dayOfWeek === 6 
+                    ? "No appointments available on weekends. Please select a weekday."
+                    : "No available time slots for the selected date."
+            });
+        }
+        
+    } catch (error) {
+        console.error("Error fetching doctor availability:", error);
+        res.status(500).json({ 
+            message: "Error fetching available time slots", 
+            error: error.message 
+        });
+    }
+});
 
 module.exports = doctorRouter;
