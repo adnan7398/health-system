@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./header"; // Default Header
-import DoctorHeader from "../pages/dashboard(doc)/headerdoc"; // Doctor Header
+import DoctorHeader from "../pages/dashboard_doc/headerdoc"; // Doctor Header
 
 const AppLayout = () => {
   const [userType, setUserType] = useState(null);
