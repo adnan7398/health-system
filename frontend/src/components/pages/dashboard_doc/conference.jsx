@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DoctorSidebar from "./doctorsidebar";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker"; // Ensure this is correct
+import "react-datepicker/dist/react-datepicker.css"; // Ensure the CSS is imported
 import "../css files doc/conference.css";
 import { 
   FaCalendarAlt, 

@@ -35,7 +35,7 @@ import HeartDisease from "./components/pages/dashboard_doc/heart-disease";
 import BreastCancer from "./components/pages/dashboard_doc/breastcancer";
 import Pneumonia from "./components/pages/dashboard_doc/pneumonia";
 import Pcod from "./components/pages/dashboard_doc/pcod";
-import Blog from "./components/pages/dashboard_pat/blogging.jsx";
+import Blogging from './components/pages/dashboard-pat/blogging.jsx';
 import { BaseLoggger } from "html5-qrcode/esm/core";
 
 const router = createBrowserRouter([
@@ -72,7 +72,7 @@ const router = createBrowserRouter([
       { path: "/heartdisease", element: <HeartDisease /> },
       { path: "/pcod", element: <Pcod /> },
       { path: "/pneumonia", element: <Pneumonia /> },
-      { path: "/blogging", element: <Blog/> },
+      { path: "/blogging", element: <Blogging/> },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
   },
