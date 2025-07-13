@@ -1,13 +1,6 @@
 const jwt = require('jsonwebtoken');
-
-/**
- * Authentication middleware
- * Verifies the JWT token in the Authorization header
- * If valid, adds the user data to req.user
- */
 const authMiddleware = (req, res, next) => {
   try {
-    // Get token from Authorization header
     const authHeader = req.headers.authorization;
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -19,11 +12,9 @@ const authMiddleware = (req, res, next) => {
     if (!token) {
       return res.status(401).json({ error: 'Authentication required' });
     }
-    
-    // Verify token
+  
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // Add user data to request
+  
     req.user = decoded;
     
     next();

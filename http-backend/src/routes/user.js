@@ -1,6 +1,7 @@
 const express = require("express");
 const { UserModel, DoctorModel, AppointmentModel } = require("../models/userschema");
 const bcrypt = require("bcryptjs");
+const userRouter = express.Router();
 const { z } = require("zod");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
@@ -9,8 +10,6 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const upload = require("../middleware/upload");
 require("dotenv").config();
 const QRCode = require("qrcode");
-const userRouter = express.Router();
-
 userRouter.post("/signup", async function (req, res) {
     const requirebody = z.object({
         email: z.string().min(3).max(50).email(),
@@ -28,14 +27,14 @@ userRouter.post("/signup", async function (req, res) {
     const parsedata = requirebody.safeParse(req.body);
     if (!parsedata.success) {
         res.json({
-            message: "incorrect detial",
+            message: "incorrect detail",
             error: parsedata.error
         })
         return
     }
     const email = req.body.email;
     const password = req.body.password;
-    const firstName = req.body.firstName;
+    const firstName = reqcons.body.firstName;
     const lastName = req.body.lastName;
     let errorthrown = false;
     try {
