@@ -36,7 +36,7 @@ import BreastCancer from "./components/pages/dashboard_doc/breastcancer";
 import Pneumonia from "./components/pages/dashboard_doc/pneumonia";
 import Pcod from "./components/pages/dashboard_doc/pcod";
 import Blogging from './components/pages/dashboard_pat/blogging';
-import { BaseLoggger } from "html5-qrcode/esm/core";
+// import { BaseLoggger } from "html5-qrcode/esm/core";
 
 const router = createBrowserRouter([
   {

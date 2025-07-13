@@ -26,10 +26,9 @@ const BookAppointment = () => {
   
   const navigate = useNavigate();
 
-  // Minimum date for date picker (today)
   const today = new Date().toISOString().split('T')[0];
 
-  // Fetch doctors on component mount
+
   useEffect(() => {
     const fetchDoctors = async () => {
       setIsLoading(true);
