@@ -36,20 +36,18 @@ const QRScanner = () => {
       scannerRef.current = null;
     };
   }, []);
+  
 
   const handleDecodedData = (decodedText) => {
     console.log("QR Code Detected!", decodedText);
     navigate("/auth");
   };
-
   return (
     <div className="scanner-wrapper">
-      {/* Left Side - Image */}
       <div className="scanner-image">
         <img src="qrimg.png" alt="QR Code Illustration" />
+        {/* <button onClick={onClickHandler()}> Generate QR</button> */}
       </div>
-
-      {/* Right Side - Scanner */}
       <div className="scanner-content">
         <a href="/arogyamcard" className="qr-code-link">
           Your QRCode

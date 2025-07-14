@@ -48,7 +48,7 @@ const Register = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:3000/register",
+        `${backend_url.process.env}/register`,
         formData,
         {
           headers: { Authorization: `Bearer ${token}` },
