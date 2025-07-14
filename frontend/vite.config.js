@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
-  base: './', // ← Important for Vercel/Render if you get path issues
+  base: '/', // Updated for Vercel deployment to avoid 404 errors
   plugins: [
     react(),
     tailwindcss(),
