@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../css files patient/userdashboard.css";
-import UserSidebar from "./usersidebar"; // Right sidebar (User Profile)
+import UserSidebar from "./usersidebar";
 import Userdashboardsidebar from "./userdashboardsidebar";
 import { 
   FaNotesMedical, 
@@ -38,9 +38,7 @@ const UserDashboard = () => {
       {/* Left Sidebar - Navigation Links */}
       <div className="left-sidebar">
         <Userdashboardsidebar />
-      </div>
-
-      {/* Main Content */}
+      </div> 
       <div className="main-content">
         <div className="dashboard-header">
           <h1><FaNotesMedical /> Patient Dashboard</h1>
