@@ -27,7 +27,7 @@ const Auth = () => {
     const endpoint = isSignup ? "/signup" : "/signin";
 
     try {
-      const response = await fetch(`/api${endpoint}`, {
+      const response = await fetch(`https://arogyam-15io.onrender.com/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
