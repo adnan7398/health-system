@@ -11,7 +11,7 @@
 
 
     "lint": "eslint .",
-    "preview": "vite preview",
+
     "autosave": "vite --watch"
   },
   "dependencies": {
