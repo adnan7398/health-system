@@ -21,13 +21,12 @@ const Auth = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
 
     const endpoint = isSignup ? "/signup" : "/signin";
-    const url = `http://localhost:3000/doctor${endpoint}`;
+    const url = `doctor${endpoint}`;
 
     console.log("Sending request to:", url);
     console.log("Form Data:", formData); // Debugging log
@@ -62,7 +61,7 @@ const Auth = () => {
   };
 
   const handleSocialLogin = (provider) => {
-    window.location.href = `http://localhost:3000/auth/${provider}`;
+    window.location.href = `https://arogyam-15io.onrender.com/auth/${provider}`;
   };
 
   return (
