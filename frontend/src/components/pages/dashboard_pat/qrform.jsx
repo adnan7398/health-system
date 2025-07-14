@@ -16,7 +16,8 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import QRScanner from "./QRScanner";
+import QRScanner from "../dashboard_pat/qrscanner";
+import "../css files patient/qrform.css";
 
 const Register = () => {
   const navigate = useNavigate();
