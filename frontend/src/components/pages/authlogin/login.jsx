@@ -44,12 +44,10 @@ const Auth = () => {
 
       if (response.ok && !isSignup) {
         localStorage.setItem("token", data.token);
-        
-        // Save the userId if it exists in the response
         if (data.userId) {
           localStorage.setItem("userId", data.userId);
         } else {
-          // If userId is not in the response, extract it from the token
+          // Attempt to extract user ID from token if available
           try {
             const tokenPayload = JSON.parse(atob(data.token.split('.')[1]));
             if (tokenPayload.id) {
@@ -71,7 +69,7 @@ const Auth = () => {
   };
 
   const handleSocialLogin = (provider) => {
-    window.location.href = `/api/auth/${provider}`;
+    window.location.href = `https://arogyam-15io.onrender.com/${provider}`;
   };
 
   return (

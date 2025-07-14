@@ -29,7 +29,7 @@ const Auth = () => {
     const url = `doctor${endpoint}`;
 
     console.log("Sending request to:", url);
-    console.log("Form Data:", formData); // Debugging log
+    console.log("Form Data:", formData);
 
     try {
       const response = await fetch(url, {
@@ -40,7 +40,7 @@ const Auth = () => {
       });
 
       const data = await response.json();
-      console.log("Response:", data); // Debugging log
+      console.log("Response:", data); 
 
       setMessage(data.message);
 
@@ -61,7 +61,7 @@ const Auth = () => {
   };
 
   const handleSocialLogin = (provider) => {
-    window.location.href = `https://arogyam-15io.onrender.com/auth/${provider}`;
+    window.location.href = `https://arogyam-15io.onrender.com/doctor/${provider}`;
   };
 
   return (
