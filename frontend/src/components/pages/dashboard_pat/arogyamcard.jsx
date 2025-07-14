@@ -12,7 +12,7 @@ const ArogyamCard = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/register/${userId}`, {
+      const response = await fetch(`https://arogyam-15io.onrender.com/register/${userId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
