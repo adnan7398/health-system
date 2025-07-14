@@ -19,7 +19,8 @@ app.use("/uploads", express.static("uploads"));
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
-  "https://arogyam.vercel.app"
+  "https://arogyam.vercel.app",
+ " https://health-system-flame.vercel.app/"
 ];
 app.use(
   cors({
