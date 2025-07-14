@@ -45,10 +45,10 @@ const EnterPassword = () => {
       {user ? (
         <div className="user-details">
           <p>
-            <strong>Name:</strong> {user.firstName} {user.lastName}
+            <strong>Name:</strong> {userId.firstName} {userId.lastName}
           </p>
           <p>
-            <strong>Age:</strong> {user.age}
+            <strong>Age:</strong> {userId.age}
           </p>
           <p>
             <strong>Blood group:</strong> {user.bloodGroup}
