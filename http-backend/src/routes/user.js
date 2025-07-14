@@ -34,7 +34,7 @@ userRouter.post("/signup", async function (req, res) {
     }
     const email = req.body.email;
     const password = req.body.password;
-    const firstName = reqcons.body.firstName;
+    const firstName = req.body.firstName;
     const lastName = req.body.lastName;
     let errorthrown = false;
     try {
