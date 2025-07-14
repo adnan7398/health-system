@@ -1,35 +1,34 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-
 const fileRoutes = require("./src/routes/fileRoute");
 const authRoutes = require("./src/routes/user");
 const doctorRoutes = require("./src/routes/doctor");
-
 const app = express();
-
-// serve uploads
 app.use("/uploads", express.static("uploads"));
+const cors = require('cors');
 
-// CORS — allow both Vite ports
 const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5174",
-  "https://arogyam.vercel.app",
- " https://health-system-flame.vercel.app/"
+  'http://localhost:5173',
+  'https://health-system-flame.vercel.app',
+  'https://arogyam.vercel.app', // add this if needed too
 ];
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -43,8 +42,6 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-// your routes
 app.use("/", authRoutes);
 app.use("/", doctorRoutes);
 app.use("/files", fileRoutes);
