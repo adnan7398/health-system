@@ -15,7 +15,7 @@ const EnterPassword = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const res = await axios.get(`https://arogyam-15io.onrender.comdetails/${userId}`);
+        const res = await axios.get(`https://arogyam-15io.onrender.com/details/${userId}`);
         setUser(res.data);
       } catch (err) {
         console.error("Error fetching user details:", err);
