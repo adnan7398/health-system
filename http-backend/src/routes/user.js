@@ -162,7 +162,7 @@ userRouter.get("/details/:id", async (req, res) => {
         const user = await UserModel.findById(id);
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        res.json({ userId: user._id, email: user.email, firstName: user.firstName });
+        res.json({ userId: user._id, email: user.email, firstName: user.firstName ,age: user.age, lastName: user.lastName, bloodGroup: user.bloodGroup, phoneNumber: user.phoneNumber, address: user.address, qrCode: user.qrCode })
     } catch (error) {
         res.status(500).json({ message: "Error fetching QR details", error: error.message });
     }
