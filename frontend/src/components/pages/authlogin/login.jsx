@@ -27,7 +27,7 @@ const Auth = () => {
     const endpoint = isSignup ? "/signup" : "/signin";
 
     try {
-      const response = await fetch(`https://arogyam-15io.onrender.com/${endpoint}`, {
+      const response = await fetch(`https://arogyam-15io.onrender.com${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -69,7 +69,7 @@ const Auth = () => {
   };
 
   const handleSocialLogin = (provider) => {
-    window.location.href = `https://arogyam-15io.onrender.com/${provider}`;
+    window.location.href = `https://arogyam-15io.onrender.com${provider}`;
   };
 
   return (
