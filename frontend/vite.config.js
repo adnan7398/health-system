@@ -19,7 +19,12 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ["react-datepicker"]
+      external: ["react-datepicker"],
+      output: {
+        globals: {
+          "react-datepicker": "ReactDatepicker"
+        }
+      }
     }
   }
 })
