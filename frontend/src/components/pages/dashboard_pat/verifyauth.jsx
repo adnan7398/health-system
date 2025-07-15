@@ -17,6 +17,7 @@ const EnterPassword = () => {
       try {
         const res = await axios.get(`https://arogyam-15io.onrender.com/details/${userId}`);
         setUser(res.data);
+        console.log("User details fetched successfully:", res.data);
       } catch (err) {
         console.error("Error fetching user details:", err);
         setError("User not found.");
