@@ -273,47 +273,53 @@ const Conferences = () => {
           )}
           
           {/* Results Summary */}
-          <div className="results-summary">
-            <p>Showing {filteredEvents.length} conferences {filteredEvents.length !== eventsData.length && `(filtered from ${eventsData.length})`}</p>
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <p className="text-blue-800 font-medium">
+              Showing {filteredEvents.length} conferences {filteredEvents.length !== eventsData.length && `(filtered from ${eventsData.length})`}
+            </p>
           </div>
           
           {/* Events Grid */}
-          <div className="events-grid">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {filteredEvents.length > 0 ? (
               filteredEvents.map((event) => (
-                <div key={event.id} className="event-card">
-                  <div className="event-card-header">
-                    <span className="event-type">{event.type}</span>
-                    <span className="event-specialty">{event.specialty}</span>
+                <div key={event.id} className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 hover:shadow-xl transition-all duration-300">
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">{event.type}</span>
+                    <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">{event.specialty}</span>
                   </div>
-                  <h2 className="event-title">{event.name}</h2>
-                  <div className="event-details">
-                    <p className="event-date">
-                      <FaCalendarAlt />
-                      {formatDate(event.date)}
-                    </p>
-                    <p className="event-time">
-                      <FaClock />
-                      {event.time}
-                    </p>
-                    <p className="event-location">
-                      <FaMapMarkerAlt />
-                      {event.location}
-                    </p>
-                    <p className="event-credits">
-                      <FaRegCalendarCheck />
-                      {event.credits} CME Credits
-                    </p>
+                  <h2 className="text-xl font-bold text-slate-800 mb-4 line-clamp-2">{event.name}</h2>
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-center gap-3 text-sm text-slate-600">
+                      <FaCalendarAlt className="text-blue-500 flex-shrink-0" />
+                      <span>{formatDate(event.date)}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-slate-600">
+                      <FaClock className="text-green-500 flex-shrink-0" />
+                      <span>{event.time}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-slate-600">
+                      <FaMapMarkerAlt className="text-red-500 flex-shrink-0" />
+                      <span>{event.location}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-slate-600">
+                      <FaRegCalendarCheck className="text-purple-500 flex-shrink-0" />
+                      <span>{event.credits} CME Credits</span>
+                    </div>
                   </div>
-                  <div className="event-actions">
+                  <div className="flex gap-3">
                     <button
-                      className="details-button"
+                      className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-300"
                       onClick={() => handleShowDetails(event)}
                     >
                       <FaInfoCircle /> Details
                     </button>
                     <button
-                      className={`register-button ${registeredEvents.some(e => e.id === event.id) ? 'registered' : ''}`}
+                      className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-300 ${
+                        registeredEvents.some(e => e.id === event.id)
+                          ? 'bg-green-100 text-green-700 cursor-not-allowed'
+                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      }`}
                       onClick={() => handleRegister(event)}
                       disabled={registeredEvents.some(e => e.id === event.id)}
                     >
@@ -327,26 +333,26 @@ const Conferences = () => {
                 </div>
               ))
             ) : (
-              <div className="no-events-found">
-                <FaCalendarAlt className="empty-icon" />
-                <h3>No events found</h3>
-                <p>Try adjusting your filters or search term</p>
+              <div className="col-span-full flex flex-col items-center justify-center py-16">
+                <FaCalendarAlt className="text-6xl text-slate-300 mb-4" />
+                <h3 className="text-xl font-semibold text-slate-600 mb-2">No events found</h3>
+                <p className="text-slate-500">Try adjusting your filters or search term</p>
               </div>
             )}
           </div>
           
           {/* My Registered Events Section */}
           {registeredEvents.length > 0 && (
-            <div className="registered-events-section">
-              <h2>My Registered Events</h2>
-              <div className="registered-events-list">
+            <div className="bg-slate-50 rounded-xl p-6 border border-slate-200">
+              <h2 className="text-xl font-semibold text-slate-800 mb-4">My Registered Events</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {registeredEvents.map(event => (
-                  <div key={event.id} className="registered-event-card">
-                    <div className="registered-event-info">
-                      <h3>{event.name}</h3>
-                      <p>{formatDate(event.date)} | {event.time}</p>
+                  <div key={event.id} className="bg-white rounded-lg p-4 border border-slate-200">
+                    <div className="mb-3">
+                      <h3 className="font-semibold text-slate-800 mb-1">{event.name}</h3>
+                      <p className="text-sm text-slate-600">{formatDate(event.date)} | {event.time}</p>
                     </div>
-                    <div className="registered-event-credits">
+                    <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium text-center">
                       {event.credits} Credits
                     </div>
                   </div>
@@ -359,53 +365,65 @@ const Conferences = () => {
       
       {/* Event Details Modal */}
       {selectedEvent && (
-        <div className="modal" onClick={() => setSelectedEvent(null)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <button className="close-button" onClick={() => setSelectedEvent(null)}>
-              &times;
-            </button>
-            <div className="modal-header">
-              <h2>{selectedEvent.name}</h2>
-              <span className="modal-type">{selectedEvent.type} | {selectedEvent.specialty}</span>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedEvent(null)}>
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-start p-6 border-b border-slate-200">
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-slate-800 mb-2">{selectedEvent.name}</h2>
+                <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded-full">
+                  {selectedEvent.type} | {selectedEvent.specialty}
+                </span>
+              </div>
+              <button 
+                className="text-slate-400 hover:text-slate-600 text-2xl transition-colors duration-200 ml-4" 
+                onClick={() => setSelectedEvent(null)}
+              >
+                &times;
+              </button>
             </div>
-            <div className="modal-body">
-              <div className="modal-detail">
-                <FaCalendarAlt />
-                <span>{formatDate(selectedEvent.date)}</span>
-              </div>
-              <div className="modal-detail">
-                <FaClock />
-                <span>{selectedEvent.time}</span>
-              </div>
-              <div className="modal-detail">
-                <FaMapMarkerAlt />
-                <span>{selectedEvent.location}</span>
-              </div>
-              <div className="modal-detail">
-                <FaRegCalendarCheck />
-                <span>{selectedEvent.credits} CME Credits</span>
-              </div>
-              
-              <div className="modal-description">
-                <h3>Description</h3>
-                <p>{selectedEvent.description}</p>
+            
+            <div className="p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 text-slate-600">
+                  <FaCalendarAlt className="text-blue-500 flex-shrink-0" />
+                  <span>{formatDate(selectedEvent.date)}</span>
+                </div>
+                <div className="flex items-center gap-3 text-slate-600">
+                  <FaClock className="text-green-500 flex-shrink-0" />
+                  <span>{selectedEvent.time}</span>
+                </div>
+                <div className="flex items-center gap-3 text-slate-600">
+                  <FaMapMarkerAlt className="text-red-500 flex-shrink-0" />
+                  <span>{selectedEvent.location}</span>
+                </div>
+                <div className="flex items-center gap-3 text-slate-600">
+                  <FaRegCalendarCheck className="text-purple-500 flex-shrink-0" />
+                  <span>{selectedEvent.credits} CME Credits</span>
+                </div>
               </div>
               
-              {!registeredEvents.some(e => e.id === selectedEvent.id) ? (
-                <button 
-                  className="modal-register-button"
-                  onClick={() => {
-                    handleRegister(selectedEvent);
-                    setSelectedEvent(null);
-                  }}
-                >
-                  Register for this Event <FaArrowRight />
-                </button>
-              ) : (
-                <button className="modal-registered-button" disabled>
-                  Already Registered <FaRegCalendarCheck />
-                </button>
-              )}
+              <div className="border-t border-slate-200 pt-6">
+                <h3 className="text-lg font-semibold text-slate-800 mb-3">Description</h3>
+                <p className="text-slate-600 leading-relaxed">{selectedEvent.description}</p>
+              </div>
+              
+              <div className="border-t border-slate-200 pt-6">
+                {!registeredEvents.some(e => e.id === selectedEvent.id) ? (
+                  <button 
+                    className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300"
+                    onClick={() => {
+                      handleRegister(selectedEvent);
+                      setSelectedEvent(null);
+                    }}
+                  >
+                    Register for this Event <FaArrowRight />
+                  </button>
+                ) : (
+                  <button className="w-full bg-green-100 text-green-700 px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 cursor-not-allowed" disabled>
+                    Already Registered <FaRegCalendarCheck />
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
