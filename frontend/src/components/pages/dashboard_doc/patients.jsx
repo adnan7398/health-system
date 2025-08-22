@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "../css files doc/patients.css";
 import DoctorSidebar from "./doctorsidebar";
 import { 
   FaUser, 
@@ -356,7 +355,7 @@ const PatientsPage = () => {
     
     // Show success message
     const notification = document.createElement("div");
-    notification.className = "notification success";
+    notification.className = "fixed top-5 right-5 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg z-50";
     notification.textContent = `Patient ${patientToAdd.firstName} ${patientToAdd.lastName} has been added successfully!`;
     document.body.appendChild(notification);
     
@@ -378,166 +377,175 @@ const PatientsPage = () => {
   };
 
   return (
-    <div className="doctor-dashboard">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <DoctorSidebar />
-      <div className="dashboard-content">
-        <div className="patients-page">
+      <div className="flex-1 ml-64 p-6 transition-all duration-300">
+        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
           {/* Header Section */}
-          <div className="patients-header">
-            <h1><FaUserMd /> My Patients</h1>
-            <button className="add-patient-btn" onClick={() => setShowAddForm(true)}>
+          <div className="flex justify-between items-center mb-8 pb-6 border-b border-slate-200">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent flex items-center gap-3">
+              <FaUserMd className="text-blue-600" />
+              My Patients
+            </h1>
+            <button className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg" onClick={() => setShowAddForm(true)}>
               <FaUserPlus /> Add New Patient
             </button>
           </div>
           
           {/* Search and Filter Section */}
-          <div className="search-filter-section">
-            <div className="search-container">
-              <FaSearch className="search-icon" />
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
+            <div className="relative flex-1 max-w-md">
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 text-sm" />
               <input 
                 type="text" 
                 placeholder="Search by name, email or phone..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
+                className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
               />
             </div>
             
-            <button 
-              className={`filter-button ${isFilterOpen ? 'active' : ''}`}
-              onClick={toggleFilterPanel}
-            >
-              <FaFilter /> {isFilterOpen ? 'Hide Filters' : 'Show Filters'}
-            </button>
+            <div className="flex gap-3">
+              <button 
+                className={`px-4 py-3 rounded-lg font-medium flex items-center gap-2 transition-all duration-300 ${
+                  isFilterOpen 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                }`}
+                onClick={toggleFilterPanel}
+              >
+                <FaFilter /> {isFilterOpen ? 'Hide Filters' : 'Show Filters'}
+              </button>
+              <button className="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-3 rounded-lg font-medium transition-all duration-300" onClick={handleClearFilters}>
+                Clear All
+              </button>
+            </div>
           </div>
           
           {/* Filter Panel */}
           {isFilterOpen && (
-            <div className="filter-panel">
-              <div className="filter-section">
-                <h3>Gender</h3>
-                <select 
-                  value={genderFilter} 
-                  onChange={(e) => setGenderFilter(e.target.value)}
-                  className="filter-select"
-                >
-                  <option value="">All Genders</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
+            <div className="bg-slate-50 rounded-xl p-6 mb-6 border border-slate-200">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Gender</h3>
+                  <select 
+                    value={genderFilter} 
+                    onChange={(e) => setGenderFilter(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  >
+                    <option value="">All Genders</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Age Group</h3>
+                  <select 
+                    value={ageFilter} 
+                    onChange={(e) => setAgeFilter(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  >
+                    <option value="">All Ages</option>
+                    <option value="0-18">0-18</option>
+                    <option value="0-18">19-40</option>
+                    <option value="41-60">41-60</option>
+                    <option value="60+">60+</option>
+                  </select>
+                </div>
+                
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Sort By</h3>
+                  <select 
+                    value={sortBy} 
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  >
+                    <option value="name">Name</option>
+                    <option value="recent">Recent Visit</option>
+                    <option value="newest">Newest Patients</option>
+                    <option value="oldest">Oldest Patients</option>
+                  </select>
+                </div>
               </div>
-              
-              <div className="filter-section">
-                <h3>Age Group</h3>
-                <select 
-                  value={ageFilter} 
-                  onChange={(e) => setAgeFilter(e.target.value)}
-                  className="filter-select"
-                >
-                  <option value="">All Ages</option>
-                  <option value="0-18">0-18</option>
-                  <option value="19-40">19-40</option>
-                  <option value="41-60">41-60</option>
-                  <option value="60+">60+</option>
-                </select>
-              </div>
-              
-              <div className="filter-section">
-                <h3>Sort By</h3>
-                <select 
-                  value={sortBy} 
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="filter-select"
-                >
-                  <option value="name">Name</option>
-                  <option value="recent">Recent Visit</option>
-                  <option value="newest">Newest Patients</option>
-                  <option value="oldest">Oldest Patients</option>
-                </select>
-              </div>
-              
-              <button 
-                className="clear-filters-btn"
-                onClick={handleClearFilters}
-              >
-                Clear All Filters
-              </button>
             </div>
           )}
           
           {/* Results Summary */}
-          <div className="results-summary">
-            <p>Showing {filteredPatients.length} patients {filteredPatients.length !== patients.length && `(filtered from ${patients.length})`}</p>
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <p className="text-blue-800 font-medium">
+              Showing {filteredPatients.length} patients {filteredPatients.length !== patients.length && `(filtered from ${patients.length})`}
+            </p>
           </div>
           
           {/* Patients Grid */}
-          <div className="patients-grid">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPatients.length > 0 ? (
               filteredPatients.map((patient) => (
-                <div key={patient.id} className="patient-card">
-                  <div className="patient-card-header">
-                    <div className="patient-avatar">
+                <div key={patient.id} className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 hover:shadow-xl transition-all duration-300">
+                  <div className="flex items-center gap-4 mb-4 pb-4 border-b border-slate-100">
+                    <div className="text-4xl">
                       {patient.gender === "Male" ? "👨" : "👩"}
                     </div>
-                    <div className="patient-name">
-                      <h3>{patient.firstName} {patient.lastName}</h3>
-                      <span className="patient-id">ID: {patient.id}</span>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-slate-800">{patient.firstName} {patient.lastName}</h3>
+                      <span className="text-sm text-slate-500">ID: {patient.id}</span>
                     </div>
                   </div>
                   
-                  <div className="patient-info">
-                    <div className="info-item">
-                      <FaVenusMars />
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-center gap-3 text-sm text-slate-600">
+                      <FaVenusMars className="text-blue-500 flex-shrink-0" />
                       <span>{patient.gender}, {patient.age} years</span>
                     </div>
-                    <div className="info-item">
-                      <FaTint />
+                    <div className="flex items-center gap-3 text-sm text-slate-600">
+                      <FaTint className="text-red-500 flex-shrink-0" />
                       <span>Blood Group: {patient.bloodGroup || "Not specified"}</span>
                     </div>
-                    <div className="info-item">
-                      <FaPhoneAlt />
+                    <div className="flex items-center gap-3 text-sm text-slate-600">
+                      <FaPhoneAlt className="text-green-500 flex-shrink-0" />
                       <span>{patient.contact.phone || "Not provided"}</span>
                     </div>
-                    <div className="info-item">
-                      <FaEnvelope />
+                    <div className="flex items-center gap-3 text-sm text-slate-600">
+                      <FaEnvelope className="text-purple-500 flex-shrink-0" />
                       <span>{patient.contact.email || "Not provided"}</span>
                     </div>
-                    <div className="info-item">
-                      <FaMapMarkerAlt />
+                    <div className="flex items-center gap-3 text-sm text-slate-600">
+                      <FaMapMarkerAlt className="text-orange-500 flex-shrink-0" />
                       <span>{patient.contact.address || "Not provided"}</span>
                     </div>
-                    <div className="info-item">
-                      <FaCalendarAlt />
+                    <div className="flex items-center gap-3 text-sm text-slate-600">
+                      <FaCalendarAlt className="text-indigo-500 flex-shrink-0" />
                       <span>Last Visit: {patient.recentVisit || "No visits"}</span>
                     </div>
                   </div>
                   
                   {patient.medicalHistory && patient.medicalHistory.length > 0 && (
-                    <div className="medical-history">
-                      <h4>Medical History</h4>
-                      <div className="conditions-list">
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-slate-700 mb-2">Medical History</h4>
+                      <div className="flex flex-wrap gap-2">
                         {patient.medicalHistory.map((condition, index) => (
-                          <span key={index} className="condition-tag">{condition}</span>
+                          <span key={index} className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full font-medium">{condition}</span>
                         ))}
                       </div>
                     </div>
                   )}
                   
                   {patient.appointmentHistory && patient.appointmentHistory.length > 0 && (
-                    <div className="appointment-history">
-                      <h4>Upcoming Appointments</h4>
-                      <div className="appointment-list">
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-slate-700 mb-2">Upcoming Appointments</h4>
+                      <div className="space-y-2">
                         {patient.appointmentHistory
                           .filter(appt => new Date(appt.date) >= new Date() && appt.status === "Scheduled")
                           .slice(0, 2)
                           .map((appt, index) => (
-                            <div key={index} className="appointment-item">
-                              <div className="appointment-date">
+                            <div key={index} className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
+                              <div className="flex items-center gap-2 text-sm text-blue-700">
                                 <FaCalendarAlt />
                                 <span>{appt.date}</span>
                               </div>
-                              <div className="appointment-reason">
+                              <div className="text-sm text-blue-600 font-medium">
                                 {appt.reason}
                               </div>
                             </div>
@@ -547,40 +555,47 @@ const PatientsPage = () => {
                     </div>
                   )}
                   
-                  <div className="patient-actions">
-                    <button className="view-history-btn">
+                  <div className="flex gap-2 pt-4 border-t border-slate-100">
+                    <button className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-300">
                       <FaClipboardList /> View Records
                     </button>
-                    <button className="add-appt-btn">
+                    <button className="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-300">
                       <FaFileMedical /> Add Appointment
                     </button>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="no-patients-found">
-                <FaUser className="empty-icon" />
-                <h3>No patients found</h3>
-                <p>Try adjusting your filters or search term</p>
+              <div className="col-span-full flex flex-col items-center justify-center py-16">
+                <FaUser className="text-6xl text-slate-300 mb-4" />
+                <h3 className="text-xl font-semibold text-slate-600 mb-2">No patients found</h3>
+                <p className="text-slate-500">Try adjusting your filters or search term</p>
               </div>
             )}
           </div>
           
           {/* Add Patient Modal */}
           {showAddForm && (
-            <div className="modal">
-              <div className="modal-content">
-                <button className="close-button" onClick={() => setShowAddForm(false)}>
-                  <FaTimes />
-                </button>
-                <div className="modal-header">
-                  <h2><FaUserPlus /> Add New Patient</h2>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div className="flex justify-between items-center p-6 border-b border-slate-200">
+                  <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
+                    <FaUserPlus className="text-blue-600" />
+                    Add New Patient
+                  </h2>
+                  <button 
+                    className="text-slate-400 hover:text-slate-600 text-2xl transition-colors duration-200" 
+                    onClick={() => setShowAddForm(false)}
+                  >
+                    <FaTimes />
+                  </button>
                 </div>
-                <div className="modal-body">
-                  <form onSubmit={handleAddPatient}>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label htmlFor="firstName">First Name *</label>
+                
+                <div className="p-6">
+                  <form onSubmit={handleAddPatient} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label htmlFor="firstName" className="block text-sm font-medium text-slate-700">First Name *</label>
                         <input
                           type="text"
                           id="firstName"
@@ -588,10 +603,11 @@ const PatientsPage = () => {
                           value={newPatient.firstName}
                           onChange={handleInputChange}
                           required
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                         />
                       </div>
-                      <div className="form-group">
-                        <label htmlFor="lastName">Last Name *</label>
+                      <div className="space-y-2">
+                        <label htmlFor="lastName" className="block text-sm font-medium text-slate-700">Last Name *</label>
                         <input
                           type="text"
                           id="lastName"
@@ -599,13 +615,14 @@ const PatientsPage = () => {
                           value={newPatient.lastName}
                           onChange={handleInputChange}
                           required
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                         />
                       </div>
                     </div>
                     
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label htmlFor="age">Age *</label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-2">
+                        <label htmlFor="age" className="block text-sm font-medium text-slate-700">Age *</label>
                         <input
                           type="number"
                           id="age"
@@ -615,29 +632,32 @@ const PatientsPage = () => {
                           required
                           min="0"
                           max="120"
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                         />
                       </div>
-                      <div className="form-group">
-                        <label htmlFor="gender">Gender *</label>
+                      <div className="space-y-2">
+                        <label htmlFor="gender" className="block text-sm font-medium text-slate-700">Gender *</label>
                         <select
                           id="gender"
                           name="gender"
                           value={newPatient.gender}
                           onChange={handleInputChange}
                           required
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                         >
                           <option value="Male">Male</option>
                           <option value="Female">Female</option>
                           <option value="Other">Other</option>
                         </select>
                       </div>
-                      <div className="form-group">
-                        <label htmlFor="bloodGroup">Blood Group</label>
+                      <div className="space-y-2">
+                        <label htmlFor="bloodGroup" className="block text-sm font-medium text-slate-700">Blood Group</label>
                         <select
                           id="bloodGroup"
                           name="bloodGroup"
                           value={newPatient.bloodGroup}
                           onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                         >
                           <option value="">Select</option>
                           <option value="A+">A+</option>
@@ -652,8 +672,8 @@ const PatientsPage = () => {
                       </div>
                     </div>
                     
-                    <div className="form-group">
-                      <label htmlFor="contact.phone">Phone Number *</label>
+                    <div className="space-y-2">
+                      <label htmlFor="contact.phone" className="block text-sm font-medium text-slate-700">Phone Number *</label>
                       <input
                         type="tel"
                         id="contact.phone"
@@ -661,56 +681,60 @@ const PatientsPage = () => {
                         value={newPatient.contact.phone}
                         onChange={handleInputChange}
                         required
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                       />
                     </div>
                     
-                    <div className="form-group">
-                      <label htmlFor="contact.email">Email</label>
+                    <div className="space-y-2">
+                      <label htmlFor="contact.email" className="block text-sm font-medium text-slate-700">Email</label>
                       <input
                         type="email"
                         id="contact.email"
                         name="contact.email"
                         value={newPatient.contact.email}
                         onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                       />
                     </div>
                     
-                    <div className="form-group">
-                      <label htmlFor="contact.address">Address</label>
+                    <div className="space-y-2">
+                      <label htmlFor="contact.address" className="block text-sm font-medium text-slate-700">Address</label>
                       <textarea
                         id="contact.address"
                         name="contact.address"
                         value={newPatient.contact.address}
                         onChange={handleInputChange}
                         rows="2"
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 resize-none"
                       ></textarea>
                     </div>
                     
-                    <div className="form-group">
-                      <label>Medical History</label>
-                      <div className="medical-history-input">
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-slate-700">Medical History</label>
+                      <div className="flex gap-2">
                         <input
                           type="text"
                           value={medicalCondition}
                           onChange={(e) => setMedicalCondition(e.target.value)}
                           placeholder="Add condition"
+                          className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                         />
                         <button 
                           type="button" 
                           onClick={handleAddMedicalCondition}
-                          className="add-condition-btn"
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300"
                         >
                           Add
                         </button>
                       </div>
-                      <div className="conditions-list">
+                      <div className="flex flex-wrap gap-2">
                         {newPatient.medicalHistory.map((condition, index) => (
-                          <div key={index} className="condition-tag">
-                            {condition}
+                          <div key={index} className="flex items-center gap-2 px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">
+                            <span>{condition}</span>
                             <button 
                               type="button"
                               onClick={() => removeMedicalCondition(index)}
-                              className="remove-condition-btn"
+                              className="text-red-500 hover:text-red-700 transition-colors duration-200"
                             >
                               <FaTimes />
                             </button>
@@ -719,11 +743,18 @@ const PatientsPage = () => {
                       </div>
                     </div>
                     
-                    <div className="form-actions">
-                      <button type="button" onClick={() => setShowAddForm(false)} className="cancel-btn">
+                    <div className="flex gap-4 pt-6 border-t border-slate-200">
+                      <button 
+                        type="button" 
+                        onClick={() => setShowAddForm(false)} 
+                        className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-3 rounded-lg font-medium transition-all duration-300"
+                      >
                         Cancel
                       </button>
-                      <button type="submit" className="submit-btn">
+                      <button 
+                        type="submit" 
+                        className="flex-1 bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300"
+                      >
                         <FaUserPlus /> Add Patient
                       </button>
                     </div>

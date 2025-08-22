@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import DoctorSidebar from "./doctorsidebar";
-import "../css files doc/appointments.css";
 import { FaCalendarCheck, FaCheck, FaEye, FaPlusCircle, FaSearch } from "react-icons/fa";
 
 const AppointmentsPage = () => {
@@ -55,7 +54,7 @@ const AppointmentsPage = () => {
         const authKey = data.authKey;
         // Show a toast or notification instead of an alert
         const notification = document.createElement("div");
-        notification.className = "notification success";
+        notification.className = "fixed top-5 right-5 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg z-50";
         notification.textContent = `Appointment accepted. Auth Key: ${authKey}`;
         document.body.appendChild(notification);
         
@@ -92,97 +91,108 @@ const AppointmentsPage = () => {
   });
 
   return (
-    <div className="doctor-dashboard">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <DoctorSidebar />
-      <div className="dashboard-content">
-        <div className="appointments-page">
-          <div className="appointments-header">
-            <h1><FaCalendarCheck /> Appointments</h1>
-            <div className="appointments-actions">
-              <div className="search-container">
-                <FaSearch className="search-icon" />
+      <div className="flex-1 ml-64 p-6 transition-all duration-300">
+        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
+          {/* Header */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 pb-6 border-b border-slate-200 gap-4">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent flex items-center gap-3">
+              <FaCalendarCheck className="text-blue-600" />
+              Appointments
+            </h1>
+            <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+              <div className="relative flex-1 sm:flex-none">
+                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 text-sm" />
                 <input 
                   type="text" 
                   placeholder="Search by patient name or email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="search-input"
+                  className="w-full sm:w-80 pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                 />
               </div>
-              <button className="add-appointment-btn">
-                <FaPlusCircle /> New Appointment
+              <button className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg whitespace-nowrap">
+                <FaPlusCircle />
+                New Appointment
               </button>
             </div>
           </div>
           
           {loading ? (
-            <div className="loading-indicator">
-              <div className="spinner"></div>
-              <p>Loading appointments...</p>
+            <div className="flex flex-col items-center justify-center py-16 gap-6">
+              <div className="w-10 h-10 border-3 border-slate-200 border-t-blue-600 rounded-full animate-spin"></div>
+              <p className="text-slate-600 text-lg">Loading appointments...</p>
             </div>
           ) : (
-            <div className="appointments-table-container">
-              <table className="appointments-table">
-                <thead>
-                  <tr>
-                    <th>Patient Name</th>
-                    <th>Email</th>
-                    <th>Address</th>
-                    <th>Age</th>
-                    <th>Phone</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Auth Key</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredAppointments.length === 0 ? (
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-slate-50">
                     <tr>
-                      <td colSpan="9" className="no-appointments">
-                        <div className="empty-state">
-                          <FaCalendarCheck className="empty-icon" />
-                          <p>No appointments found</p>
-                        </div>
-                      </td>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-blue-600 uppercase tracking-wider border-b border-slate-200">Patient Name</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-blue-600 uppercase tracking-wider border-b border-slate-200">Email</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-blue-600 uppercase tracking-wider border-b border-slate-200">Address</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-blue-600 uppercase tracking-wider border-b border-slate-200">Age</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-blue-600 uppercase tracking-wider border-b border-slate-200">Phone</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-blue-600 uppercase tracking-wider border-b border-slate-200">Date</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-blue-600 uppercase tracking-wider border-b border-slate-200">Status</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-blue-600 uppercase tracking-wider border-b border-slate-200">Auth Key</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-blue-600 uppercase tracking-wider border-b border-slate-200">Action</th>
                     </tr>
-                  ) : (
-                    filteredAppointments.map((appointment) => (
-                      <tr key={appointment._id}>
-                        <td className="patient-name">
-                          {appointment.userId.firstName} {appointment.userId.lastName}
-                        </td>
-                        <td>{appointment.userId.email}</td>
-                        <td>{appointment.userId.address || "N/A"}</td>
-                        <td>{appointment.userId.age || "N/A"}</td>
-                        <td>{appointment.userId.phoneNumber || "N/A"}</td>
-                        <td>{formatDate(appointment.date)}</td>
-                        <td>
-                          <span className={`status ${appointment.status}`}>
-                            {appointment.status}
-                          </span>
-                        </td>
-                        <td>{appointment.authKey || "N/A"}</td>
-                        <td className="actions-cell">
-                          {appointment.status !== "accepted" ? (
-                            <button
-                              className="accept-button"
-                              onClick={() => handleAccept(appointment._id)}
-                              title="Accept Appointment"
-                            >
-                              <FaCheck /> Accept
-                            </button>
-                          ) : (
-                            <button className="view-button" title="View Details">
-                              <FaEye /> View
-                            </button>
-                          )}
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {filteredAppointments.length === 0 ? (
+                      <tr>
+                        <td colSpan="9" className="px-6 py-16">
+                          <div className="flex flex-col items-center justify-center gap-4">
+                            <FaCalendarCheck className="text-6xl text-slate-300" />
+                            <p className="text-slate-500 text-lg">No appointments found</p>
+                          </div>
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ) : (
+                      filteredAppointments.map((appointment) => (
+                        <tr key={appointment._id} className="hover:bg-slate-50 transition-colors duration-200">
+                          <td className="px-6 py-4 text-sm font-semibold text-slate-800">
+                            {appointment.userId.firstName} {appointment.userId.lastName}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-slate-600">{appointment.userId.email}</td>
+                          <td className="px-6 py-4 text-sm text-slate-600">{appointment.userId.address || "N/A"}</td>
+                          <td className="px-6 py-4 text-sm text-slate-600">{appointment.userId.age || "N/A"}</td>
+                          <td className="px-6 py-4 text-sm text-slate-600">{appointment.userId.phoneNumber || "N/A"}</td>
+                          <td className="px-6 py-4 text-sm text-slate-600">{formatDate(appointment.date)}</td>
+                          <td className="px-6 py-4">
+                            <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
+                              appointment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                              appointment.status === 'accepted' || appointment.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {appointment.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-slate-600 font-mono">{appointment.authKey || "N/A"}</td>
+                          <td className="px-6 py-4">
+                            {appointment.status !== "accepted" ? (
+                              <button
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-300 transform hover:scale-105"
+                                onClick={() => handleAccept(appointment._id)}
+                                title="Accept Appointment"
+                              >
+                                <FaCheck /> Accept
+                              </button>
+                            ) : (
+                              <button className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-300 transform hover:scale-105" title="View Details">
+                                <FaEye /> View
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>

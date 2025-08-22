@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import DoctorSidebar from "./doctorsidebar";
 import DatePicker from "react-datepicker"; // Ensure this is correct
 import "react-datepicker/dist/react-datepicker.css"; // Ensure the CSS is imported
-import "../css files doc/conference.css";
 import { 
   FaCalendarAlt, 
   FaSearch, 
@@ -165,34 +164,41 @@ const Conferences = () => {
   };
 
   return (
-    <div className="doctor-dashboard">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <DoctorSidebar />
-      <div className="dashboard-content">
-        <div className="conferences-page">
+      <div className="flex-1 ml-64 p-6 transition-all duration-300">
+        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
           {/* Header Section */}
-          <div className="conferences-header">
-            <h1><FaCalendarAlt /> Medical Conferences</h1>
-            <div className="cme-credits-counter">
-              <span>Total CME Credits: </span>
-              <span className="credits-value">{totalCredits}</span>
+          <div className="flex justify-between items-center mb-8 pb-6 border-b border-slate-200">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent flex items-center gap-3">
+              <FaCalendarAlt className="text-blue-600" />
+              Medical Conferences
+            </h1>
+            <div className="bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
+              <span className="text-blue-800 font-medium">Total CME Credits: </span>
+              <span className="text-blue-600 font-bold text-xl">{totalCredits}</span>
             </div>
           </div>
           
           {/* Search and Filter Section */}
-          <div className="search-filter-section">
-            <div className="search-container">
-              <FaSearch className="search-icon" />
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
+            <div className="relative flex-1 max-w-md">
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 text-sm" />
               <input 
                 type="text" 
                 placeholder="Search by name or location..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
+                className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
               />
             </div>
             
             <button 
-              className={`filter-button ${isFilterOpen ? 'active' : ''}`}
+              className={`px-4 py-3 rounded-lg font-medium flex items-center gap-2 transition-all duration-300 ${
+                isFilterOpen 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+              }`}
               onClick={toggleFilterPanel}
             >
               <FaFilter /> {isFilterOpen ? 'Hide Filters' : 'Show Filters'}
@@ -201,64 +207,68 @@ const Conferences = () => {
           
           {/* Filter Panel */}
           {isFilterOpen && (
-            <div className="filter-panel">
-              <div className="filter-section">
-                <h3>Date Range</h3>
-                <div className="date-filters">
-                  <div className="date-picker-container">
-                    <label>Start Date</label>
-                    <input 
-                      type="date" 
-                      onChange={(e) => setStartDate(e.target.value ? new Date(e.target.value) : null)}
-                      className="date-picker"
-                    />
+            <div className="bg-slate-50 rounded-xl p-6 mb-6 border border-slate-200">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Date Range</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="block text-xs text-slate-600">Start Date</label>
+                      <input 
+                        type="date" 
+                        onChange={(e) => setStartDate(e.target.value ? new Date(e.target.value) : null)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-xs text-slate-600">End Date</label>
+                      <input 
+                        type="date" 
+                        onChange={(e) => setEndDate(e.target.value ? new Date(e.target.value) : null)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-sm"
+                        min={startDate ? startDate.toISOString().split('T')[0] : ''}
+                      />
+                    </div>
                   </div>
-                  <div className="date-picker-container">
-                    <label>End Date</label>
-                    <input 
-                      type="date" 
-                      onChange={(e) => setEndDate(e.target.value ? new Date(e.target.value) : null)}
-                      className="date-picker"
-                      min={startDate ? startDate.toISOString().split('T')[0] : ''}
-                    />
-                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Event Type</h3>
+                  <select 
+                    value={selectedType} 
+                    onChange={(e) => setSelectedType(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  >
+                    <option value="">All Types</option>
+                    {eventTypes.map(type => (
+                      <option key={type} value={type}>{type}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Specialty</h3>
+                  <select 
+                    value={selectedSpecialty} 
+                    onChange={(e) => setSelectedSpecialty(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  >
+                    <option value="">All Specialties</option>
+                    {specialties.map(specialty => (
+                      <option key={specialty} value={specialty}>{specialty}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
               
-              <div className="filter-section">
-                <h3>Event Type</h3>
-                <select 
-                  value={selectedType} 
-                  onChange={(e) => setSelectedType(e.target.value)}
-                  className="filter-select"
+              <div className="mt-6 flex justify-end">
+                <button 
+                  className="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg font-medium transition-all duration-300"
+                  onClick={handleClearFilters}
                 >
-                  <option value="">All Types</option>
-                  {eventTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
+                  Clear All Filters
+                </button>
               </div>
-              
-              <div className="filter-section">
-                <h3>Specialty</h3>
-                <select 
-                  value={selectedSpecialty} 
-                  onChange={(e) => setSelectedSpecialty(e.target.value)}
-                  className="filter-select"
-                >
-                  <option value="">All Specialties</option>
-                  {specialties.map(specialty => (
-                    <option key={specialty} value={specialty}>{specialty}</option>
-                  ))}
-                </select>
-              </div>
-              
-              <button 
-                className="clear-filters-btn"
-                onClick={handleClearFilters}
-              >
-                Clear All Filters
-              </button>
             </div>
           )}
           

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "../css files doc/doctorsidebar.css";
 
 const DoctorSidebar = () => {
   const [doctor, setDoctor] = useState(null);
@@ -32,31 +31,68 @@ const DoctorSidebar = () => {
   }, []);
 
   if (loading) {
-    return <div className="sidebar">Loading...</div>;
+    return (
+      <aside className="w-64 h-screen fixed top-0 left-0 bg-gradient-to-b from-teal-600 via-teal-700 to-blue-800 text-white p-6 shadow-xl z-50 flex flex-col">
+        <div className="flex items-center justify-center h-full">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+        </div>
+      </aside>
+    );
   }
 
   return (
-    <aside className="sidebar">
+    <aside className="w-64 h-screen fixed top-0 left-0 bg-gradient-to-b from-teal-600 via-teal-700 to-blue-800 text-white p-6 shadow-xl z-50 flex flex-col">
       {doctor ? (
         <>
-          <div className="profile-pic-container"></div>
-          <h2 className="doctor-name">
+          <div className="w-32 h-32 bg-white/20 rounded-full mx-auto my-6 border-4 border-white/30 shadow-lg bg-cover bg-center" 
+               style={{backgroundImage: "url('https://cdn-icons-png.flaticon.com/512/6915/6915987.png')"}}>
+          </div>
+          
+          <h2 className="text-xl font-semibold text-white text-center mb-4 text-shadow-sm">
             <strong>
-              Name: {doctor.firstName} {doctor.lastName}
+              {doctor.firstName} {doctor.lastName}
             </strong>
           </h2>
-          <p className="doctor-specialization">
-            <strong>Specialization: {doctor.specialization}</strong>
-          </p>
-          <p className="doctor-hospital">
-            <strong>Hospital: {doctor.hospital}</strong>
-          </p>
-          <p className="doctor-experience">
-            <strong>Experience: {doctor.experience} years</strong>
-          </p>
+          
+          <div className="space-y-3 flex-1">
+            <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-center">
+              <p className="text-sm font-medium text-white/90">
+                <strong>Specialization: {doctor.specialization}</strong>
+              </p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-center">
+              <p className="text-sm font-medium text-white/90">
+                <strong>Hospital: {doctor.hospital}</strong>
+              </p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-center">
+              <p className="text-sm font-medium text-white/90">
+                <strong>Experience: {doctor.experience} years</strong>
+              </p>
+            </div>
+          </div>
+          
+          {/* Navigation Menu */}
+          <div className="mt-auto space-y-2">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 text-center cursor-pointer hover:bg-white/20 transition-all duration-300">
+              <span className="text-sm font-medium text-white/90">Dashboard</span>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 text-center cursor-pointer hover:bg-white/20 transition-all duration-300">
+              <span className="text-sm font-medium text-white/90">Patients</span>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 text-center cursor-pointer hover:bg-white/20 transition-all duration-300">
+              <span className="text-sm font-medium text-white/90">Appointments</span>
+            </div>
+          </div>
         </>
       ) : (
-        <p className="error-message">Doctor details not found</p>
+        <div className="flex flex-col items-center justify-center h-full">
+          <div className="bg-red-500/20 backdrop-blur-sm rounded-lg px-6 py-4 text-center">
+            <p className="text-sm font-medium text-red-200">Doctor details not found</p>
+          </div>
+        </div>
       )}
     </aside>
   );
