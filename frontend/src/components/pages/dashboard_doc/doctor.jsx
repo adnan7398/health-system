@@ -1,299 +1,266 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import DoctorSidebar from "./doctorsidebar";
+import { FaUserMd, FaCalendarAlt, FaUsers, FaBell, FaChartLine, FaStethoscope, FaHeartbeat, FaBrain, FaLungs, FaDna, FaQrcode, FaFileMedical, FaClock, FaMapMarkerAlt, FaPhone, FaEnvelope } from "react-icons/fa";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { 
-  FaUserMd, 
-  FaCalendarPlus, 
-  FaLungs, 
-  FaHeartbeat, 
-  FaMicroscope, 
-  FaVenus, 
-  FaUserInjured, 
-  FaCalendarCheck, 
-  FaCheckCircle, 
-  FaHourglassHalf, 
-  FaStethoscope, 
-  FaHospital,
-  FaBell,
-  FaUserPlus
-} from "react-icons/fa";
-
-// Sample data for the doctor dashboard
-const appointments = [
-  {
-    time: "09:00 AM",
-    patient: "John Doe",
-    condition: "Flu",
-    status: "Confirmed",
-  },
-  {
-    time: "10:30 AM",
-    patient: "Emily Smith",
-    condition: "Migraine",
-    status: "Pending",
-  },
-  {
-    time: "12:00 PM",
-    patient: "Michael Johnson",
-    condition: "Diabetes",
-    status: "Confirmed",
-  },
-  {
-    time: "02:00 PM",
-    patient: "Sarah Williams",
-    condition: "Back Pain",
-    status: "Canceled",
-  },
-  {
-    time: "03:30 PM",
-    patient: "David Brown",
-    condition: "Hypertension",
-    status: "Confirmed",
-  },
-  {
-    time: "04:45 PM",
-    patient: "Sophia Martinez",
-    condition: "Asthma",
-    status: "Pending",
-  },
-  {
-    time: "06:00 PM",
-    patient: "James Wilson",
-    condition: "Allergy",
-    status: "Confirmed",
-  },
-  {
-    time: "07:15 PM",
-    patient: "Olivia Taylor",
-    condition: "Fever",
-    status: "Canceled",
-  },
-];
-
-// Notification data for the dashboard
-const notifications = [
-  {
-    type: "new_patient",
-    message: "New patient registered:",
-    subject: "Daniel Green"
-  },
-  {
-    type: "reschedule",
-    message: "Appointment rescheduled:",
-    subject: "Sarah Williams"
-  },
-  {
-    type: "completed",
-    message: "Appointment completed:",
-    subject: "Michael Johnson"
-  },
-  {
-    type: "results",
-    message: "New lab results available:",
-    subject: "James Wilson"
-  }
-];
 
 const DoctorDashboard = () => {
-  const [date, setDate] = useState(new Date());
-  const [stats, setStats] = useState({
-    totalPatients: 72,
-    todaysAppointments: 8,
-    completed: 4,
-    pending: 2,
-    specialization: "Neurologist", 
-    hospital: "City Medical Center"
-  });
-  
-  // Simulate loading stats from API
-  useEffect(() => {
-    // This would be replaced with an actual API call
-    // fetchDoctorStats().then(data => setStats(data));
-  }, []);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [appointments, setAppointments] = useState([
+    { id: 1, patientName: "Alice Johnson", time: "09:00 AM", type: "Consultation", status: "Confirmed" },
+    { id: 2, patientName: "Bob Smith", time: "10:30 AM", type: "Follow-up", status: "Confirmed" },
+    { id: 3, patientName: "Carol Davis", time: "02:00 PM", type: "Emergency", status: "Pending" },
+    { id: 4, patientName: "David Wilson", time: "03:30 PM", type: "Consultation", status: "Confirmed" }
+  ]);
+
+  const [notifications, setNotifications] = useState([
+    { id: 1, message: "New patient registration", time: "2 min ago", type: "info" },
+    { id: 2, message: "Lab results ready for review", time: "15 min ago", type: "success" },
+    { id: 3, message: "Appointment reminder", time: "1 hour ago", type: "warning" }
+  ]);
+
+  const stats = [
+    { title: "Total Patients", value: "1,247", change: "+12%", icon: FaUsers, color: "from-blue-500 to-cyan-500" },
+    { title: "Today's Appointments", value: "8", change: "+2", icon: FaCalendarAlt, color: "from-emerald-500 to-teal-500" },
+    { title: "Pending Reports", value: "23", change: "-5", icon: FaFileMedical, color: "from-orange-500 to-red-500" },
+    { title: "Success Rate", value: "98.5%", change: "+1.2%", icon: FaChartLine, color: "from-purple-500 to-pink-500" }
+  ];
+
+  const mlTools = [
+    { name: "Pneumonia Detection", icon: FaLungs, description: "AI-powered X-ray analysis", path: "/pneumonia", color: "from-blue-500 to-cyan-500" },
+    { name: "Heart Disease Risk", icon: FaHeartbeat, description: "Predictive cardiovascular assessment", path: "/heartdisease", color: "from-red-500 to-pink-500" },
+    { name: "Breast Cancer Prediction", icon: FaDna, description: "Early detection using ML models", path: "/breastcancer", color: "from-pink-500 to-purple-500" },
+    { name: "PCOD Assessment", icon: FaBrain, description: "Polycystic ovary syndrome analysis", path: "/pcod", color: "from-purple-500 to-indigo-500" }
+  ];
+
+  const recentPatients = [
+    { name: "Alice Johnson", age: 28, lastVisit: "2 days ago", status: "Active" },
+    { name: "Bob Smith", age: 45, lastVisit: "1 week ago", status: "Active" },
+    { name: "Carol Davis", age: 32, lastVisit: "3 days ago", status: "Follow-up" },
+    { name: "David Wilson", age: 56, lastVisit: "1 day ago", status: "Active" }
+  ];
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <DoctorSidebar />
-      <div className="flex-1 ml-64 p-6 transition-all duration-300">
-        {/* Header */}
-        <header className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 mb-6">
-          <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent flex items-center gap-3">
-              <FaUserMd className="text-blue-600" />
-              Doctor Dashboard
-            </h1>
-            <button className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg">
-              <FaCalendarPlus />
-              Add Appointment
-            </button>
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* Main Content */}
+      <div className="flex-1 p-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+                  Doctor Dashboard
+                </h1>
+                <p className="text-slate-600 text-lg">
+                  Welcome back, <span className="font-semibold text-blue-600">Dr. Sarah Wilson</span>
+                </p>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <FaBell className="text-2xl text-slate-600 cursor-pointer hover:text-blue-600 transition-colors duration-200" />
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {notifications.length}
+                  </span>
+                </div>
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+                  <FaUserMd className="text-white text-xl" />
+                </div>
+              </div>
+            </div>
+            
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {stats.map((stat, index) => (
+                <div key={index} className="bg-gradient-to-br from-white to-slate-50 rounded-xl p-6 border border-slate-200 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center shadow-lg`}>
+                      <stat.icon className="text-white text-xl" />
+                    </div>
+                    <span className={`text-sm font-medium ${
+                      stat.change.startsWith('+') ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {stat.change}
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-800 mb-1">{stat.value}</h3>
+                  <p className="text-slate-600 text-sm">{stat.title}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </header>
-        
-        {/* ML Tools Navigation */}
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 mb-6">
-          <div className="flex gap-4 overflow-x-auto pb-2">
-            <Link to="/pneumonia" className="flex items-center gap-2 px-6 py-3 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg font-medium transition-all duration-300 whitespace-nowrap">
-              <FaLungs />
-              Pneumonia Detection
-            </Link>
-            <Link to="/heartdisease" className="flex items-center gap-2 px-6 py-3 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg font-medium transition-all duration-300 whitespace-nowrap">
-              <FaHeartbeat />
-              Heart Disease
-            </Link>
-            <Link to="/breastcancer" className="flex items-center gap-2 px-6 py-3 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg font-medium transition-all duration-300 whitespace-nowrap">
-              <FaMicroscope />
-              Breast Cancer
-            </Link>
-            <Link to="/pcod" className="flex items-center gap-2 px-6 py-3 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg font-medium transition-all duration-300 whitespace-nowrap">
-              <FaVenus />
-              PCOD
-            </Link>
-          </div>
-        </div>
 
-        {/* Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-6">
-          <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 text-center relative overflow-hidden group hover:transform hover:scale-105 transition-all duration-300">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-teal-600"></div>
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <FaUserInjured className="text-white text-xl" />
-            </div>
-            <div className="text-sm text-slate-600 font-medium mb-2">Total Patients</div>
-            <div className="text-2xl font-bold text-blue-600">{stats.totalPatients}</div>
-          </div>
-          
-          <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 text-center relative overflow-hidden group hover:transform hover:scale-105 transition-all duration-300">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-teal-600"></div>
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <FaCalendarCheck className="text-white text-xl" />
-            </div>
-            <div className="text-sm text-slate-600 font-medium mb-2">Today's Appointments</div>
-            <div className="text-2xl font-bold text-blue-600">{stats.todaysAppointments}</div>
-          </div>
-          
-          <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 text-center relative overflow-hidden group hover:transform hover:scale-105 transition-all duration-300">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-teal-600"></div>
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <FaCheckCircle className="text-white text-xl" />
-            </div>
-            <div className="text-sm text-slate-600 font-medium mb-2">Completed</div>
-            <div className="text-2xl font-bold text-blue-600">{stats.completed}</div>
-          </div>
-          
-          <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 text-center relative overflow-hidden group hover:transform hover:scale-105 transition-all duration-300">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-teal-600"></div>
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <FaHourglassHalf className="text-white text-xl" />
-            </div>
-            <div className="text-sm text-slate-600 font-medium mb-2">Pending</div>
-            <div className="text-2xl font-bold text-blue-600">{stats.pending}</div>
-          </div>
-          
-          <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 text-center relative overflow-hidden group hover:transform hover:scale-105 transition-all duration-300">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-teal-600"></div>
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <FaStethoscope className="text-white text-xl" />
-            </div>
-            <div className="text-sm text-slate-600 font-medium mb-2">Specialization</div>
-            <div className="text-2xl font-bold text-blue-600">{stats.specialization}</div>
-          </div>
-          
-          <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 text-center relative overflow-hidden group hover:transform hover:scale-105 transition-all duration-300">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-teal-600"></div>
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <FaHospital className="text-white text-xl" />
-            </div>
-            <div className="text-sm text-slate-600 font-medium mb-2">Hospital</div>
-            <div className="text-2xl font-bold text-blue-600">{stats.hospital}</div>
-          </div>
-        </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column - Calendar & Appointments */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Calendar */}
+              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                <h2 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
+                  <FaCalendarAlt className="text-blue-600" />
+                  Schedule Calendar
+                </h2>
+                <div className="bg-gradient-to-br from-slate-50 to-blue-50 rounded-xl p-4">
+                  <Calendar
+                    onChange={setSelectedDate}
+                    value={selectedDate}
+                    className="w-full border-0 bg-transparent"
+                    tileClassName={({ date, view }) => {
+                      if (view === 'month') {
+                        const hasAppointment = appointments.some(apt => 
+                          new Date(apt.date).toDateString() === date.toDateString()
+                        );
+                        return hasAppointment ? 'bg-blue-100 text-blue-800 rounded-lg' : '';
+                      }
+                    }}
+                  />
+                </div>
+              </div>
 
-        {/* Calendar Section */}
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 mb-6">
-          <h2 className="text-xl font-semibold text-blue-600 mb-6 flex items-center gap-3">
-            <div className="w-4 h-4 bg-blue-600 rounded-full opacity-20"></div>
-            <FaCalendarCheck />
-            Calendar
-          </h2>
-          <Calendar
-            onChange={setDate}
-            value={date}
-            className="w-full max-w-full border-none font-sans"
-          />
-        </div>
+              {/* Today's Appointments */}
+              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                <h2 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
+                  <FaClock className="text-emerald-600" />
+                  Today's Appointments
+                </h2>
+                <div className="space-y-4">
+                  {appointments.map((appointment) => (
+                    <div key={appointment.id} className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition-all duration-200">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                            <FaUserMd className="text-white" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-slate-800">{appointment.patientName}</h3>
+                            <p className="text-sm text-slate-600">{appointment.type}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-semibold text-slate-800">{appointment.time}</div>
+                          <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
+                            appointment.status === 'Confirmed' 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {appointment.status}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-        {/* Appointments Section */}
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 mb-6">
-          <h2 className="text-xl font-semibold text-blue-600 mb-6 flex items-center gap-3">
-            <div className="w-4 h-4 bg-blue-600 rounded-full opacity-20"></div>
-            <FaCalendarCheck />
-            Today's Appointments
-          </h2>
-          
-          <div className="flex gap-4 mb-6 flex-wrap">
-            <button className="px-6 py-2 rounded-full border border-slate-300 bg-white text-slate-600 text-sm font-medium hover:bg-blue-50 hover:text-blue-600 hover:border-blue-600 transition-all duration-300">
-              All
-            </button>
-            <button className="px-6 py-2 rounded-full border border-slate-300 bg-white text-slate-600 text-sm font-medium hover:bg-blue-50 hover:text-blue-600 hover:border-blue-600 transition-all duration-300">
-              Confirmed
-            </button>
-            <button className="px-6 py-2 rounded-full border border-slate-300 bg-white text-slate-600 text-sm font-medium hover:bg-blue-50 hover:text-blue-600 hover:border-blue-600 transition-all duration-300">
-              Pending
-            </button>
-            <button className="px-6 py-2 rounded-full border border-slate-300 bg-white text-slate-600 text-sm font-medium hover:bg-blue-50 hover:text-blue-600 hover:border-blue-600 transition-all duration-300">
-              Canceled
-            </button>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full border border-slate-200 rounded-lg overflow-hidden">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-blue-600 border-b border-slate-200">Time</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-blue-600 border-b border-slate-200">Patient</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-blue-600 border-b border-slate-200">Condition</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-blue-600 border-b border-slate-200">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {appointments.map((appt, index) => (
-                  <tr key={index} className="hover:bg-slate-50 transition-colors duration-200">
-                    <td className="px-4 py-3 text-sm text-slate-700 border-b border-slate-100">{appt.time}</td>
-                    <td className="px-4 py-3 text-sm text-slate-700 border-b border-slate-100">{appt.patient}</td>
-                    <td className="px-4 py-3 text-sm text-slate-700 border-b border-slate-100">{appt.condition}</td>
-                    <td className="px-4 py-3 border-b border-slate-100">
-                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                        appt.status === 'Confirmed' ? 'bg-green-100 text-green-700' :
-                        appt.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-red-100 text-red-700'
+            {/* Right Column - Tools & Notifications */}
+            <div className="space-y-8">
+              {/* ML Tools */}
+              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                <h2 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
+                  <FaStethoscope className="text-purple-600" />
+                  AI Medical Tools
+                </h2>
+                <div className="space-y-4">
+                  {mlTools.map((tool, index) => (
+                    <a
+                      key={index}
+                      href={tool.path}
+                      className="group block bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-4 border border-slate-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 bg-gradient-to-br ${tool.color} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                          <tool.icon className="text-white text-xl" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-slate-800 group-hover:text-blue-600 transition-colors duration-200">
+                            {tool.name}
+                          </h3>
+                          <p className="text-sm text-slate-600">{tool.description}</p>
+                        </div>
+                        <div className="text-slate-400 group-hover:text-blue-600 transition-colors duration-200">
+                          →
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Recent Patients */}
+              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                <h2 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
+                  <FaUsers className="text-green-600" />
+                  Recent Patients
+                </h2>
+                <div className="space-y-4">
+                  {recentPatients.map((patient, index) => (
+                    <div key={index} className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg hover:bg-blue-50 transition-colors duration-200">
+                      <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                        <span className="text-white font-semibold text-sm">
+                          {patient.name.split(' ').map(n => n[0]).join('')}
+                        </span>
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-medium text-slate-800">{patient.name}</h4>
+                        <p className="text-sm text-slate-600">{patient.age} years • {patient.lastVisit}</p>
+                      </div>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        patient.status === 'Active' 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-blue-100 text-blue-800'
                       }`}>
-                        {appt.status}
+                        {patient.status}
                       </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Notifications */}
+              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                <h2 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
+                  <FaBell className="text-orange-600" />
+                  Notifications
+                </h2>
+                <div className="space-y-4">
+                  {notifications.map((notification) => (
+                    <div key={notification.id} className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg hover:bg-blue-50 transition-colors duration-200">
+                      <div className={`w-2 h-2 rounded-full mt-2 ${
+                        notification.type === 'success' ? 'bg-green-500' :
+                        notification.type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'
+                      }`}></div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-slate-800">{notification.message}</p>
+                        <p className="text-xs text-slate-500">{notification.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        
-        {/* Notifications Section */}
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
-          <h2 className="text-xl font-semibold text-blue-600 mb-6 flex items-center gap-3">
-            <div className="w-4 h-4 bg-blue-600 rounded-full opacity-20"></div>
-            <FaBell />
-            Notifications
-          </h2>
-          <ul className="space-y-3">
-            {notifications.map((notification, index) => (
-              <li key={index} className="p-4 border-b border-slate-100 last:border-b-0 hover:bg-slate-50 rounded-lg transition-colors duration-200 flex items-center text-sm text-slate-600">
-                <strong className="text-blue-600 font-semibold mr-2">{notification.message}</strong> 
-                {notification.subject}
-              </li>
-            ))}
-          </ul>
+
+          {/* Quick Actions */}
+          <div className="mt-8 bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+            <h2 className="text-2xl font-semibold text-slate-800 mb-6">Quick Actions</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <button className="flex items-center gap-3 p-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <FaQrcode className="text-xl" />
+                <span>Scan Patient QR</span>
+              </button>
+              <button className="flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <FaFileMedical className="text-xl" />
+                <span>View Reports</span>
+              </button>
+              <button className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <FaCalendarAlt className="text-xl" />
+                <span>Schedule</span>
+              </button>
+              <button className="flex items-center gap-3 p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <FaUsers className="text-xl" />
+                <span>Patients</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

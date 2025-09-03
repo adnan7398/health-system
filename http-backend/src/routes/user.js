@@ -280,6 +280,42 @@ userRouter.post("/update-status", async (req, res) => {
     }
 });
 
+// Simple chatbot endpoint
+userRouter.post("/chatbot", async (req, res) => {
+    try {
+        const { message } = req.body;
+        
+        if (!message) {
+            return res.status(400).json({ error: "Message is required" });
+        }
+
+        // Simple response logic - in a real app, you'd integrate with OpenAI or similar
+        let response = "I'm here to help with your health questions. Please provide more details about your concern.";
+        
+        const lowerMessage = message.toLowerCase();
+        
+        if (lowerMessage.includes("headache") || lowerMessage.includes("head pain")) {
+            response = "Headaches can have various causes including stress, dehydration, lack of sleep, or underlying medical conditions. I recommend staying hydrated, getting adequate rest, and consulting a doctor if the pain is severe or persistent.";
+        } else if (lowerMessage.includes("fever") || lowerMessage.includes("temperature")) {
+            response = "A fever is often a sign that your body is fighting an infection. Rest, stay hydrated, and monitor your temperature. Seek medical attention if fever is above 103°F (39.4°C) or persists for more than 3 days.";
+        } else if (lowerMessage.includes("cough") || lowerMessage.includes("cold")) {
+            response = "For coughs and colds, rest, stay hydrated, and consider over-the-counter remedies. If symptoms persist for more than 10 days or become severe, consult a healthcare provider.";
+        } else if (lowerMessage.includes("appointment") || lowerMessage.includes("book")) {
+            response = "To book an appointment, please use our appointment booking system. You can select a doctor, choose a date and time, and provide your medical details.";
+        } else if (lowerMessage.includes("doctor") || lowerMessage.includes("physician")) {
+            response = "We have qualified doctors across various specialties including cardiology, neurology, pediatrics, and more. You can browse our doctor directory to find the right specialist for your needs.";
+        }
+
+        res.json({ 
+            message: response,
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error("Chatbot error:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 module.exports = userRouter;
 
 
