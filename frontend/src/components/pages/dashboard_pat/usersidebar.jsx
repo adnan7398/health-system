@@ -130,107 +130,156 @@ const UserSidebar = () => {
   }
 
   return (
-    <div className="h-full bg-white border-r border-slate-200 p-6">
-      {/* User Profile Section */}
-      <div className="text-center mb-8">
-        <div className="w-20 h-20 bg-gradient-to-br from-slate-600 to-slate-700 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
-          <FaUser className="text-white text-2xl" />
-        </div>
-        <h2 className="text-xl font-bold text-slate-800 mb-1">Patient Portal</h2>
-        <p className="text-slate-600 text-sm">Health Management System</p>
-      </div>
-
-      {/* QR Code Section */}
-      <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-6 mb-6 border border-slate-200">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4 text-center">Your Health Card</h3>
-        <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-          {qrCodeData && (
-            <div className="flex flex-col items-center">
-              <QRCodeSVG value={qrCodeData} size={120} className="mb-3" />
-              <button
-                onClick={handleDownloadQR}
-                className="bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-              >
-                Download QR
-              </button>
+    <div className="h-full bg-white shadow-lg border-r border-slate-200 p-6">
+      <div className="max-w-sm mx-auto">
+        {/* Profile Header */}
+        <div className="text-center mb-8">
+          <div className="relative inline-block mb-4">
+            <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center shadow-lg">
+              {userData?.profilePicture ? (
+                <img
+                  src={userData.profilePicture}
+                  alt="Profile"
+                  className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+                />
+              ) : (
+                <FaUserCircle className="text-white text-4xl" />
+              )}
             </div>
-          )}
+            <button className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-blue-500 hover:bg-blue-50 transition-colors duration-200">
+              <FaCamera className="text-blue-600 text-sm" />
+            </button>
+          </div>
+          
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">
+            {userData?.name || "Unknown User"}
+          </h2>
+          <p className="text-slate-600 font-medium mb-1">Patient ID: {userData?.id || "N/A"}</p>
+          <p className="text-slate-500 text-sm">Member since {userData?.createdAt ? new Date(userData.createdAt).getFullYear() : "N/A"}</p>
         </div>
-        <p className="text-slate-600 text-xs text-center">
-          Present this QR code at healthcare facilities for quick access to your medical records
-        </p>
-      </div>
 
-      {/* Navigation Links */}
-      <nav className="space-y-2">
-        <a
-          href="/userDashboard"
-          className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-        >
-          <div className="w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-            <FaHome className="text-white text-sm" />
+        {/* Contact Information */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl p-6 mb-6 border border-slate-200">
+          <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <FaUser className="text-blue-600" />
+            Contact Information
+          </h3>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                <FaPhone className="text-blue-600 text-sm" />
+              </div>
+              <div>
+                <p className="text-sm text-slate-600">Phone</p>
+                <p className="font-medium text-slate-800">{userData?.phone || "Not provided"}</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                <FaEnvelope className="text-green-600 text-sm" />
+              </div>
+              <div>
+                <p className="text-sm text-slate-600">Email</p>
+                <p className="font-medium text-slate-800">{userData?.email || "Not provided"}</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                <FaMapMarkerAlt className="text-purple-600 text-sm" />
+              </div>
+              <div>
+                <p className="text-sm text-slate-600">Location</p>
+                <p className="font-medium text-slate-800">{userData?.address || "Not provided"}</p>
+              </div>
+            </div>
           </div>
-          Dashboard
-        </a>
-
-        <a
-          href="/bookappointment"
-          className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-        >
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-            <FaCalendarCheck className="text-white text-sm" />
-          </div>
-          Book Appointment
-        </a>
-
-        <a
-          href="/patientappointments"
-          className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-        >
-          <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-            <FaCalendarAlt className="text-white text-sm" />
-          </div>
-          My Appointments
-        </a>
-
-        <a
-          href="/medicalReport"
-          className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-        >
-          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-            <FaFileMedical className="text-white text-sm" />
-          </div>
-          Medical Reports
-        </a>
-
-        <a
-          href="/chatbot"
-          className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-        >
-          <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-            <FaRobot className="text-white text-sm" />
-          </div>
-          Health Assistant
-        </a>
-
-        <a
-          href="/scanner"
-          className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-        >
-          <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-            <FaQrcode className="text-white text-sm" />
-          </div>
-          QR Scanner
-        </a>
-      </nav>
-
-      {/* Health Status */}
-      <div className="mt-8 bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-4 border border-slate-200">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-          <span className="text-sm font-medium text-slate-800">Health Status</span>
         </div>
-        <p className="text-slate-600 text-xs">All systems operational</p>
+
+        {/* Health Summary */}
+        <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-6 mb-6 border border-emerald-200">
+          <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <FaHeartbeat className="text-emerald-600" />
+            Health Summary
+          </h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-emerald-600 mb-1">
+                {userData?.age || "N/A"}
+              </div>
+              <div className="text-xs text-slate-600 font-medium">Age</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-emerald-600 mb-1">
+                {userData?.bloodGroup || "N/A"}
+              </div>
+              <div className="text-xs text-slate-600 font-medium">Blood Group</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Health Card QR Code */}
+        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 mb-6 border border-indigo-200">
+          <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <FaQrcode className="text-indigo-600" />
+            Health Card QR Code
+          </h3>
+          
+          <div className="text-center mb-4">
+            <div className="bg-white p-4 rounded-xl inline-block shadow-lg">
+              {qrCodeData && (
+                <QRCodeSVG
+                  value={qrCodeData}
+                  size={120}
+                  level="H"
+                  includeMargin={true}
+                  className="mx-auto"
+                />
+              )}
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            <button
+              onClick={handleDownloadQR}
+              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-2 px-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+            >
+              <FaDownload className="text-sm" />
+              Download QR Code
+            </button>
+            
+            <button
+              onClick={handleShareQR}
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-2 px-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+            >
+              <FaShare className="text-sm" />
+              Share QR Code
+            </button>
+          </div>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-6 border border-orange-200">
+          <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <FaFileMedical className="text-orange-600" />
+            Quick Stats
+          </h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-600 mb-1">
+                {userData?.appointments?.length || 0}
+              </div>
+              <div className="text-xs text-slate-600 font-medium">Appointments</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-600 mb-1">
+                {userData?.reports?.length || 0}
+              </div>
+              <div className="text-xs text-slate-600 font-medium">Reports</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

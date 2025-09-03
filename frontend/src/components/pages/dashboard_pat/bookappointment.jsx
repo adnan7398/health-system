@@ -252,341 +252,424 @@ const BookAppointment = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 mb-8">
-          <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
-              <FaCalendarCheck className="text-white text-3xl" />
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="flex-1 p-6">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+                  Book Appointment
+                </h1>
+                <p className="text-slate-600">
+                  Schedule your appointment with our healthcare professionals
+                </p>
+              </div>
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg">
+                <FaCalendarCheck className="text-white text-2xl" />
+              </div>
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-700 to-slate-800 bg-clip-text text-transparent mb-2">
-              Book Your Appointment
-            </h1>
-            <p className="text-slate-600 text-lg">Schedule a consultation with our healthcare professionals</p>
+
+            {/* Progress Steps */}
+            <div className="flex items-center justify-between">
+              {steps.map((step, index) => (
+                <div key={step.number} className="flex items-center">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 ${
+                    currentStep >= step.number
+                      ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg"
+                      : "bg-slate-200 text-slate-400"
+                  }`}>
+                    {currentStep > step.number ? (
+                      <FaCheckCircle className="text-white" />
+                    ) : (
+                      step.number
+                    )}
+                  </div>
+                  <div className="ml-3">
+                    <h3 className={`font-semibold text-sm ${
+                      currentStep >= step.number ? "text-slate-800" : "text-slate-500"
+                    }`}>
+                      {step.title}
+                    </h3>
+                    <p className={`text-xs ${
+                      currentStep >= step.number ? "text-slate-600" : "text-slate-400"
+                    }`}>
+                      {step.description}
+                    </p>
+                  </div>
+                  {index < steps.length - 1 && (
+                    <div className={`w-16 h-1 mx-4 transition-all duration-300 ${
+                      currentStep > step.number ? "bg-gradient-to-r from-blue-500 to-indigo-500" : "bg-slate-200"
+                    }`} />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Progress Steps */}
-          <div className="flex items-center justify-center mb-8">
-            {steps.map((step, index) => (
-              <div key={step.number} className="flex items-center">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 ${
-                  currentStep >= step.number
-                    ? 'bg-gradient-to-r from-slate-600 to-slate-700 text-white shadow-lg'
-                    : 'bg-slate-200 text-slate-500'
-                }`}>
-                  {currentStep > step.number ? <FaCheckCircle className="text-white" /> : step.number}
-                </div>
-                <div className="ml-4 mr-8">
-                  <h3 className="font-semibold text-slate-800">{step.title}</h3>
-                  <p className="text-sm text-slate-600">{step.description}</p>
-                </div>
-                {index < steps.length - 1 && (
-                  <div className={`w-16 h-1 rounded-full ${
-                    currentStep > step.number ? 'bg-gradient-to-r from-slate-600 to-slate-700' : 'bg-slate-200'
-                  }`}></div>
+          {/* Message Display */}
+          {message && (
+            <div className={`mb-6 p-4 rounded-xl border ${
+              messageType === "success"
+                ? "bg-green-50 border-green-200 text-green-800"
+                : "bg-red-50 border-red-200 text-red-800"
+            }`}>
+              <div className="flex items-center gap-2">
+                {messageType === "success" ? (
+                  <FaCheckCircle className="text-green-500" />
+                ) : (
+                  <FaExclamationTriangle className="text-red-500" />
                 )}
+                <span className="font-medium">{message}</span>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Step Content */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
-          {currentStep === 1 && (
-            <div>
-              <h2 className="text-3xl font-bold text-slate-800 mb-6">Select Your Doctor</h2>
-              
-              {/* Search and Filter */}
-              <div className="flex flex-col lg:flex-row gap-4 mb-6">
-                <div className="flex-1 relative">
-                  <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" />
-                  <input
-                    type="text"
-                    placeholder="Search doctors by name or specialty..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
-                  />
-                </div>
-                <select
-                  value={selectedSpecialty}
-                  onChange={(e) => setSelectedSpecialty(e.target.value)}
-                  className="px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
-                >
-                  {specialties.map((specialty) => (
-                    <option key={specialty.value} value={specialty.value}>
-                      {specialty.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Doctors Grid */}
-              {loading ? (
-                <div className="text-center py-12">
-                  <FaSpinner className="text-4xl text-slate-400 mx-auto mb-4 animate-spin" />
-                  <p className="text-slate-600">Loading doctors...</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredDoctors.map((doctor) => (
-                    <div
-                      key={doctor.id}
-                      onClick={() => setSelectedDoctor(doctor)}
-                      className={`cursor-pointer rounded-2xl border-2 transition-all duration-300 transform hover:scale-105 ${
-                        selectedDoctor?.id === doctor.id
-                          ? 'border-slate-600 shadow-xl'
-                          : 'border-slate-200 hover:border-slate-300 hover:shadow-lg'
-                      }`}
-                    >
-                      <div className="p-6">
-                        <div className="flex items-center gap-4 mb-4">
-                          <img
-                            src={doctor.image}
-                            alt={doctor.name}
-                            className="w-16 h-16 rounded-full object-cover border-2 border-slate-200"
-                          />
-                          <div>
-                            <h3 className="font-bold text-slate-800 text-lg">{doctor.name}</h3>
-                            <p className="text-slate-600">{doctor.specialty}</p>
-                            <div className="flex items-center gap-2 mt-1">
-                              <FaStar className="text-yellow-500 text-sm" />
-                              <span className="text-slate-700 font-medium">{doctor.rating}</span>
-                              <span className="text-slate-500 text-sm">({doctor.reviews} reviews)</span>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-2 mb-4">
-                          <div className="flex items-center gap-2 text-sm text-slate-600">
-                            <FaHospital className="text-slate-400" />
-                            {doctor.hospital}
-                          </div>
-                          <div className="flex items-center gap-2 text-sm text-slate-600">
-                            <FaStethoscope className="text-slate-400" />
-                            {doctor.experience} experience
-                          </div>
-                          <div className="flex items-center gap-2 text-sm text-slate-600">
-                            <FaMapMarkerAlt className="text-slate-400" />
-                            {doctor.location}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 mb-4">
-                          {doctor.languages.map((lang, index) => (
-                            <span key={index} className="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">
-                              {lang}
-                            </span>
-                          ))}
-                        </div>
-
-                        <div className="text-center">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedDoctor(doctor);
-                            }}
-                            className="w-full bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white py-2 px-4 rounded-xl font-medium transition-all duration-200"
-                          >
-                            Select Doctor
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           )}
 
-          {currentStep === 2 && (
-            <div>
-              <h2 className="text-3xl font-bold text-slate-800 mb-6">Choose Date & Time</h2>
-              
-              {selectedDoctor ? (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* Date Selection */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-slate-800 mb-4">Select Date</h3>
-                    <input
-                      type="date"
-                      value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
-                      min={new Date().toISOString().split('T')[0]}
-                      className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
-                    />
-                  </div>
-
-                  {/* Time Selection */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-slate-800 mb-4">Select Time</h3>
-                    <div className="grid grid-cols-2 gap-3">
-                      {selectedDoctor.availableSlots.map((slot) => (
+          {/* Step Content */}
+          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 mb-6">
+            {currentStep === 1 && (
+              <div className="space-y-6">
+                {/* Search and Filter */}
+                <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl p-6 border border-slate-200">
+                  <div className="flex flex-col lg:flex-row gap-4">
+                    <div className="flex-1 relative">
+                      <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder="Search doctors, specialties, or hospitals..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                    
+                    <div className="flex gap-2 overflow-x-auto pb-2">
+                      {specialties.map((specialty) => (
                         <button
-                          key={slot}
-                          onClick={() => setSelectedTime(slot)}
-                          className={`p-3 rounded-xl border-2 transition-all duration-200 ${
-                            selectedTime === slot
-                              ? 'border-slate-600 bg-slate-50 text-slate-800'
-                              : 'border-slate-200 hover:border-slate-300 text-slate-600'
+                          key={specialty.value}
+                          onClick={() => setSelectedSpecialty(specialty.value)}
+                          className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200 ${
+                            selectedSpecialty === specialty.value
+                              ? `bg-gradient-to-r ${specialty.color} text-white shadow-lg`
+                              : "bg-white text-slate-600 hover:bg-slate-50 border border-slate-200"
                           }`}
                         >
-                          {slot}
+                          {specialty.label}
                         </button>
                       ))}
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className="text-center py-12">
-                  <FaExclamationTriangle className="text-4xl text-slate-400 mx-auto mb-4" />
-                  <p className="text-slate-600">Please select a doctor first</p>
-                </div>
-              )}
-            </div>
-          )}
 
-          {currentStep === 3 && (
-            <div>
-              <h2 className="text-3xl font-bold text-slate-800 mb-6">Appointment Details</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Medical Reason</label>
-                  <textarea
-                    value={appointmentDetails.medicalReason}
-                    onChange={(e) => setAppointmentDetails({...appointmentDetails, medicalReason: e.target.value})}
-                    placeholder="Describe your symptoms or reason for visit..."
-                    rows="4"
-                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Additional Notes</label>
-                  <textarea
-                    value={appointmentDetails.notes}
-                    onChange={(e) => setAppointmentDetails({...appointmentDetails, notes: e.target.value})}
-                    placeholder="Any additional information..."
-                    rows="4"
-                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Phone Number</label>
-                  <input
-                    type="tel"
-                    value={appointmentDetails.phone}
-                    onChange={(e) => setAppointmentDetails({...appointmentDetails, phone: e.target.value})}
-                    placeholder="Your contact number"
-                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Visit Type</label>
-                  <div className="space-y-3">
-                    {visitTypes.map((type) => (
-                      <label key={type.value} className="flex items-center gap-3 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="visitType"
-                          value={type.value}
-                          checked={appointmentDetails.visitType === type.value}
-                          onChange={(e) => setAppointmentDetails({...appointmentDetails, visitType: e.target.value})}
-                          className="w-4 h-4 text-slate-600 focus:ring-slate-500"
-                        />
-                        <div className={`w-8 h-8 bg-gradient-to-br ${type.color} rounded-lg flex items-center justify-center`}>
-                          <type.icon className="text-white text-sm" />
+                {/* Doctors List */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredDoctors.map((doctor) => (
+                    <div
+                      key={doctor.id}
+                      onClick={() => handleDoctorSelect(doctor)}
+                      className={`group cursor-pointer bg-white rounded-2xl border-2 transition-all duration-300 transform hover:scale-105 ${
+                        selectedDoctor?.id === doctor.id
+                          ? "border-blue-500 shadow-xl shadow-blue-100"
+                          : "border-slate-200 hover:border-blue-300 hover:shadow-lg"
+                      }`}
+                    >
+                      <div className="p-6">
+                        <div className="flex items-start gap-4 mb-4">
+                          <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+                            <img
+                              src={doctor.image}
+                              alt={doctor.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-slate-800 text-lg mb-1 group-hover:text-blue-600 transition-colors duration-200">
+                              {doctor.name}
+                            </h3>
+                            <p className="text-blue-600 font-medium text-sm mb-1">{doctor.specialty}</p>
+                            <p className="text-slate-600 text-sm">{doctor.hospital}</p>
+                          </div>
                         </div>
-                        <span className="text-slate-700">{type.label}</span>
-                      </label>
+                        
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <FaStar className="text-yellow-400" />
+                              <span className="font-semibold text-slate-800">{doctor.rating}</span>
+                              <span className="text-slate-500 text-sm">({doctor.reviews} reviews)</span>
+                            </div>
+                            <span className="text-emerald-600 font-medium text-sm">{doctor.experience}</span>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 text-slate-600 text-sm">
+                            <FaMapMarkerAlt className="text-slate-400" />
+                            <span>{doctor.location}</span>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 text-slate-600 text-sm">
+                            <FaPhone className="text-slate-400" />
+                            <span>{doctor.phone}</span>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 text-slate-600 text-sm">
+                            <FaEnvelope className="text-slate-400" />
+                            <span className="truncate">{doctor.email}</span>
+                          </div>
+                        </div>
+                        
+                        {selectedDoctor?.id === doctor.id && (
+                          <div className="mt-4 p-3 bg-blue-50 rounded-xl border border-blue-200">
+                            <div className="flex items-center gap-2 text-blue-700">
+                              <FaCheckCircle />
+                              <span className="font-medium text-sm">Selected</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                {filteredDoctors.length === 0 && (
+                  <div className="text-center py-12">
+                    <FaExclamationTriangle className="text-4xl text-slate-300 mx-auto mb-4" />
+                    <p className="text-slate-500">No doctors found matching your criteria</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {currentStep === 2 && (
+              <div className="space-y-6">
+                {/* Date Selection */}
+                <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                  <h3 className="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <FaCalendarAlt className="text-blue-500" />
+                    Select Date
+                  </h3>
+                  <div className="grid grid-cols-7 gap-2">
+                    {Array.from({ length: 31 }, (_, i) => {
+                      const date = new Date();
+                      date.setDate(date.getDate() + i);
+                      const isSelected = selectedDate === date.toISOString().split('T')[0];
+                      const isToday = i === 0;
+                      
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => handleDateSelect(date.toISOString().split('T')[0])}
+                          className={`p-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                            isSelected
+                              ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg"
+                              : isToday
+                              ? "bg-gradient-to-r from-emerald-500 to-green-500 text-white"
+                              : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                          }`}
+                        >
+                          <div className="text-center">
+                            <div className="text-xs opacity-75">
+                              {date.toLocaleDateString('en-US', { weekday: 'short' })}
+                            </div>
+                            <div className="text-lg font-bold">
+                              {date.getDate()}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Time Selection */}
+                <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                  <h3 className="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <FaClock className="text-green-500" />
+                    Select Time
+                  </h3>
+                  <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                    {generateTimeSlots().map((time) => (
+                      <button
+                        key={time}
+                        onClick={() => handleTimeSelect(time)}
+                        className={`p-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                          selectedTime === time
+                            ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        }`}
+                      >
+                        {time}
+                      </button>
                     ))}
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {currentStep === 4 && (
-            <div>
-              <h2 className="text-3xl font-bold text-slate-800 mb-6">Confirm Appointment</h2>
-              
-              <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-6 border border-slate-200">
-                <h3 className="text-xl font-semibold text-slate-800 mb-4">Appointment Summary</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-medium text-slate-700 mb-2">Doctor Information</h4>
-                    <div className="space-y-2 text-sm text-slate-600">
-                      <p><span className="font-medium">Name:</span> {selectedDoctor?.name}</p>
-                      <p><span className="font-medium">Specialty:</span> {selectedDoctor?.specialty}</p>
-                      <p><span className="font-medium">Hospital:</span> {selectedDoctor?.hospital}</p>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-medium text-slate-700 mb-2">Appointment Details</h4>
-                    <div className="space-y-2 text-sm text-slate-600">
-                      <p><span className="font-medium">Date:</span> {selectedDate}</p>
-                      <p><span className="font-medium">Time:</span> {selectedTime}</p>
-                      <p><span className="font-medium">Type:</span> {appointmentDetails.visitType}</p>
-                    </div>
+            {currentStep === 3 && (
+              <div className="space-y-6">
+                {/* Visit Type Selection */}
+                <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                  <h3 className="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <FaCalendarCheck className="text-purple-500" />
+                    Visit Type
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {visitTypes.map((type) => (
+                      <button
+                        key={type.value}
+                        onClick={() => setAppointmentDetails(prev => ({ ...prev, visitType: type.value }))}
+                        className={`p-4 rounded-xl border-2 transition-all duration-200 text-left ${
+                          appointmentDetails.visitType === type.value
+                            ? `border-blue-500 bg-gradient-to-r ${type.color} text-white shadow-lg`
+                            : "border-slate-200 hover:border-blue-300 hover:shadow-md"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                            appointmentDetails.visitType === type.value
+                              ? "bg-white/20"
+                              : `bg-gradient-to-br ${type.color}`
+                          }`}>
+                            <type.icon className={`text-lg ${
+                              appointmentDetails.visitType === type.value ? "text-white" : "text-white"
+                            }`} />
+                          </div>
+                          <span className="font-medium">{type.label}</span>
+                        </div>
+                      </button>
+                    ))}
                   </div>
                 </div>
-                
-                <div className="mt-6 pt-6 border-t border-slate-200">
-                  <h4 className="font-medium text-slate-700 mb-2">Medical Information</h4>
-                  <p className="text-sm text-slate-600 mb-2"><span className="font-medium">Reason:</span> {appointmentDetails.medicalReason}</p>
-                  {appointmentDetails.notes && (
-                    <p className="text-sm text-slate-600"><span className="font-medium">Notes:</span> {appointmentDetails.notes}</p>
-                  )}
+
+                {/* Appointment Details Form */}
+                <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                  <h3 className="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <FaNotesMedical className="text-orange-500" />
+                    Appointment Details
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Medical Reason *
+                      </label>
+                      <textarea
+                        value={appointmentDetails.medicalReason}
+                        onChange={(e) => setAppointmentDetails(prev => ({ ...prev, medicalReason: e.target.value }))}
+                        placeholder="Please describe the reason for your visit..."
+                        rows="3"
+                        className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Additional Notes
+                      </label>
+                      <textarea
+                        value={appointmentDetails.notes}
+                        onChange={(e) => setAppointmentDetails(prev => ({ ...prev, notes: e.target.value }))}
+                        placeholder="Any additional information or special requests..."
+                        rows="2"
+                        className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                          Contact Phone *
+                        </label>
+                        <input
+                          type="tel"
+                          value={appointmentDetails.phone}
+                          onChange={(e) => setAppointmentDetails(prev => ({ ...prev, phone: e.target.value }))}
+                          placeholder="Your phone number"
+                          className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between mt-8">
-            <button
-              onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
-              disabled={currentStep === 1}
-              className="px-6 py-3 border border-slate-300 text-slate-700 rounded-xl font-medium hover:bg-slate-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
-            
-            {currentStep < totalSteps ? (
-              <button
-                onClick={() => setCurrentStep(currentStep + 1)}
-                disabled={!canProceed()}
-                className="px-6 py-3 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-              >
-                Next Step
-              </button>
-            ) : (
-              <button
-                onClick={handleSubmit}
-                disabled={loading}
-                className="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-              >
-                {loading ? <FaSpinner className="animate-spin mr-2" /> : <FaCheckCircle className="mr-2" />}
-                Confirm Appointment
-              </button>
+            {currentStep === 4 && (
+              <div className="text-center py-12">
+                <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <FaCheckCircle className="text-white text-4xl" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-800 mb-4">Appointment Confirmed!</h3>
+                <p className="text-slate-600 mb-6">
+                  Your appointment has been successfully scheduled. You will receive a confirmation email shortly.
+                </p>
+                
+                <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl p-6 border border-slate-200 max-w-md mx-auto">
+                  <h4 className="font-semibold text-slate-800 mb-4">Appointment Summary</h4>
+                  <div className="space-y-3 text-left">
+                    <div className="flex items-center gap-3">
+                      <FaUserMd className="text-blue-500" />
+                      <span className="text-sm text-slate-600">{selectedDoctor?.name}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <FaCalendarAlt className="text-green-500" />
+                      <span className="text-sm text-slate-600">{selectedDate}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <FaClock className="text-purple-500" />
+                      <span className="text-sm text-slate-600">{selectedTime}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <FaMapMarkerAlt className="text-orange-500" />
+                      <span className="text-sm text-slate-600">{selectedDoctor?.hospital}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
-        </div>
 
-        {/* Success Message */}
-        {message && (
-          <div className={`fixed top-4 right-4 p-4 rounded-xl shadow-lg z-50 ${
-            messageType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-          }`}>
-            {message}
-          </div>
-        )}
+          {/* Navigation Buttons */}
+          {currentStep < 4 && (
+            <div className="flex justify-between items-center">
+              <button
+                onClick={handlePrevious}
+                disabled={currentStep === 1}
+                className="px-6 py-3 bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:cursor-not-allowed text-slate-700 rounded-xl font-medium transition-all duration-200 flex items-center gap-2"
+              >
+                Previous
+              </button>
+              
+              <button
+                onClick={currentStep === 3 ? handleSubmit : handleNext}
+                disabled={
+                  (currentStep === 1 && !selectedDoctor) ||
+                  (currentStep === 2 && (!selectedDate || !selectedTime)) ||
+                  (currentStep === 3 && !appointmentDetails.medicalReason) ||
+                  loading
+                }
+                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-slate-300 disabled:to-slate-400 text-white rounded-xl font-medium transition-all duration-200 flex items-center gap-2 shadow-lg disabled:shadow-none"
+              >
+                {loading ? (
+                  <>
+                    <FaSpinner className="animate-spin" />
+                    Processing...
+                  </>
+                ) : currentStep === 3 ? (
+                  <>
+                    Book Appointment
+                    <FaArrowRight />
+                  </>
+                ) : (
+                  <>
+                    Next
+                    <FaArrowRight />
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

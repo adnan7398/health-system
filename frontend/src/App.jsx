@@ -6,6 +6,7 @@ import {
 import React from "react";
 import AppLayout from "./components/layouts/app-layout";
 import Home from "./components/pages/home";
+import ProtectedRoute from "./components/utils/ProtectedRoute";
 
 //auth routes
 import Login from "./components/pages/authlogin/login";
@@ -47,32 +48,97 @@ const router = createBrowserRouter([
       { path: "/doctor/signin", element: <LoginDr /> },
       { path: "/signin", element: <Login /> },
 
-      //patient route
-      { path: "/chatbot", element: <Chatbot /> },
-      { path: "/register", element: <Qrform /> },
-      { path: "/scanner", element: <QRScanner /> },
-      { path: "/userdashboard", element: <Dashboard /> },
-      { path: "/auth", element: <SecretKey /> },
-      { path: "/arogyamcard", element: <ArogyamCard /> },
-      { path: "/bookappointment", element: <BookAppointment /> },
-      { path: "/calorieconvertor", element: <Caloriecalculator /> },
-      { path: "/fitness", element: <Fitness /> },
-      { path: "/summarizer", element: <Summarizer /> },
-      { path: "/patientreport", element: <PatientReport /> },
-      { path: "/patientappointments", element: <PatientAppointments /> },
-      { path: "/alldoctors", element: <Alldoctors /> },
+      //patient routes (protected)
+      { 
+        path: "/chatbot", 
+        element: <ProtectedRoute><Chatbot /></ProtectedRoute> 
+      },
+      { 
+        path: "/register", 
+        element: <ProtectedRoute><Qrform /></ProtectedRoute> 
+      },
+      { 
+        path: "/scanner", 
+        element: <ProtectedRoute><QRScanner /></ProtectedRoute> 
+      },
+      { 
+        path: "/userdashboard", 
+        element: <ProtectedRoute><Dashboard /></ProtectedRoute> 
+      },
+      { 
+        path: "/auth", 
+        element: <ProtectedRoute><SecretKey /></ProtectedRoute> 
+      },
+      { 
+        path: "/arogyamcard", 
+        element: <ProtectedRoute><ArogyamCard /></ProtectedRoute> 
+      },
+      { 
+        path: "/bookappointment", 
+        element: <ProtectedRoute><BookAppointment /></ProtectedRoute> 
+      },
+      { 
+        path: "/calorieconvertor", 
+        element: <ProtectedRoute><Caloriecalculator /></ProtectedRoute> 
+      },
+      { 
+        path: "/fitness", 
+        element: <ProtectedRoute><Fitness /></ProtectedRoute> 
+      },
+      { 
+        path: "/summarizer", 
+        element: <ProtectedRoute><Summarizer /></ProtectedRoute> 
+      },
+      { 
+        path: "/patientreport", 
+        element: <ProtectedRoute><PatientReport /></ProtectedRoute> 
+      },
+      { 
+        path: "/patientappointments", 
+        element: <ProtectedRoute><PatientAppointments /></ProtectedRoute> 
+      },
+      { 
+        path: "/alldoctors", 
+        element: <ProtectedRoute><Alldoctors /></ProtectedRoute> 
+      },
 
-      //doctor routes
-
-      { path: "/doctordashboard", element: <DoctorDashboard /> },
-      { path: "/patient", element: <Patient /> },
-      { path: "/appointment", element: <Appointment /> },
-      { path: "/conference", element: <Conference /> },
-      { path: "/breastcancer", element: <BreastCancer /> },
-      { path: "/heartdisease", element: <HeartDisease /> },
-      { path: "/pcod", element: <Pcod /> },
-      { path: "/pneumonia", element: <Pneumonia /> },
-      { path: "/blogging", element: <Blogging/> },
+      //doctor routes (protected)
+      { 
+        path: "/doctordashboard", 
+        element: <ProtectedRoute><DoctorDashboard /></ProtectedRoute> 
+      },
+      { 
+        path: "/patient", 
+        element: <ProtectedRoute><Patient /></ProtectedRoute> 
+      },
+      { 
+        path: "/appointment", 
+        element: <ProtectedRoute><Appointment /></ProtectedRoute> 
+      },
+      { 
+        path: "/conference", 
+        element: <ProtectedRoute><Conference /></ProtectedRoute> 
+      },
+      { 
+        path: "/breastcancer", 
+        element: <ProtectedRoute><BreastCancer /></ProtectedRoute> 
+      },
+      { 
+        path: "/heartdisease", 
+        element: <ProtectedRoute><HeartDisease /></ProtectedRoute> 
+      },
+      { 
+        path: "/pcod", 
+        element: <ProtectedRoute><Pcod /></ProtectedRoute> 
+      },
+      { 
+        path: "/pneumonia", 
+        element: <ProtectedRoute><Pneumonia /></ProtectedRoute> 
+      },
+      { 
+        path: "/blogging", 
+        element: <ProtectedRoute><Blogging /></ProtectedRoute> 
+      },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
   },

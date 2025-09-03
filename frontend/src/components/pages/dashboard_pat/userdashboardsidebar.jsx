@@ -94,160 +94,139 @@ const Userdashboardsidebar = () => {
   };
 
   return (
-    <div className="h-full bg-white border-r border-slate-200 p-6">
-      {/* Portal Title */}
-      <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-gradient-to-br from-slate-600 to-slate-700 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
-          <FaHospital className="text-white text-2xl" />
+    <div className="h-full bg-white shadow-lg border-r border-slate-200 p-6">
+      <div className="max-w-sm mx-auto">
+        {/* Portal Title */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <FaShieldAlt className="text-white text-2xl" />
+          </div>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+            ArogyaM Portal
+          </h1>
+          <p className="text-slate-600 text-sm font-medium">Patient Dashboard</p>
         </div>
-        <h2 className="text-xl font-bold text-slate-800 mb-1">Health Portal</h2>
-        <p className="text-slate-600 text-sm">Patient Dashboard</p>
-      </div>
 
-      {/* Main Navigation */}
-      <nav className="space-y-2 mb-8">
-        <a
-          href="/userDashboard"
-          className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-        >
-          <div className="w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-            <FaHome className="text-white text-sm" />
-          </div>
-          Dashboard
-        </a>
-
-        <a
-          href="/bookappointment"
-          className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-        >
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-            <FaCalendarCheck className="text-white text-sm" />
-          </div>
-          Book Appointment
-        </a>
-
-        <a
-          href="/patientappointments"
-          className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-        >
-          <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-            <FaCalendarAlt className="text-white text-sm" />
-          </div>
-          My Appointments
-        </a>
-
-        <a
-          href="/medicalReport"
-          className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-        >
-          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-            <FaFileMedical className="text-white text-sm" />
-          </div>
-          Medical Reports
-        </a>
-      </nav>
-
-      {/* Health Tools Section */}
-      <div className="mb-8">
-        <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-4 px-4">Health Tools</h3>
-        <nav className="space-y-2">
-          <a
-            href="/chatbot"
-            className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-          >
-            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-              <FaRobot className="text-white text-sm" />
-            </div>
-            AI Assistant
-          </a>
-
-          <a
-            href="/scanner"
-            className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-          >
-            <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-              <FaQrcode className="text-white text-sm" />
-            </div>
-            QR Scanner
-          </a>
-
-          <a
-            href="/calorieconvertor"
-            className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-          >
-            <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-              <FaWeight className="text-white text-sm" />
-            </div>
-            Health Metrics
-          </a>
-
-          <a
-            href="/fitness"
-            className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl font-medium transition-all duration-200 group"
-          >
-            <div className="w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-              <FaRunning className="text-white text-sm" />
-            </div>
-            Fitness Plans
-          </a>
-        </nav>
-      </div>
-
-      {/* Health Categories */}
-      <div className="mb-8">
-        <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-4 px-4">Health Categories</h3>
-        <div className="space-y-2">
-          <div className="px-4 py-2">
-            <div className="flex items-center gap-2 text-sm text-slate-600">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              Primary Care
-            </div>
-          </div>
-          <div className="px-4 py-2">
-            <div className="flex items-center gap-2 text-sm text-slate-600">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              Specialists
-            </div>
-          </div>
-          <div className="px-4 py-2">
-            <div className="flex items-center gap-2 text-sm text-slate-600">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              Diagnostics
-            </div>
-          </div>
-          <div className="px-4 py-2">
-            <div className="flex items-center gap-2 text-sm text-slate-600">
-              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-              Wellness
-            </div>
+        {/* Main Navigation */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4 px-3">
+            Main Navigation
+          </h3>
+          <div className="space-y-2">
+            {navigationItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.path}
+                className={`group flex items-center gap-3 p-3 rounded-xl transition-all duration-300 transform hover:scale-105 ${
+                  isActive(item.path)
+                    ? `bg-gradient-to-r ${item.color} text-white shadow-lg`
+                    : "text-slate-700 hover:bg-gradient-to-r hover:from-slate-50 hover:to-blue-50"
+                }`}
+              >
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                  isActive(item.path)
+                    ? "bg-white/20 text-white"
+                    : `bg-gradient-to-br ${item.color} text-white group-hover:scale-110`
+                }`}>
+                  <item.icon className="text-sm" />
+                </div>
+                <span className="font-medium">{item.name}</span>
+              </Link>
+            ))}
           </div>
         </div>
-      </div>
 
-      {/* Quick Actions */}
-      <div className="mb-8">
-        <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-4 px-4">Quick Actions</h3>
-        <div className="space-y-2">
-          <button className="w-full px-4 py-3 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-            Emergency Contact
-          </button>
-          <button className="w-full px-4 py-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-            SOS Alert
-          </button>
+        {/* Health Tools */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4 px-3">
+            Health Tools
+          </h3>
+          <div className="space-y-3">
+            {healthTools.map((tool) => (
+              <Link
+                key={tool.name}
+                to={tool.path}
+                className="group block bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-4 border border-slate-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className={`w-10 h-10 bg-gradient-to-br ${tool.color} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    <tool.icon className="text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-slate-800 group-hover:text-blue-600 transition-colors duration-200">
+                      {tool.name}
+                    </h4>
+                    <p className="text-xs text-slate-600">{tool.description}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Health Status Indicator */}
-      <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-4 border border-slate-200">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-          <span className="text-sm font-medium text-slate-800">System Status</span>
+        {/* Health Categories */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4 px-3">
+            Health Categories
+          </h3>
+          <div className="grid grid-cols-2 gap-3">
+            {healthCategories.map((category) => (
+              <div
+                key={category.name}
+                className="group bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-3 border border-slate-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105 cursor-pointer"
+              >
+                <div className="text-center">
+                  <div className={`w-8 h-8 bg-gradient-to-br ${category.color} rounded-lg flex items-center justify-center mx-auto mb-2 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    <category.icon className="text-white text-sm" />
+                  </div>
+                  <h4 className="font-medium text-slate-800 text-xs">{category.name}</h4>
+                  <p className="text-xs text-slate-600 leading-tight">{category.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        <p className="text-slate-600 text-xs">All services operational</p>
-        <div className="mt-3 pt-3 border-t border-slate-200">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-500">Last updated</span>
-            <span className="text-slate-600 font-medium">2 min ago</span>
+
+        {/* Quick Actions */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4 px-3">
+            Quick Actions
+          </h3>
+          <div className="space-y-3">
+            <button className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white py-3 px-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2">
+              <FaAmbulance className="text-sm" />
+              Emergency Contact
+            </button>
+            <button className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white py-3 px-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2">
+              <FaNotesMedical className="text-sm" />
+              Health Tips
+            </button>
+          </div>
+        </div>
+
+        {/* Settings & Logout */}
+        <div className="border-t border-slate-200 pt-6">
+          <div className="space-y-2">
+            <button className="w-full flex items-center gap-3 p-3 text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-xl transition-all duration-200">
+              <FaCog className="text-sm" />
+              <span className="font-medium">Settings</span>
+            </button>
+            <button className="w-full flex items-center gap-3 p-3 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-200">
+              <FaSignOutAlt className="text-sm" />
+              <span className="font-medium">Logout</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Health Status Indicator */}
+        <div className="mt-8 bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl p-4 border border-emerald-200">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium text-emerald-800">Health Status</span>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-emerald-600 mb-1">Good</div>
+            <p className="text-xs text-emerald-700">Your health metrics are within normal range</p>
           </div>
         </div>
       </div>
