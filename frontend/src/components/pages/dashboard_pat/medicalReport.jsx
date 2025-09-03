@@ -216,7 +216,7 @@ const MedicalReport = () => {
       link.href = URL.createObjectURL(new Blob(['Decrypted file content'], { type: 'application/pdf' }));
       link.download = selectedFile.name.replace('.enc', '');
       link.click();
-      
+
       setShowDecryptForm(false);
       setIsDecrypting(false);
       alert('File decrypted and downloaded successfully!');
@@ -255,7 +255,7 @@ const MedicalReport = () => {
         <div className="max-w-7xl mx-auto px-6 text-center">
           <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
             <FaShieldAlt className="text-4xl text-white" />
-          </div>
+      </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Medical Records Manager
           </h1>
@@ -280,7 +280,7 @@ const MedicalReport = () => {
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="flex-1 relative">
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input
+            <input
                   type="text"
                   placeholder="Search reports by name, doctor, hospital, or description..."
                   value={searchTerm}
@@ -438,7 +438,7 @@ const MedicalReport = () => {
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex gap-2">
                               <button
-                                onClick={() => handleFileSelect(file)}
+                  onClick={() => handleFileSelect(file)}
                                 className="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded text-xs transition-colors duration-200"
                               >
                                 Decrypt
@@ -508,8 +508,8 @@ const MedicalReport = () => {
                   Encryption Password
                 </label>
                 <div className="relative">
-                  <input
-                    type="password"
+              <input
+                type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter a strong password for encryption"
@@ -684,8 +684,8 @@ const MedicalReport = () => {
             >
               Upload Report Now
             </button>
-          </div>
         </div>
+      </div>
       </section>
     </div>
   );

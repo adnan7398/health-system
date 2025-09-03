@@ -17,8 +17,8 @@ const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get the intended destination from the ProtectedRoute
-  const from = location.state?.from?.pathname || "/userdashboard";
+  // Get the intended destination from the ProtectedRoute, but default to scanner
+  const from = location.state?.from?.pathname || "/scanner";
 
   useEffect(() => {
     // Check if user is already logged in
@@ -72,8 +72,8 @@ const Auth = () => {
           }
         }
         
-        // Redirect to the intended destination or default to userdashboard
-        navigate(from, { replace: true });
+        // Redirect to scanner page after successful login
+        navigate("/scanner", { replace: true });
       }
     } catch (error) {
       setMessage("Something went wrong! Try again.");
