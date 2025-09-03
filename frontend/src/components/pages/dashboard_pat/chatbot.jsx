@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaMicrophone, FaVolumeUp, FaPaperPlane, FaRobot, FaUser, FaSpinner, FaGlobe, FaBrain, FaShieldAlt, FaClock, FaLightbulb, FaHeartbeat, FaStethoscope, FaPills, FaHospital, FaAmbulance, FaNotesMedical, FaDownload, FaShare, FaCog, FaMicrophoneSlash, FaVolumeMute } from "react-icons/fa";
+import { FaMicrophone, FaVolumeUp, FaPaperPlane, FaRobot, FaUser, FaSpinner, FaGlobe, FaBrain, FaShieldAlt, FaClock, FaLightbulb, FaHeartbeat, FaStethoscope, FaPills, FaHospital, FaAmbulance, FaNotesMedical, FaDownload, FaShare, FaCog, FaMicrophoneSlash, FaVolumeMute, FaArrowRight } from "react-icons/fa";
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([
@@ -35,35 +35,35 @@ const Chatbot = () => {
       icon: FaBrain,
       title: "AI-Powered Analysis",
       description: "Advanced machine learning for accurate health insights",
-      color: "from-blue-500 to-cyan-500"
+      color: "from-teal-500 to-teal-600"
     },
     {
       icon: FaShieldAlt,
       title: "Privacy First",
       description: "Your health data is encrypted and secure",
-      color: "from-green-500 to-emerald-500"
+      color: "from-teal-500 to-teal-600"
     },
     {
       icon: FaClock,
       title: "24/7 Availability",
       description: "Get health advice anytime, anywhere",
-      color: "from-purple-500 to-pink-500"
+      color: "from-teal-500 to-teal-600"
     },
     {
       icon: FaLightbulb,
       title: "Smart Recommendations",
       description: "Personalized health tips and suggestions",
-      color: "from-orange-500 to-red-500"
+      color: "from-teal-500 to-teal-600"
     }
   ];
 
   const healthCategories = [
-    { name: "General Health", icon: FaHeartbeat, color: "from-red-500 to-pink-500" },
-    { name: "Symptoms", icon: FaStethoscope, color: "from-blue-500 to-cyan-500" },
-    { name: "Medications", icon: FaPills, color: "from-green-500 to-emerald-500" },
-    { name: "Nutrition", icon: FaHospital, color: "from-purple-500 to-pink-500" },
-    { name: "Fitness", icon: FaAmbulance, color: "from-orange-500 to-red-500" },
-    { name: "Mental Health", icon: FaNotesMedical, color: "from-indigo-500 to-blue-500" }
+    { name: "General Health", icon: FaHeartbeat, color: "from-teal-500 to-teal-600" },
+    { name: "Symptoms", icon: FaStethoscope, color: "from-teal-500 to-teal-600" },
+    { name: "Medications", icon: FaPills, color: "from-teal-500 to-teal-600" },
+    { name: "Nutrition", icon: FaHospital, color: "from-teal-500 to-teal-600" },
+    { name: "Fitness", icon: FaAmbulance, color: "from-teal-500 to-teal-600" },
+    { name: "Mental Health", icon: FaNotesMedical, color: "from-teal-500 to-teal-600" }
   ];
 
   useEffect(() => {
@@ -111,8 +111,7 @@ const Chatbot = () => {
       id: Date.now(),
       text,
       sender,
-      timestamp: new Date(),
-      type: sender === "bot" ? "response" : "user"
+      timestamp: new Date()
     };
     setMessages(prev => [...prev, newMessage]);
   };
@@ -121,36 +120,28 @@ const Chatbot = () => {
     if (!inputText.trim()) return;
 
     const userMessage = inputText;
-    setInputText("");
     addMessage(userMessage, "user");
+    setInputText("");
     setIsLoading(true);
 
     try {
-              const response = await fetch("http://localhost:3000/api/chatbot", {
+      const response = await fetch("http://localhost:3000/chatbot", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          message: userMessage,
-          language: selectedLanguage
-        }),
+        body: JSON.stringify({ message: userMessage }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        addMessage(data.response, "bot");
-        
-        // Auto-speak bot response
-        if (isSpeaking) {
-          speakText(data.response);
-        }
+        addMessage(data.response || "Thank you for your message. I'm here to help!", "bot");
       } else {
-        addMessage("I'm sorry, I'm having trouble connecting right now. Please try again later.", "bot");
+        addMessage("I'm sorry, I'm experiencing some technical difficulties. Please try again later.", "bot");
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      addMessage("I'm sorry, there was an error processing your request. Please try again.", "bot");
+      addMessage("I'm sorry, I'm experiencing some technical difficulties. Please try again later.", "bot");
     } finally {
       setIsLoading(false);
     }
@@ -163,322 +154,251 @@ const Chatbot = () => {
     }
   };
 
-  const startListening = () => {
-    if (recognitionRef.current && !isListening) {
-      setIsListening(true);
-      recognitionRef.current.start();
-    }
-  };
-
-  const stopListening = () => {
-    if (recognitionRef.current && isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
-    }
-  };
-
-  const speakText = (text) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = selectedLanguage;
-      utterance.rate = 0.9;
-      utterance.pitch = 1;
-      
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      
-      speechSynthesis.speak(utterance);
-    }
-  };
-
-  const toggleSpeaking = () => {
-    if (isSpeaking) {
-      speechSynthesis.cancel();
-      setIsSpeaking(false);
-    } else {
-      setIsSpeaking(true);
-      if (messages.length > 1) {
-        const lastBotMessage = messages.filter(m => m.sender === "bot").pop();
-        if (lastBotMessage) {
-          speakText(lastBotMessage.text);
-        }
-      }
-    }
-  };
-
-  const handleLanguageChange = (languageCode) => {
-    setSelectedLanguage(languageCode);
-    if (recognitionRef.current) {
-      recognitionRef.current.lang = languageCode;
-    }
-  };
-
-  const exportChat = () => {
-    const chatText = messages.map(msg => 
-      `${msg.sender === 'user' ? 'You' : 'AI Assistant'}: ${msg.text}`
-    ).join('\n\n');
-    
-    const blob = new Blob([chatText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'health-chat-export.txt';
-    link.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const toggleVoiceInput = () => {
+  const toggleSpeechRecognition = () => {
     if (isListening) {
-      stopListening();
+      recognitionRef.current?.stop();
     } else {
-      startListening();
+      recognitionRef.current?.start();
+      setIsListening(true);
     }
   };
 
-  const toggleVoiceOutput = () => {
+  const toggleSpeechSynthesis = () => {
     if (isSpeaking) {
-      speechSynthesis.cancel();
+      window.speechSynthesis.cancel();
       setIsSpeaking(false);
     } else {
+      const utterance = new SpeechSynthesisUtterance(messages[messages.length - 1]?.text);
+      utterance.onend = () => setIsSpeaking(false);
+      window.speechSynthesis.speak(utterance);
       setIsSpeaking(true);
-      if (messages.length > 1) {
-        const lastBotMessage = messages.filter(m => m.sender === "bot").pop();
-        if (lastBotMessage) {
-          speakText(lastBotMessage.text);
-        }
-      }
     }
+  };
+
+  const changeLanguage = (langCode) => {
+    setSelectedLanguage(langCode);
+    if (recognitionRef.current) {
+      recognitionRef.current.lang = langCode;
+    }
+  };
+
+  const formatTime = (timestamp) => {
+    return timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <FaRobot className="text-white text-3xl" />
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-16">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
+            <FaRobot className="text-4xl text-white" />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            AI Health Assistant
+          </h1>
+          <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed">
+            Get instant health guidance, symptom analysis, and wellness advice from our intelligent AI
+          </p>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Our AI Assistant?</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Experience healthcare reimagined with cutting-edge AI technology
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((feature, index) => (
+              <div key={index} className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 text-center hover:shadow-xl transition-all duration-300">
+                <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <feature.icon className="text-3xl text-teal-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                <p className="text-gray-600 text-sm">{feature.description}</p>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  AI Health Assistant
-                </h1>
-                <p className="text-slate-600">Your 24/7 health companion powered by artificial intelligence</p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Health Categories Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Health Categories</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Explore different areas of health and wellness
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {healthCategories.map((category, index) => (
+              <div key={index} className="bg-gray-50 p-6 rounded-xl text-center hover:bg-teal-50 transition-colors duration-300 border border-gray-200">
+                <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <category.icon className="text-2xl text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{category.name}</h3>
               </div>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <button
-                onClick={exportChat}
-                className="p-3 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
-                title="Export Chat"
-              >
-                <FaDownload />
-              </button>
-              <button
-                onClick={() => setShowFeatures(!showFeatures)}
-                className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
-                title="Toggle Features"
-              >
-                <FaCog />
-              </button>
-            </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Chat Interface Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Start Your Health Conversation</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Ask questions, describe symptoms, or get wellness advice
+            </p>
           </div>
 
           {/* Language Selector */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <FaGlobe className="text-slate-600" />
-              <span className="text-sm font-medium text-slate-700">Language:</span>
+          <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-6">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <FaGlobe className="text-teal-600 text-xl" />
+              <span className="text-gray-700 font-medium">Select Language:</span>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap justify-center gap-2">
               {languages.map((lang) => (
                 <button
                   key={lang.code}
-                  onClick={() => handleLanguageChange(lang.code)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                  onClick={() => changeLanguage(lang.code)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     selectedLanguage === lang.code
-                      ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      ? "bg-teal-600 text-white shadow-lg"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
-                  <span>{lang.flag}</span>
-                  <span className="hidden sm:inline">{lang.name}</span>
+                  <span className="mr-2">{lang.flag}</span>
+                  {lang.name}
                 </button>
               ))}
             </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Features Info */}
-          {showFeatures && (
-            <div className="lg:col-span-1 space-y-6">
-              {/* Features */}
-              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
-                <h3 className="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                  <FaLightbulb className="text-yellow-500" />
-                  Features
-                </h3>
-                <div className="space-y-4">
-                  {features.map((feature, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <div className={`w-10 h-10 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center shadow-lg flex-shrink-0`}>
-                        <feature.icon className="text-white" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-slate-800 text-sm mb-1">{feature.title}</h4>
-                        <p className="text-xs text-slate-600 leading-relaxed">{feature.description}</p>
-                      </div>
-                    </div>
-                  ))}
+          {/* Chat Container */}
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            {/* Chat Header */}
+            <div className="bg-teal-600 text-white p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                  <FaRobot className="text-xl text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">AI Health Assistant</h3>
+                  <p className="text-teal-100 text-sm">Online • Ready to help</p>
                 </div>
               </div>
-
-              {/* Health Categories */}
-              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
-                <h3 className="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                  <FaStethoscope className="text-blue-500" />
-                  Health Topics
-                </h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {healthCategories.map((category, index) => (
-                    <div
-                      key={index}
-                      className="group bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-3 border border-slate-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105 cursor-pointer"
-                    >
-                      <div className="text-center">
-                        <div className={`w-8 h-8 bg-gradient-to-br ${category.color} rounded-lg flex items-center justify-center mx-auto mb-2 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                          <category.icon className="text-white text-sm" />
-                        </div>
-                        <h4 className="font-medium text-slate-800 text-xs">{category.name}</h4>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleSpeechSynthesis}
+                  className={`p-2 rounded-lg transition-colors duration-200 ${
+                    isSpeaking ? "bg-white/20" : "hover:bg-white/10"
+                  }`}
+                  title={isSpeaking ? "Stop speaking" : "Listen to response"}
+                >
+                  {isSpeaking ? <FaVolumeMute /> : <FaVolumeUp />}
+                </button>
+                <button
+                  onClick={toggleSpeechRecognition}
+                  className={`p-2 rounded-lg transition-colors duration-200 ${
+                    isListening ? "bg-white/20" : "hover:bg-white/10"
+                  }`}
+                  title={isListening ? "Stop listening" : "Start voice input"}
+                >
+                  {isListening ? <FaMicrophoneSlash /> : <FaMicrophone />}
+                </button>
               </div>
             </div>
-          )}
 
-          {/* Chat Interface */}
-          <div className={`bg-white rounded-2xl shadow-lg border border-slate-200 flex flex-col ${showFeatures ? 'lg:col-span-3' : 'lg:col-span-4'}`}>
-            {/* Chat Messages */}
-            <div className="flex-1 p-6 overflow-y-auto max-h-96">
-              <div className="space-y-4">
-                {messages.map((message) => (
+            {/* Messages */}
+            <div className="h-96 overflow-y-auto p-4 bg-gray-50">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"} mb-4`}
+                >
                   <div
-                    key={message.id}
-                    className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+                    className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
+                      message.sender === "user"
+                        ? "bg-teal-600 text-white rounded-br-md"
+                        : "bg-white text-gray-800 rounded-bl-md shadow-md border border-gray-200"
+                    }`}
                   >
-                    <div className={`flex items-start gap-3 max-w-xs lg:max-w-md ${
-                      message.sender === "user" ? "flex-row-reverse" : "flex-row"
+                    <p className="text-sm leading-relaxed">{message.text}</p>
+                    <p className={`text-xs mt-2 ${
+                      message.sender === "user" ? "text-teal-100" : "text-gray-500"
                     }`}>
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        message.sender === "user"
-                          ? "bg-gradient-to-br from-blue-500 to-indigo-500"
-                          : "bg-gradient-to-br from-emerald-500 to-green-500"
-                      }`}>
-                        {message.sender === "user" ? (
-                          <FaUser className="text-white text-sm" />
-                        ) : (
-                          <FaRobot className="text-white text-sm" />
-                        )}
-                      </div>
-                      <div className={`rounded-2xl px-4 py-3 ${
-                        message.sender === "user"
-                          ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white"
-                          : "bg-gradient-to-r from-slate-50 to-blue-50 text-slate-800 border border-slate-200"
-                      }`}>
-                        <p className="text-sm leading-relaxed">{message.text}</p>
-                        <p className={`text-xs mt-2 ${
-                          message.sender === "user" ? "text-blue-100" : "text-slate-500"
-                        }`}>
-                          {message.timestamp.toLocaleTimeString()}
-                        </p>
-                      </div>
+                      {formatTime(message.timestamp)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              
+              {isLoading && (
+                <div className="flex justify-start mb-4">
+                  <div className="bg-white text-gray-800 rounded-2xl rounded-bl-md shadow-md border border-gray-200 px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <FaSpinner className="animate-spin text-teal-600" />
+                      <span className="text-sm">AI is thinking...</span>
                     </div>
                   </div>
-                ))}
-                
-                {isLoading && (
-                  <div className="flex justify-start">
-                    <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center">
-                        <FaRobot className="text-white text-sm" />
-                      </div>
-                      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl px-4 py-3 border border-slate-200">
-                        <div className="flex items-center gap-2">
-                          <FaSpinner className="text-blue-600 animate-spin" />
-                          <span className="text-slate-600 text-sm">AI is thinking...</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                <div ref={messagesEndRef} />
-              </div>
+                </div>
+              )}
+              
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Input Area */}
-            <div className="border-t border-slate-200 p-6">
-              <div className="flex items-end gap-3">
-                <div className="flex-1 relative">
-                  <textarea
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Ask me anything about your health..."
-                    className="w-full p-4 pr-12 border border-slate-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                    rows="3"
-                  />
-                  <div className="absolute bottom-3 right-3 flex items-center gap-2">
-                    <button
-                      onClick={toggleSpeaking}
-                      className={`p-2 rounded-lg transition-all duration-200 ${
-                        isSpeaking
-                          ? "bg-red-500 text-white hover:bg-red-600"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                      }`}
-                      title={isSpeaking ? "Stop Speaking" : "Start Speaking"}
-                    >
-                      <FaVolumeUp className="text-sm" />
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={isListening ? stopListening : startListening}
-                    className={`p-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg ${
-                      isListening
-                        ? "bg-red-500 hover:bg-red-600 text-white"
-                        : "bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
-                    }`}
-                    title={isListening ? "Stop Listening" : "Start Voice Input"}
-                  >
-                    <FaMicrophone className="text-lg" />
-                  </button>
-                  
-                  <button
-                    onClick={handleSendMessage}
-                    disabled={!inputText.trim() || isLoading}
-                    className="p-4 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 disabled:from-slate-300 disabled:to-slate-400 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg disabled:transform-none disabled:cursor-not-allowed"
-                    title="Send Message"
-                  >
-                    <FaPaperPlane className="text-lg" />
-                  </button>
-                </div>
-              </div>
-              
-              <div className="mt-3 text-xs text-slate-500 text-center">
-                Press Enter to send, Shift+Enter for new line
+            <div className="p-4 bg-white border-t border-gray-200">
+              <div className="flex items-center gap-3">
+                <input
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Type your health question here..."
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                  disabled={isLoading}
+                />
+                <button
+                  onClick={handleSendMessage}
+                  disabled={!inputText.trim() || isLoading}
+                  className="bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 text-white p-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none"
+                >
+                  <FaPaperPlane className="text-lg" />
+                </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-teal-700 text-white">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <h2 className="text-4xl font-bold mb-6">Need More Help?</h2>
+          <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
+            Our AI assistant is available 24/7, but you can also connect with human healthcare professionals
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/bookappointment" className="bg-white text-teal-700 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg">
+              Book Appointment
+            </a>
+            <a href="/userdashboard" className="border-2 border-white text-white hover:bg-white hover:text-teal-700 px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-300">
+              Back to Dashboard
+            </a>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
