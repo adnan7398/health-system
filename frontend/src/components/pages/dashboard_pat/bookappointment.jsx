@@ -239,25 +239,16 @@ const BookAppointment = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-16">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
-            <FaCalendarCheck className="text-4xl text-white" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Book Your Appointment
-          </h1>
-          <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed">
-            Schedule consultations with top healthcare professionals in just a few clicks
-          </p>
-        </div>
-      </section>
-
+    <div className="min-h-screen bg-gray-50">
       {/* Progress Steps */}
-      <section className="py-8 bg-gray-50">
+      <section className="py-12 bg-white">
         <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Book Your Appointment</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Follow these steps to schedule your consultation
+            </p>
+          </div>
           <div className="flex items-center justify-between">
             {steps.map((step, index) => (
               <div key={step.number} className="flex items-center">

@@ -249,29 +249,14 @@ const MedicalReport = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-16">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
-            <FaShieldAlt className="text-4xl text-white" />
-      </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Medical Records Manager
-          </h1>
-          <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed">
-            Secure, encrypted storage for your medical reports with military-grade protection
-          </p>
-        </div>
-      </section>
-
+    <div className="min-h-screen bg-gray-50">
       {/* Reports Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Your Medical Reports</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              View, manage, and access your securely stored medical documents
+              Access, manage, and secure your medical documents with encryption
             </p>
           </div>
 

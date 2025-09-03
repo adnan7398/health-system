@@ -39,29 +39,14 @@ const ArogyamCard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-16">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
-            <FaHeartbeat className="text-4xl text-white" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Arogyam Health Card
-          </h1>
-          <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed">
-            Your secure, digital health identity accessible anytime, anywhere
-          </p>
-        </div>
-      </section>
-
+    <div className="min-h-screen bg-gray-50">
       {/* Benefits Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Arogyam Health Card?</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Your Arogyam Health Card Benefits</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Experience healthcare reimagined with our secure digital health solution
+              Discover the advantages of carrying your digital health identity
             </p>
           </div>
 

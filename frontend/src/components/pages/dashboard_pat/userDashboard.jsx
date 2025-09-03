@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FaNotesMedical, FaCalendarCheck, FaUserMd, FaHeartbeat, FaFileMedical, FaHistory, FaBell, FaChartLine, FaShieldAlt, FaQrcode, FaRobot, FaWeight, FaRunning, FaThermometerHalf, FaTint, FaLungs, FaBrain, FaArrowRight, FaClock, FaUser, FaFlask, FaStethoscope } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
+  const navigate = useNavigate();
   const [userName, setUserName] = useState("John Doe");
   const [upcomingAppointments, setUpcomingAppointments] = useState([
     { id: 1, doctor: "Dr. Sarah Wilson", specialty: "Cardiologist", date: "2023-10-15", time: "10:30 AM", status: "Confirmed" },
@@ -44,47 +46,32 @@ const UserDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-16">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
-            <FaHeartbeat className="text-4xl text-white" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Welcome back, {userName}!
-          </h1>
-          <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed">
-            Your health dashboard - monitor, manage, and improve your wellness journey
-          </p>
-        </div>
-      </section>
-
-      {/* Quick Actions Section */}
-      <section className="py-16 bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
+      {/* Quick Actions */}
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Access your most important health features with one click
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Access your most frequently used health features
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {quickActions.map((action, index) => (
-              <a
+              <div
                 key={index}
-                href={action.path}
-                className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group"
+                onClick={() => navigate(action.path)}
+                className="bg-gradient-to-br from-teal-500 to-teal-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 group"
               >
-                <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
                   <action.icon className="text-white text-2xl" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-teal-600 transition-colors duration-200">
+                <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-teal-100 transition-colors duration-200">
                   {action.name}
                 </h3>
-                <div className="w-8 h-0.5 bg-teal-500 mx-auto group-hover:w-12 transition-all duration-300"></div>
-              </a>
+                <p className="text-teal-100 text-sm">{action.description || action.name}</p>
+              </div>
             ))}
           </div>
         </div>

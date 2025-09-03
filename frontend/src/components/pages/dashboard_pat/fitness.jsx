@@ -128,25 +128,16 @@ const Fitness = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white">
-            {/* Hero Section */}
-            <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-16">
-                <div className="max-w-7xl mx-auto px-6 text-center">
-                    <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
-                        <FaDumbbell className="text-4xl text-white" />
-                    </div>
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                        Fitness Events
-                    </h1>
-                    <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed">
-                        Join our community events and stay active with expert-led fitness sessions
-                    </p>
-                </div>
-            </section>
-
+        <div className="min-h-screen bg-gray-50">
             {/* Credits Display */}
-            <section className="py-8 bg-gray-50">
+            <section className="py-12 bg-white">
                 <div className="max-w-7xl mx-auto px-6">
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Fitness & Wellness</h2>
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                            Join fitness events and earn wellness credits
+                        </p>
+                    </div>
                     <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 text-center">
                         <div className="flex items-center justify-center gap-3 mb-2">
                             <FaTicketAlt className="text-2xl text-teal-600" />
