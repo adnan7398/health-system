@@ -46,7 +46,7 @@ const UserDashboard = () => {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Left Sidebar - Navigation Links */}
       <div className="w-64 bg-white shadow-lg border-r border-slate-200">
         <Userdashboardsidebar />
@@ -58,21 +58,21 @@ const UserDashboard = () => {
           <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 mb-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-700 to-slate-800 bg-clip-text text-transparent mb-2">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
                   Patient Dashboard
                 </h1>
                 <p className="text-slate-600 text-lg">
-                  Welcome back, <span className="font-semibold text-slate-700">{userName}</span>
+                  Welcome back, <span className="font-semibold text-blue-600">{userName}</span>
                 </p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <FaBell className="text-2xl text-slate-600 cursor-pointer hover:text-slate-800 transition-colors duration-200" />
+                  <FaBell className="text-2xl text-slate-600 cursor-pointer hover:text-blue-600 transition-colors duration-200" />
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     3
                   </span>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-slate-600 to-slate-700 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
                   <FaUserMd className="text-white text-xl" />
                 </div>
               </div>
@@ -84,13 +84,13 @@ const UserDashboard = () => {
                 <a
                   key={index}
                   href={action.path}
-                  className="group flex items-center gap-3 p-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl border border-slate-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                  className="group flex items-center gap-3 p-4 bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl border border-slate-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
                 >
                   <div className={`w-12 h-12 bg-gradient-to-br ${action.color} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                     <action.icon className="text-white text-xl" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-800 group-hover:text-slate-700 transition-colors duration-200">
+                    <h3 className="font-semibold text-slate-800 group-hover:text-blue-600 transition-colors duration-200">
                       {action.name}
                     </h3>
                   </div>
