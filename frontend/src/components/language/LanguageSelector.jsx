@@ -1,24 +1,26 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { FaGlobe, FaChevronDown } from 'react-icons/fa';
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { FaGlobe, FaChevronDown } from "react-icons/fa";
 
 const LanguageSelector = () => {
   const { i18n, t } = useTranslation();
 
   const languages = [
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
-    { code: 'ta', name: 'தமிழ்', flag: '🇮🇳' },
-    { code: 'ml', name: 'മലയാളം', flag: '🇮🇳' },
-    { code: 'es', name: 'Español', flag: '🇪🇸' }
+    { code: "en", name: "English", flag: "🇺🇸" },
+    { code: "hi", name: "हिन्दी", flag: "🇮🇳" },
+    { code: "ta", name: "தமிழ்", flag: "🇮🇳" },
+    { code: "ml", name: "മലയാളം", flag: "🇮🇳" },
+    { code: "es", name: "Español", flag: "🇪🇸" },
   ];
 
   const changeLanguage = (languageCode) => {
     i18n.changeLanguage(languageCode);
-    localStorage.setItem('language', languageCode);
+    localStorage.setItem("language", languageCode);
   };
 
-  const currentLanguage = languages.find(lang => lang.code === (i18n.language || 'en'));
+  const currentLanguage = languages.find(
+    (lang) => lang.code === (i18n.language || "en")
+  );
 
   return (
     <div className="relative group">
@@ -28,17 +30,16 @@ const LanguageSelector = () => {
         <span className="hidden sm:inline">{currentLanguage?.name}</span>
         <FaChevronDown className="text-white text-xs transition-colors duration-200" />
       </button>
-      
+
       <div className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg border border-gray-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-        <div className="px-3 py-1.5 border-b border-gray-100 mb-1">
-          <p className="text-xs text-gray-500 font-medium">Select Language</p>
-        </div>
         {languages.map(({ code, name, flag }) => (
           <button
             key={code}
             onClick={() => changeLanguage(code)}
             className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2 ${
-              i18n.language === code ? 'text-teal-600 bg-teal-50' : 'text-gray-700'
+              i18n.language === code
+                ? "text-teal-600 bg-teal-50"
+                : "text-gray-700"
             }`}
           >
             <span className="text-base">{flag}</span>
@@ -53,4 +54,4 @@ const LanguageSelector = () => {
   );
 };
 
-export default LanguageSelector; 
+export default LanguageSelector;
