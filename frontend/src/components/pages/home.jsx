@@ -193,7 +193,7 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600 text-white relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-br from-teal-600 via-teal-700 to-teal-800 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-30">
           <div className="absolute top-10 left-20 w-20 h-20 bg-white rounded-full"></div>
           <div className="absolute bottom-10 right-20 w-16 h-16 bg-white rounded-full"></div>
@@ -205,10 +205,10 @@ const Home = () => {
             Join thousands of users who trust Arogyam for their healthcare needs
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-purple-600 hover:bg-slate-100 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            <button className="bg-white text-teal-600 hover:bg-gray-100 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
               Get Started Today
             </button>
-            <button className="border-2 border-white text-white hover:bg-white hover:text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300">
+            <button className="border-2 border-white text-white hover:bg-white hover:text-teal-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300">
               Learn More
             </button>
           </div>
@@ -221,17 +221,17 @@ const Home = () => {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-teal-600 to-teal-700 rounded-xl flex items-center justify-center">
                   <FaHeartbeat className="text-white text-xl" />
                 </div>
                 <span className="text-2xl font-bold">Arogyam</span>
               </div>
-              <p className="text-slate-400 mb-6 leading-relaxed">
+              <p className="text-gray-400 mb-6 leading-relaxed">
                 Your most trusted healthcare brand, powered by AI technology and designed for modern life.
               </p>
               <div className="flex space-x-4">
                 {[FaGithub, FaDribbble, FaBehance, FaTwitter].map((Icon, index) => (
-                  <a key={index} href="#" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-purple-600 transition-all duration-200">
+                  <a key={index} href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-teal-600 transition-all duration-200">
                     <Icon className="text-lg" />
                   </a>
                 ))}
