@@ -159,32 +159,32 @@ const Home = () => {
       </section>
 
       {/* Services Grid */}
-      <section id="services" className="py-20 bg-gradient-to-br from-slate-50 to-white">
+      <section id="services" className="py-20 bg-gradient-to-br from-teal-50 to-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-slate-800 mb-6">Our Services</h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+            <h2 className="text-5xl font-bold text-gray-800 mb-6">Our Services</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Comprehensive healthcare solutions designed for modern life
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { icon: FaQrcode, title: "Health Card", desc: "Digital health records and QR code access", color: "from-purple-500 to-pink-500" },
-              { icon: FaStethoscope, title: "Health Metrics", desc: "Track vital signs and health indicators", color: "from-blue-500 to-cyan-500" },
-              { icon: FaRunning, title: "Fitness Plans", desc: "Personalized workout and nutrition plans", color: "from-emerald-500 to-teal-500" },
-              { icon: FaRobot, title: "Health Assistant", desc: "AI-powered health guidance and support", color: "from-orange-500 to-red-500" },
-              { icon: FaLungs, title: "Respiratory Care", desc: "Specialized breathing and lung health monitoring", color: "from-indigo-500 to-purple-500" },
-              { icon: FaHeartbeat, title: "Cardiac Care", desc: "Heart health monitoring and prevention", color: "from-pink-500 to-rose-500" }
+              { icon: FaQrcode, title: "Health Card", desc: "Digital health records and QR code access", color: "from-teal-500 to-teal-600" },
+              { icon: FaStethoscope, title: "Health Metrics", desc: "Track vital signs and health indicators", color: "from-teal-600 to-teal-700" },
+              { icon: FaRunning, title: "Fitness Plans", desc: "Personalized workout and nutrition plans", color: "from-teal-700 to-teal-800" },
+              { icon: FaRobot, title: "Health Assistant", desc: "AI-powered health guidance and support", color: "from-teal-500 to-teal-600" },
+              { icon: FaLungs, title: "Respiratory Care", desc: "Specialized breathing and lung health monitoring", color: "from-teal-600 to-teal-700" },
+              { icon: FaHeartbeat, title: "Cardiac Care", desc: "Heart health monitoring and prevention", color: "from-teal-700 to-teal-800" }
             ].map((service, index) => (
               <div key={index} className="group cursor-pointer">
                 <div className={`absolute inset-0 bg-gradient-to-br ${service.color} rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300`}></div>
-                <div className="relative bg-white p-8 rounded-2xl border border-slate-200 shadow-lg hover:shadow-2xl transition-all duration-300 group-hover:-translate-y-2">
+                <div className="relative bg-white p-8 rounded-2xl border border-teal-200 shadow-lg hover:shadow-2xl transition-all duration-300 group-hover:-translate-y-2">
                   <div className={`w-16 h-16 bg-gradient-to-br ${service.color} rounded-2xl flex items-center justify-center mx-auto mb-6 text-white`}>
                     <service.icon className="text-2xl" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-3 text-center">{service.title}</h3>
-                  <p className="text-slate-600 text-center">{service.desc}</p>
+                  <h3 className="text-xl font-bold text-gray-800 mb-3 text-center">{service.title}</h3>
+                  <p className="text-gray-600 text-center">{service.desc}</p>
                 </div>
               </div>
             ))}
