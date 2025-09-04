@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { Html5Qrcode } from "html5-qrcode";
 import { useNavigate } from "react-router-dom";
 import { FaQrcode, FaHeartbeat, FaUserMd, FaCalendarCheck, FaFileMedical, FaRobot, FaQrcode as FaQrCodeIcon, FaCheckCircle, FaArrowRight, FaShieldAlt, FaUser, FaHospital, FaFlask, FaAmbulance, FaBrain, FaRunning, FaLeaf, FaCamera, FaTimes } from "react-icons/fa";
 
@@ -10,6 +10,8 @@ const QRScanner = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [showFeatures, setShowFeatures] = useState(false);
   const [scannerError, setScannerError] = useState(null);
+  const [cameras, setCameras] = useState([]);
+  const [selectedCamera, setSelectedCamera] = useState("");
   
   const scannerRef = useRef(null);
   const scannerContainerRef = useRef(null);
@@ -28,12 +30,20 @@ const QRScanner = () => {
 
     // Cleanup function
     return () => {
-      if (scannerRef.current) {
-        scannerRef.current.clear()
-          .catch((error) => console.log("Scanner cleanup error:", error));
-      }
+      cleanupScanner();
     };
   }, [navigate]);
+
+  const cleanupScanner = async () => {
+    try {
+      if (scannerRef.current && scannerRef.current.isScanning) {
+        await scannerRef.current.stop();
+      }
+      scannerRef.current = null;
+    } catch (error) {
+      console.log("Scanner cleanup error:", error);
+    }
+  };
 
   const fetchUserProfile = async () => {
     try {
@@ -55,17 +65,30 @@ const QRScanner = () => {
     }
   };
 
+  const getAvailableCameras = async () => {
+    try {
+      const devices = await Html5Qrcode.getCameras();
+      setCameras(devices);
+      if (devices.length > 0) {
+        setSelectedCamera(devices[0].id);
+      }
+    } catch (error) {
+      console.error("Error getting cameras:", error);
+      setScannerError("Unable to access camera. Please check permissions.");
+    }
+  };
+
   const startScanner = async () => {
     try {
-      // Clear any existing scanner
-      if (scannerRef.current) {
-        await scannerRef.current.clear();
-        scannerRef.current = null;
-      }
+      // Clean up any existing scanner first
+      await cleanupScanner();
 
-      // Clear container
-      if (scannerContainerRef.current) {
-        scannerContainerRef.current.innerHTML = "";
+      // Get available cameras
+      await getAvailableCameras();
+
+      if (cameras.length === 0) {
+        setScannerError("No cameras available. Please check camera permissions.");
+        return;
       }
 
       setIsScanning(true);
@@ -73,28 +96,32 @@ const QRScanner = () => {
       setScannerError(null);
 
       // Small delay to ensure DOM is ready
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 300));
 
-      const scannerId = "scanner";
-      
-      const qrCodeScanner = new Html5QrcodeScanner(
-        scannerId,
-        { 
-          fps: 10, 
+      // Check if component is still mounted
+      if (!scannerContainerRef.current) return;
+
+      // Create new scanner instance
+      const html5QrCode = new Html5Qrcode("scanner");
+      scannerRef.current = html5QrCode;
+
+      // Start scanning
+      await html5QrCode.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
           qrbox: { width: 250, height: 250 },
           aspectRatio: 1.0
         },
-        false
+        (decodedText) => {
+          handleDecodedData(decodedText);
+        },
+        (error) => {
+          // Handle scanning errors silently
+          console.log("Scanning error:", error);
+        }
       );
 
-      qrCodeScanner.render((decodedText) => {
-        handleDecodedData(decodedText);
-      }, (error) => {
-        // Handle scanning errors silently
-        console.log("Scanning error:", error);
-      });
-
-      scannerRef.current = qrCodeScanner;
     } catch (error) {
       console.error("Error starting scanner:", error);
       setScannerError("Failed to start scanner. Please try again.");
@@ -105,21 +132,20 @@ const QRScanner = () => {
 
   const stopScanner = async () => {
     try {
-      if (scannerRef.current) {
-        await scannerRef.current.clear();
-        scannerRef.current = null;
+      if (scannerRef.current && scannerRef.current.isScanning) {
+        await scannerRef.current.stop();
       }
-      
-      // Clear container
-      if (scannerContainerRef.current) {
-        scannerContainerRef.current.innerHTML = "";
-      }
+      scannerRef.current = null;
       
       setIsScanning(false);
       setScanStatus("ready");
       setScannerError(null);
     } catch (error) {
       console.error("Error stopping scanner:", error);
+      // Force reset state even if cleanup fails
+      setIsScanning(false);
+      setScanStatus("ready");
+      setScannerError(null);
     }
   };
 
@@ -164,13 +190,15 @@ const QRScanner = () => {
     }
   };
 
-  const resetScanner = () => {
-    setShowFeatures(false);
-    setScanStatus("ready");
-    setScanResult(null);
-    setScannerError(null);
-    if (scannerRef.current) {
-      stopScanner();
+  const resetScanner = async () => {
+    try {
+      setShowFeatures(false);
+      setScanStatus("ready");
+      setScanResult(null);
+      setScannerError(null);
+      await cleanupScanner();
+    } catch (error) {
+      console.error("Error resetting scanner:", error);
     }
   };
 
@@ -222,21 +250,6 @@ const QRScanner = () => {
   if (showFeatures) {
     return (
       <div className="min-h-screen bg-white">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-16">
-          <div className="max-w-7xl mx-auto px-6 text-center">
-            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
-              <FaCheckCircle className="text-4xl text-white" />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Welcome to Arogyam!
-            </h1>
-            <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed">
-              Your QR code has been verified. Access all your health features below.
-            </p>
-          </div>
-        </section>
-
         {/* User Profile Section */}
         {userProfile && (
           <section className="py-8 bg-gray-50">
@@ -283,7 +296,7 @@ const QRScanner = () => {
                   <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-teal-600 transition-colors duration-200">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-4">{feature.description}</p>
+                  <p className="text-gray-600 text-sm">{feature.description}</p>
                   <div className="flex items-center justify-center">
                     <FaArrowRight className="text-teal-600 group-hover:translate-x-1 transition-transform duration-200" />
                   </div>
@@ -314,21 +327,6 @@ const QRScanner = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-teal-600 to-teal-800 text-white py-16">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
-            <FaQrcode className="text-4xl text-white" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            QR Code Scanner
-          </h1>
-          <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed">
-            Scan your Arogyam health card to access all your healthcare features
-          </p>
-        </div>
-      </section>
-
       {/* Scanner Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-6">
@@ -348,8 +346,8 @@ const QRScanner = () => {
                 </div>
               )}
               {scanStatus === "scanning" && (
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
                 </div>
               )}
               {scanStatus === "success" && (
@@ -412,8 +410,8 @@ const QRScanner = () => {
                 </div>
               )}
               {scanStatus === "scanning" && (
-                <div className="text-center text-blue-600">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+                <div className="text-center text-teal-600">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto mb-2"></div>
                   <p>Initializing camera...</p>
                 </div>
               )}
