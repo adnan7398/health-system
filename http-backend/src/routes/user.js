@@ -316,6 +316,165 @@ userRouter.post("/chatbot", async (req, res) => {
     }
 });
 
+// Aadhaar registration route
+userRouter.post("/register-aadhaar", userMiddleware, async (req, res) => {
+    try {
+        const { aadhaarNumber, firstName, lastName, age, phoneNumber, address, bloodGroup } = req.body;
+        
+        // Validate Aadhaar number format
+        if (!/^\d{12}$/.test(aadhaarNumber)) {
+            return res.status(400).json({ message: "Invalid Aadhaar number format" });
+        }
+
+        // Check if Aadhaar number is already registered
+        const existingUser = await UserModel.findOne({ aadhaarNumber });
+        if (existingUser && existingUser._id.toString() !== req.userId) {
+            return res.status(400).json({ message: "Aadhaar number already registered with another account" });
+        }
+
+        // Update user with Aadhaar and health card data
+        const user = await UserModel.findByIdAndUpdate(req.userId, {
+            aadhaarNumber,
+            firstName,
+            lastName,
+            age,
+            phoneNumber,
+            address,
+            bloodGroup,
+            isHealthCardRegistered: true,
+            'healthCardData.registrationDate': new Date(),
+            'healthCardData.lastUpdated': new Date()
+        }, { new: true });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Generate QR code for health card
+        const qrData = JSON.stringify({
+            id: user._id,
+            aadhaarNumber: user.aadhaarNumber,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            bloodGroup: user.bloodGroup,
+            age: user.age,
+            phoneNumber: user.phoneNumber,
+            address: user.address,
+            isHealthCardRegistered: user.isHealthCardRegistered
+        });
+
+        const qrCodeUrl = `http://localhost:3000/details/${user._id}`;
+        const qrCodeDataUrl = await QRCode.toDataURL(qrCodeUrl);
+        user.qrCode = qrCodeDataUrl;
+        await user.save();
+
+        res.status(200).json({
+            message: "Health card registered successfully with Aadhaar",
+            user: {
+                id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                aadhaarNumber: user.aadhaarNumber,
+                isHealthCardRegistered: user.isHealthCardRegistered,
+                qrCode: user.qrCode
+            }
+        });
+
+    } catch (error) {
+        console.error("Aadhaar registration error:", error);
+        res.status(500).json({ message: "Error registering health card", error: error.message });
+    }
+});
+
+// Check health card registration status
+userRouter.get("/health-card-status", userMiddleware, async (req, res) => {
+    try {
+        const user = await UserModel.findById(req.userId).select("-password");
+        
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({
+            isHealthCardRegistered: user.isHealthCardRegistered || false,
+            aadhaarNumber: user.aadhaarNumber || null,
+            healthCardData: user.healthCardData || {},
+            qrCode: user.qrCode || null,
+            user: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                bloodGroup: user.bloodGroup,
+                age: user.age,
+                phoneNumber: user.phoneNumber,
+                address: user.address
+            }
+        });
+
+    } catch (error) {
+        console.error("Health card status check error:", error);
+        res.status(500).json({ message: "Error checking health card status", error: error.message });
+    }
+});
+
+// Update health card data
+userRouter.put("/update-health-card", userMiddleware, async (req, res) => {
+    try {
+        const { bloodGroup, age, phoneNumber, address, emergencyContact } = req.body;
+        
+        const updateData = {
+            bloodGroup,
+            age,
+            phoneNumber,
+            address,
+            'healthCardData.lastUpdated': new Date()
+        };
+
+        if (emergencyContact) {
+            updateData['healthCardData.emergencyContact'] = emergencyContact;
+        }
+
+        const user = await UserModel.findByIdAndUpdate(req.userId, updateData, { new: true });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Regenerate QR code with updated data
+        const qrData = JSON.stringify({
+            id: user._id,
+            aadhaarNumber: user.aadhaarNumber,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            bloodGroup: user.bloodGroup,
+            age: user.age,
+            phoneNumber: user.phoneNumber,
+            address: user.address,
+            isHealthCardRegistered: user.isHealthCardRegistered
+        });
+
+        const qrCodeUrl = `http://localhost:3000/details/${user._id}`;
+        const qrCodeDataUrl = await QRCode.toDataURL(qrCodeUrl);
+        user.qrCode = qrCodeDataUrl;
+        await user.save();
+
+        res.status(200).json({
+            message: "Health card updated successfully",
+            user: {
+                id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                isHealthCardRegistered: user.isHealthCardRegistered,
+                qrCode: user.qrCode
+            }
+        });
+
+    } catch (error) {
+        console.error("Health card update error:", error);
+        res.status(500).json({ message: "Error updating health card", error: error.message });
+    }
+});
+
 module.exports = userRouter;
 
 

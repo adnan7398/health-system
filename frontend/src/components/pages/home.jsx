@@ -1,17 +1,103 @@
 import React, { useState, useEffect } from "react";
 import { FaFacebook, FaHeartbeat, FaInstagram, FaLinkedin, FaTwitter, FaStar, FaArrowRight, FaCheckCircle, FaUserMd, FaQrcode, FaRobot, FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaUsers, FaAward, FaPills, FaFlask, FaStethoscope, FaAmbulance, FaUserFriends, FaLungs, FaThermometerEmpty, FaRunning, FaPlay, FaGithub, FaDribbble, FaBehance } from "react-icons/fa";
+import HealthCardNotification from "../utils/HealthCardNotification";
 
 const Home = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
+  const [userStatus, setUserStatus] = useState({
+    isAuthenticated: false,
+    isHealthCardRegistered: false,
+    isLoading: true
+  });
+  const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
     const interval = setInterval(() => {
       setActiveFeature((prev) => (prev + 1) % 3);
     }, 3000);
+    
+    // Check user status
+    checkUserStatus();
+    
     return () => clearInterval(interval);
   }, []);
+
+  // Show notification when user is authenticated but doesn't have health card
+  useEffect(() => {
+    if (userStatus.isAuthenticated && !userStatus.isHealthCardRegistered && !userStatus.isLoading) {
+      setShowNotification(true);
+    }
+  }, [userStatus]);
+
+  const checkUserStatus = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      
+      if (!token) {
+        setUserStatus({
+          isAuthenticated: false,
+          isHealthCardRegistered: false,
+          isLoading: false
+        });
+        return;
+      }
+
+      // Check health card status
+      const response = await fetch("https://arogyam-15io.onrender.com/health-card-status", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserStatus({
+          isAuthenticated: true,
+          isHealthCardRegistered: data.isHealthCardRegistered || false,
+          isLoading: false
+        });
+      } else {
+        // Token might be invalid
+        localStorage.removeItem("token");
+        setUserStatus({
+          isAuthenticated: false,
+          isHealthCardRegistered: false,
+          isLoading: false
+        });
+      }
+    } catch (error) {
+      console.error("Error checking user status:", error);
+      setUserStatus({
+        isAuthenticated: false,
+        isHealthCardRegistered: false,
+        isLoading: false
+      });
+    }
+  };
+
+  const handleGetStarted = () => {
+    if (!userStatus.isAuthenticated) {
+      window.location.href = "/signin";
+    } else if (!userStatus.isHealthCardRegistered) {
+      window.location.href = "/aadhaar-registration";
+    } else {
+      window.location.href = "/userdashboard";
+    }
+  };
+
+  const handleLearnMore = () => {
+    if (userStatus.isAuthenticated && userStatus.isHealthCardRegistered) {
+      window.location.href = "/userdashboard";
+    } else if (userStatus.isAuthenticated) {
+      window.location.href = "/scanner";
+    } else {
+      window.location.href = "/signin";
+    }
+  };
 
   const features = [
     {
@@ -34,40 +120,22 @@ const Home = () => {
     }
   ];
 
-  return (
-          <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-teal-100">
-        {/* Navigation */}
-        <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-teal-200/50">
-          <div className="max-w-7xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-xl flex items-center justify-center">
-                  <FaHeartbeat className="text-white text-xl" />
-                </div>
-                <span className="text-2xl font-bold text-teal-700">
-                  Arogyam
-                </span>
-              </div>
-              <div className="hidden md:flex items-center space-x-8">
-                <a href="#features" className="text-gray-600 hover:text-teal-600 transition-colors duration-200 font-medium">Features</a>
-                <a href="#services" className="text-gray-600 hover:text-teal-600 transition-colors duration-200 font-medium">Services</a>
-                <a href="#about" className="text-gray-600 hover:text-teal-600 transition-colors duration-200 font-medium">About</a>
-                <a href="#contact" className="text-gray-600 hover:text-teal-600 transition-colors duration-200 font-medium">Contact</a>
-              </div>
-              <div className="flex items-center space-x-4">
-                <button className="px-6 py-2 text-gray-600 hover:text-teal-600 transition-colors duration-200 font-medium">
-                  Sign In
-                </button>
-                <button className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                  Get Started
-                </button>
-              </div>
-            </div>
-          </div>
-        </nav>
+  // Show loading state
+  if (userStatus.isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-teal-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-teal-100">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
+      <section className="relative pt-20 pb-20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-50 via-teal-100 to-teal-200"></div>
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-10 w-32 h-32 bg-teal-400 rounded-full"></div>
@@ -89,16 +157,41 @@ const Home = () => {
                 Experience healthcare reimagined with cutting-edge AI technology. 
                 Faster access, smarter diagnosis, and better lives.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <button className="group px-8 py-4 bg-teal-600 text-white rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center space-x-2 hover:bg-teal-700">
-                  <span>Start Your Journey</span>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button 
+                  onClick={handleGetStarted}
+                  className="group px-8 py-4 bg-teal-600 text-white rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center space-x-2 hover:bg-teal-700"
+                >
+                  <span>
+                    {userStatus.isAuthenticated && userStatus.isHealthCardRegistered 
+                      ? "Go to Dashboard" 
+                      : userStatus.isAuthenticated 
+                        ? "Complete Health Card Registration" 
+                        : "Start Your Journey"
+                    }
+                  </span>
                   <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-200" />
                 </button>
-                <button className="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold text-lg transition-all duration-300 hover:border-teal-400 hover:text-teal-600 flex items-center space-x-2">
+                <button 
+                  onClick={handleLearnMore}
+                  className="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold text-lg transition-all duration-300 hover:border-teal-400 hover:text-teal-600 flex items-center space-x-2"
+                >
                   <FaPlay className="text-sm" />
                   <span>Watch Demo</span>
                 </button>
               </div>
+              
+              {/* Health Card Requirement Notice */}
+              {userStatus.isAuthenticated && !userStatus.isHealthCardRegistered && (
+                <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                  <div className="flex items-center justify-center text-amber-800">
+                    <FaQrcode className="text-xl mr-2" />
+                    <span className="font-medium">
+                      Next Step: Use Scanner as Entry Gate → Complete Health Card Registration (One-time Setup)
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -117,8 +210,8 @@ const Home = () => {
                   <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mx-auto mb-6 text-white`}>
                     {feature.icon}
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-800 mb-4 text-center">{feature.title}</h3>
-                  <p className="text-slate-600 leading-relaxed text-center">{feature.description}</p>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">{feature.title}</h3>
+                  <p className="text-gray-600 leading-relaxed text-center">{feature.description}</p>
                 </div>
               </div>
             ))}
@@ -205,18 +298,46 @@ const Home = () => {
             Join thousands of users who trust Arogyam for their healthcare needs
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-teal-600 hover:bg-gray-100 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-              Get Started Today
+            <button 
+              onClick={handleGetStarted}
+              className="bg-white text-teal-600 hover:bg-gray-100 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            >
+              {userStatus.isAuthenticated && userStatus.isHealthCardRegistered 
+                ? "Go to Dashboard" 
+                : userStatus.isAuthenticated 
+                  ? "Complete Health Card Registration" 
+                  : "Get Started Today"
+              }
             </button>
-            <button className="border-2 border-white text-white hover:bg-white hover:text-teal-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300">
-              Learn More
+            <button 
+              onClick={handleLearnMore}
+              className="border-2 border-white text-white hover:bg-white hover:text-teal-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300"
+            >
+              {userStatus.isAuthenticated && userStatus.isHealthCardRegistered 
+                ? "View Health Card" 
+                : userStatus.isAuthenticated 
+                  ? "Learn About Health Card" 
+                  : "Learn More"
+              }
             </button>
           </div>
+          
+          {/* Health Card Requirement Notice in CTA */}
+          {userStatus.isAuthenticated && !userStatus.isHealthCardRegistered && (
+            <div className="mt-6 p-4 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
+              <div className="flex items-center justify-center text-white">
+                <FaQrcode className="text-xl mr-2" />
+                <span className="font-medium text-center">
+                  🔐 Scanner is Your Entry Gate → Health Card Registration (One-time Setup) for Complete Access
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="bg-slate-900 text-white py-16">
+      <footer id="contact" className="bg-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
@@ -243,7 +364,7 @@ const Home = () => {
               <ul className="space-y-3">
                 {["Features", "Integrations", "Pricing", "Changelog", "Documentation"].map((item, index) => (
                   <li key={index}>
-                    <a href="#" className="text-slate-400 hover:text-purple-400 transition-colors duration-200">
+                    <a href="#" className="text-gray-400 hover:text-teal-400 transition-colors duration-200">
                       {item}
                     </a>
                   </li>
@@ -256,7 +377,7 @@ const Home = () => {
               <ul className="space-y-3">
                 {["About", "Blog", "Careers", "Press", "Partners"].map((item, index) => (
                   <li key={index}>
-                    <a href="#" className="text-slate-400 hover:text-purple-400 transition-colors duration-200">
+                    <a href="#" className="text-gray-400 hover:text-teal-400 transition-colors duration-200">
                       {item}
                     </a>
                   </li>
@@ -269,7 +390,7 @@ const Home = () => {
               <ul className="space-y-3">
                 {["Help Center", "Community", "Contact", "Status", "Security"].map((item, index) => (
                   <li key={index}>
-                    <a href="#" className="text-slate-400 hover:text-purple-400 transition-colors duration-200">
+                    <a href="#" className="text-gray-400 hover:text-teal-400 transition-colors duration-200">
                       {item}
                     </a>
                   </li>
@@ -278,8 +399,8 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="border-t border-slate-800 mt-12 pt-8 text-center">
-            <p className="text-slate-400">
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center">
+            <p className="text-gray-400">
               © 2024 Arogyam. All rights reserved. | Privacy Policy | Terms of Service
             </p>
           </div>

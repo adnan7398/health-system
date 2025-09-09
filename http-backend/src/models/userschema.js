@@ -7,12 +7,29 @@ const UserSchema = new mongoose.Schema({
     lastName: { type: String, required: true, minlength: 2, maxlength: 20 },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    aadhaarNumber: { type: String, unique: true, sparse: true, validate: {
+        validator: function(v) {
+            return /^\d{12}$/.test(v);
+        },
+        message: 'Aadhaar number must be exactly 12 digits'
+    }},
     bloodGroup: { type: String, enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"] },
     address: { type: String },
     age: { type: Number},
     phoneNumber: { type: Number},
     profileImage: { type: String }, 
     qrCode: { type: String },
+    isHealthCardRegistered: { type: Boolean, default: false },
+    healthCardData: {
+        registrationDate: { type: Date },
+        lastUpdated: { type: Date },
+        medicalHistory: [String],
+        emergencyContact: {
+            name: String,
+            relationship: String,
+            phone: String
+        }
+    }
 }, { timestamps: true });
 
 

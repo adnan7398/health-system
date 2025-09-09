@@ -7,6 +7,7 @@ import React from "react";
 import AppLayout from "./components/layouts/app-layout";
 import Home from "./components/pages/home";
 import ProtectedRoute from "./components/utils/ProtectedRoute";
+import ErrorBoundary from "./components/utils/ErrorBoundary";
 
 //auth routes
 import Login from "./components/pages/authlogin/login";
@@ -26,6 +27,8 @@ import ArogyamCard from "./components/pages/dashboard_pat/arogyamcard";
 import Qrform from "./components/pages/dashboard_pat/qrform";
 import QRScanner from "./components/pages/dashboard_pat/qrscanner";
 import SecretKey from "./components/pages/dashboard_pat/verifyauth";
+import AadhaarRegistration from "./components/pages/dashboard_pat/aadhaarRegistration";
+import CommonFacilities from "./components/pages/dashboard_pat/CommonFacilities";
 
 //doctor routes
 import DoctorDashboard from "./components/pages/dashboard_doc/doctor";
@@ -59,7 +62,7 @@ const router = createBrowserRouter([
       },
       { 
         path: "/scanner", 
-        element: <ProtectedRoute><QRScanner /></ProtectedRoute> 
+        element: <ProtectedRoute isScannerRoute={true}><QRScanner /></ProtectedRoute> 
       },
       { 
         path: "/userdashboard", 
@@ -72,6 +75,10 @@ const router = createBrowserRouter([
       { 
         path: "/arogyamcard", 
         element: <ProtectedRoute><ArogyamCard /></ProtectedRoute> 
+      },
+      { 
+        path: "/aadhaar-registration", 
+        element: <ProtectedRoute><AadhaarRegistration /></ProtectedRoute> 
       },
       { 
         path: "/bookappointment", 
@@ -94,12 +101,24 @@ const router = createBrowserRouter([
         element: <ProtectedRoute><PatientReport /></ProtectedRoute> 
       },
       { 
+        path: "/medicalReport", 
+        element: <ProtectedRoute><PatientReport /></ProtectedRoute> 
+      },
+      { 
         path: "/patientappointments", 
         element: <ProtectedRoute><PatientAppointments /></ProtectedRoute> 
       },
       { 
         path: "/alldoctors", 
         element: <ProtectedRoute><Alldoctors /></ProtectedRoute> 
+      },
+      { 
+        path: "/blogging", 
+        element: <ProtectedRoute><Blogging /></ProtectedRoute> 
+      },
+      { 
+        path: "/common-facilities", 
+        element: <ProtectedRoute><CommonFacilities /></ProtectedRoute> 
       },
 
       //doctor routes (protected)
@@ -135,17 +154,17 @@ const router = createBrowserRouter([
         path: "/pneumonia", 
         element: <ProtectedRoute><Pneumonia /></ProtectedRoute> 
       },
-      { 
-        path: "/blogging", 
-        element: <ProtectedRoute><Blogging /></ProtectedRoute> 
-      },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
   },
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <ErrorBoundary>
+      <RouterProvider router={router} />
+    </ErrorBoundary>
+  );
 }
 
 export default App;
