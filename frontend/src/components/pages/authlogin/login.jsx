@@ -1,6 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { FaHeartbeat, FaEye, FaEyeSlash, FaGoogle, FaFacebook, FaApple, FaArrowRight, FaCheckCircle, FaShieldAlt, FaUserMd, FaQrcode, FaRobot, FaFlask, FaAmbulance } from "react-icons/fa";
+import { 
+  Heart, 
+  Eye, 
+  EyeOff, 
+  ArrowRight, 
+  CheckCircle, 
+  Shield, 
+  UserCheck, 
+  QrCode, 
+  Bot, 
+  FlaskConical, 
+  Ambulance,
+  Chrome,
+  Facebook,
+  Apple
+} from "lucide-react";
 
 const Auth = () => {
   const [isSignup, setIsSignup] = useState(false);
@@ -13,12 +28,14 @@ const Auth = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [rememberMe, setRememberMe] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
   // Get the intended destination from the ProtectedRoute, but default to scanner
-  const from = location.state?.from?.pathname || "/scanner";
+  const from = (location.state)?.from?.pathname || "/scanner";
 
   useEffect(() => {
     // Check if user is already logged in
@@ -30,12 +47,32 @@ const Auth = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear field error
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  };
+
+  const validate = () => {
+    const errs ={};
+    if (!formData.email) errs.email = "Email is required.";
+    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) errs.email = "Enter a valid email.";
+    if (!formData.password) errs.password = "Password is required.";
+    else if (formData.password.length < 6) errs.password = "Password must be at least 6 characters.";
+    if (isSignup && !formData.firstName) errs.firstName = "First name is required.";
+    if (isSignup && !formData.lastName) errs.lastName = "Last name is required.";
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
     setLoading(true);
+
+    // client-side validation
+    if (!validate()) {
+      setLoading(false);
+      return;
+    }
 
     const endpoint = isSignup ? "/signup" : "/signin";
 
@@ -56,16 +93,18 @@ const Auth = () => {
       }
 
       if (response.ok && !isSignup) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("userRole", "patient");
+        // Persist token according to "Remember me"
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem("token", data.token);
+        storage.setItem("userRole", "patient");
         if (data.userId) {
-          localStorage.setItem("userId", data.userId);
+          storage.setItem("userId", data.userId);
         } else {
           // Attempt to extract user ID from token if available
           try {
             const tokenPayload = JSON.parse(atob(data.token.split('.')[1]));
             if (tokenPayload.id) {
-              localStorage.setItem("userId", tokenPayload.id);
+              storage.setItem("userId", tokenPayload.id);
             }
           } catch (error) {
             console.error("Error parsing token:", error);
@@ -88,180 +127,287 @@ const Auth = () => {
   };
 
   const features = [
-    { icon: FaUserMd, title: "Online Doctor Consultation", description: "Connect with top specialists 24/7" },
-    { icon: FaQrcode, title: "Digital Health Records", description: "Secure access to medical history" },
-    { icon: FaFlask, title: "Lab Tests at Home", description: "Convenient diagnostic services" },
-    { icon: FaRobot, title: "AI Health Assistant", description: "24/7 medical guidance" },
-    { icon: FaAmbulance, title: "Emergency Support", description: "Quick medical assistance" }
+    { icon: UserCheck, title: "Online Doctor Consultation", description: "Connect with top specialists 24/7" },
+    { icon: QrCode, title: "Digital Health Records", description: "Secure access to medical history" },
+    { icon: FlaskConical, title: "Lab Tests at Home", description: "Convenient diagnostic services" },
+    { icon: Bot, title: "AI Health Assistant", description: "24/7 medical guidance" },
+    { icon: Ambulance, title: "Emergency Support", description: "Quick medical assistance" }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 flex items-center justify-center p-6 antialiased">
-      <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 flex items-center justify-center p-4 antialiased">
+      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         {/* Left - Brand & Features */}
-        <div className="hidden lg:flex flex-col justify-center bg-gradient-to-br from-emerald-600 to-emerald-800 text-white rounded-3xl p-12 shadow-2xl overflow-hidden relative">
+        <div className="hidden lg:flex flex-col justify-center bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white rounded-3xl p-12 shadow-2xl overflow-hidden relative">
+          {/* Background decorative elements */}
           <div className="absolute inset-0 opacity-10 pointer-events-none">
-            <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
-            <div className="absolute bottom-0 right-0 w-24 h-24 bg-white rounded-full translate-x-12 translate-y-12"></div>
+            <div className="absolute top-0 left-0 w-40 h-40 bg-white rounded-full -translate-x-20 -translate-y-20"></div>
+            <div className="absolute top-1/2 right-0 w-32 h-32 bg-white rounded-full translate-x-16"></div>
+            <div className="absolute bottom-0 right-0 w-28 h-28 bg-white rounded-full translate-x-14 translate-y-14"></div>
           </div>
 
           <div className="relative z-10">
-            <div className="flex items-center mb-6">
-              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mr-4">
-                <FaHeartbeat className="text-3xl text-white" />
+            {/* Brand Header */}
+            <div className="flex items-center mb-8">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+                <Heart className="w-8 h-8 text-white" fill="currentColor" />
               </div>
               <div>
-                <h2 className="text-3xl font-extrabold">Welcome to Arogyam</h2>
-                <p className="text-emerald-100 mt-1">Better care, powered by AI — secure and always available.</p>
+                <h2 className="text-4xl font-bold tracking-tight">Welcome to Arogyam</h2>
+                <p className="text-emerald-100 mt-2 text-lg">Better care, powered by AI — secure and always available.</p>
               </div>
             </div>
 
-            <ul className="space-y-4 mt-6">
+            {/* Features List */}
+            <div className="space-y-6 mt-8">
               {features.map((feature, i) => (
-                <li key={i} className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                    <feature.icon className="text-white" />
+                <div key={i} className="flex items-start gap-4 group">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                    <feature.icon className="w-6 h-6 text-white" />
                   </div>
-                  <div>
-                    <div className="font-semibold">{feature.title}</div>
-                    <div className="text-emerald-100 text-sm">{feature.description}</div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg text-white mb-1">{feature.title}</h3>
+                    <p className="text-emerald-100 text-sm leading-relaxed">{feature.description}</p>
                   </div>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8 pt-6 border-t border-white/10">
-              <div className="flex items-center gap-6 text-sm text-emerald-100">
-                <div className="flex items-center gap-2">
-                  <FaShieldAlt />
-                  <span>Secure & Private</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <FaCheckCircle />
-                  <span>Trusted by 50K+</span>
+              ))}
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="mt-10 pt-8 border-t border-white/20">
+              <div className="flex items-center gap-8 text-emerald-100">
+                <div className="flex items-center gap-3">
+                  <Shield className="w-5 h-5" />
+                  <span className="font-medium">Secure & Private</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5" />
+                  <span className="font-medium">Trusted by 50K+</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right - Card */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-          {/* Header shading (matches left panel) */}
-          <div className="bg-gradient-to-r from-emerald-600 to-emerald-800 text-white p-4 lg:p-6 flex items-center justify-center">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-              <FaHeartbeat className="text-2xl" />
+        {/* Right - Authentication Form */}
+        {/* right panel: remove mobile tap highlight via inline style and keep layout */}
+        <div
+          className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100"
+          style={{ WebkitTapHighlightColor: "transparent" }}
+        >
+          {/* Header */}
+          <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white p-6 flex items-center justify-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-emerald-600 opacity-90"></div>
+            <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center relative z-10">
+              <Heart className="w-7 h-7 text-white" fill="currentColor" />
             </div>
           </div>
 
-          <div className="max-w-md mx-auto p-8 lg:p-12">
-            <div className="text-center mb-6">
-              <h3 className="text-2xl font-bold text-slate-800 mb-2">{isSignup ? "Create Account" : "Welcome Back"}</h3>
-              <p className="text-sm text-slate-500">{isSignup ? "Join Arogyam and take control of your health." : "Sign in to access your personalized health dashboard."}</p>
+          {/* enforce neutral text color for the entire right panel to avoid accidental blue inheritance */}
+          <div className="p-8 lg:p-10 text-slate-800" style={{ WebkitTapHighlightColor: "transparent" }}>
+            {/* Form Header */}
+            <div className="text-center mb-8">
+              <h3 className="text-3xl font-bold text-slate-800 mb-3">
+                {isSignup ? "Create Account" : "Welcome Back"}
+              </h3>
+              <p className="text-slate-600 leading-relaxed">
+                {isSignup 
+                  ? "Join Arogyam and take control of your health journey with personalized care." 
+                  : "Sign in to access your personalized health dashboard and continue your wellness journey."
+                }
+              </p>
             </div>
 
-            {/* Message */}
+            {/* Message Display */}
             {message && (
-              <div className={`mb-4 p-3 rounded-md text-center ${message.includes("success") || message.includes("created") ? "bg-green-50 text-green-700 border border-green-100" : "bg-red-50 text-red-700 border border-red-100"}`}>
+              <div className={`mb-6 p-4 rounded-xl text-center font-medium ${
+                message.includes("success") || message.includes("created") 
+                  ? "bg-green-50 text-green-800 border border-green-200" 
+                  : "bg-red-50 text-red-800 border border-red-200"
+              }`}>
                 {message}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Authentication Form */}
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               {isSignup && (
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-2">First name</label>
-                    <input name="firstName" value={formData.firstName} onChange={handleChange} required autoComplete="given-name"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 transition" />
+                    <label className="block text-sm font-semibold text-slate-700 mb-3">First name</label>
+                    <input 
+                      name="firstName" 
+                      value={formData.firstName} 
+                      onChange={handleChange} 
+                      required 
+                      autoComplete="given-name"
+                      className={`w-full px-4 py-4 border-2 rounded-xl bg-slate-50 shadow-sm focus:outline-none focus:ring-4 focus:ring-emerald-200 focus:border-emerald-600 transition-all duration-200 ${
+                        errors.firstName ? "border-red-300 bg-red-50" : "border-slate-200 hover:border-slate-300"
+                      }`}
+                    />
+                    {errors.firstName && <p className="mt-2 text-sm text-red-600">{errors.firstName}</p>}
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-2">Last name</label>
-                    <input name="lastName" value={formData.lastName} onChange={handleChange} required autoComplete="family-name"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 transition" />
+                    <label className="block text-sm font-semibold text-slate-700 mb-3">Last name</label>
+                    <input 
+                      name="lastName" 
+                      value={formData.lastName} 
+                      onChange={handleChange} 
+                      required 
+                      autoComplete="family-name"
+                      className={`w-full px-4 py-4 border-2 rounded-xl bg-slate-50 shadow-sm focus:outline-none focus:ring-4 focus:ring-emerald-200 focus:border-emerald-600 transition-all duration-200 ${
+                        errors.lastName ? "border-red-300 bg-red-50" : "border-slate-200 hover:border-slate-300"
+                      }`}
+                    />
+                    {errors.lastName && <p className="mt-2 text-sm text-red-600">{errors.lastName}</p>}
                   </div>
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-medium text-slate-600 mb-2">Email</label>
-                <input type="email" name="email" value={formData.email} onChange={handleChange} required autoComplete="email"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 transition" />
+                <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-3">Email address</label>
+                <input 
+                  id="email" 
+                  type="email" 
+                  name="email" 
+                  value={formData.email} 
+                  onChange={handleChange} 
+                  required 
+                  autoComplete="email"
+                  className={`w-full px-4 py-4 border-2 rounded-xl bg-slate-50 shadow-sm focus:outline-none focus:ring-4 focus:ring-emerald-200 focus:border-emerald-600 transition-all duration-200 ${
+                    errors.email ? "border-red-300 bg-red-50" : "border-slate-200 hover:border-slate-300"
+                  }`}
+                  placeholder="Enter your email"
+                />
+                {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email}</p>}
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-600 mb-2">Password</label>
+                <label className="block text-sm font-semibold text-slate-700 mb-3">Password</label>
                 <div className="relative">
-                  <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} required autoComplete={isSignup ? "new-password" : "current-password"}
-                    className="w-full px-4 py-3 pr-12 border border-gray-200 rounded-lg bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 transition" />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label="Toggle password" className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  <input 
+                    id="password" 
+                    type={showPassword ? "text" : "password"} 
+                    name="password" 
+                    value={formData.password} 
+                    onChange={handleChange} 
+                    required 
+                    autoComplete={isSignup ? "new-password" : "current-password"}
+                    className={`w-full px-4 py-4 pr-12 border-2 rounded-xl bg-slate-50 shadow-sm focus:outline-none focus:ring-4 focus:ring-emerald-200 focus:border-emerald-600 transition-all duration-200 ${
+                      errors.password ? "border-red-300 bg-red-50" : "border-slate-200 hover:border-slate-300"
+                    }`}
+                    placeholder="Enter your password"
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => setShowPassword(!showPassword)} 
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
+                {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password}</p>}
               </div>
 
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" className="w-4 h-4 rounded border-gray-300" />
-                  <span className="text-slate-600">Remember me</span>
-                </label>
-                <a href="/forgot-password" className="text-emerald-600 hover:underline">Forgot password?</a>
-              </div>
+              {!isSignup && (
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-3">
+                    <input 
+                      type="checkbox" 
+                      checked={rememberMe} 
+                      onChange={(e) => setRememberMe(e.target.checked)} 
+                      className="w-4 h-4 rounded border-slate-300 accent-emerald-600 focus:outline-none focus:ring-0"
+                    />
+                    <span className="text-sm font-medium text-slate-700">Remember me</span>
+                  </label>
+                  <a
+                    href="/forgot-password"
+                    className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500 rounded"
+                    style={{ WebkitTapHighlightColor: "transparent" }}
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+              )}
 
-              <button type="submit" disabled={loading}
-                className="w-full flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-semibold transition disabled:opacity-50 shadow-md">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white py-4 rounded-xl font-semibold text-lg transition-all duration-200 disabled:opacity-50 shadow-lg hover:shadow-xl focus:outline-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-600 ring-offset-0"
+                style={{ WebkitTapHighlightColor: "transparent" }}
+              >
                 {loading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>{isSignup ? "Creating..." : "Signing in..."}</span>
+                  <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>{isSignup ? "Creating Account..." : "Signing In..."}</span>
                   </div>
                 ) : (
                   <>
                     <span>{isSignup ? "Create Account" : "Sign In"}</span>
-                    <FaArrowRight />
+                    <ArrowRight className="w-5 h-5" />
                   </>
                 )}
               </button>
             </form>
 
-            <div className="my-4 relative">
-              <div className="absolute inset-0 flex items-center" aria-hidden>
-                <div className="w-full border-t border-gray-200"></div>
+            {/* Divider */}
+            <div className="my-8 relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-200"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-3 bg-white text-slate-500">Or continue with</span>
+                <span className="px-4 bg-white text-slate-500 font-medium">Or continue with</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
-              <button onClick={() => handleSocialLogin("/auth/google")} aria-label="Continue with Google"
-                className="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
-                <FaGoogle className="text-red-500" />
-                <span className="sr-only">Google</span>
+            {/* Social Login */}
+            <div className="grid grid-cols-3 gap-4">
+              <button
+                onClick={() => handleSocialLogin("/auth/google")}
+                className="flex items-center justify-center p-4 bg-white border-2 border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 group focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500"
+                style={{ WebkitTapHighlightColor: "transparent" }}
+              >
+                <Chrome className="w-5 h-5 text-slate-600 group-hover:text-slate-800" />
               </button>
-              <button onClick={() => handleSocialLogin("/auth/facebook")} aria-label="Continue with Facebook"
-                className="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
-                <FaFacebook className="text-blue-600" />
-                <span className="sr-only">Facebook</span>
+              <button
+                onClick={() => handleSocialLogin("/auth/facebook")}
+                className="flex items-center justify-center p-4 bg-white border-2 border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 group focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500"
+                style={{ WebkitTapHighlightColor: "transparent" }}
+              >
+                <Facebook className="w-5 h-5 text-slate-600 group-hover:text-slate-800" />
               </button>
-              <button onClick={() => handleSocialLogin("/auth/apple")} aria-label="Continue with Apple"
-                className="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
-                <FaApple className="text-slate-800" />
-                <span className="sr-only">Apple</span>
+              <button
+                onClick={() => handleSocialLogin("/auth/apple")}
+                className="flex items-center justify-center p-4 bg-white border-2 border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 group focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500"
+                style={{ WebkitTapHighlightColor: "transparent" }}
+              >
+                <Apple className="w-5 h-5 text-slate-800 group-hover:text-slate-900" />
               </button>
             </div>
 
-            <div className="mt-6 text-center text-sm">
+            {/* Toggle Auth Mode */}
+            <div className="mt-8 text-center">
               <span className="text-slate-600">
                 {isSignup ? "Already have an account?" : "Don't have an account?"}
               </span>
-              <button onClick={() => setIsSignup(!isSignup)} className="ml-2 text-emerald-600 font-semibold hover:underline">
+              <button
+                onClick={() => setIsSignup(!isSignup)}
+                className="ml-2 text-emerald-600 font-semibold hover:text-emerald-700 transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500 rounded"
+                style={{ WebkitTapHighlightColor: "transparent" }}
+              >
                 {isSignup ? "Sign In" : "Sign Up"}
               </button>
             </div>
 
-            <div className="mt-6 text-center text-xs text-slate-400">
-              By continuing you agree to our <a href="/terms" className="underline">Terms</a> and <a href="/privacy" className="underline">Privacy Policy</a>.
+            {/* Footer */}
+            <div className="mt-8 pt-6 border-t border-slate-100 text-center text-sm text-slate-500">
+              <p className="mb-3">
+                By continuing you agree to our{" "}
+                <a href="/terms" className="text-emerald-600 hover:text-emerald-700 font-medium">Terms of Service</a>
+                {" "}and{" "}
+                <a href="/privacy" className="text-emerald-600 hover:text-emerald-700 font-medium">Privacy Policy</a>
+              </p>
+              <p className="text-slate-400">© {new Date().getFullYear()} Arogyam. All rights reserved.</p>
             </div>
           </div>
         </div>
