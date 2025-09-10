@@ -1043,3 +1043,22 @@
 2025-09-04 19:18:11.613 +05:30 [DBG] Starting: Processing notification exit
 2025-09-04 19:18:11.613 +05:30 [DBG] Starting: Routing Notification exit
 2025-09-04 19:18:11.614 +05:30 [VRB] Converting params for Notification exit to OmniSharp.Extensions.LanguageServer.Protocol.Models.ExitParams
+2025-09-10 22:40:17.964 +05:30 [INF] This only goes file...
+2025-09-10 22:40:18.400 +05:30 [INF] Foo
+2025-09-10 22:40:18.436 +05:30 [DBG] Finding descriptors for initialize
+2025-09-10 22:40:18.626 +05:30 [DBG] Queueing "Serial":initialize:0 request for processing
+2025-09-10 22:40:18.644 +05:30 [DBG] Starting: Processing request initialize 0
+2025-09-10 22:40:18.646 +05:30 [DBG] Starting: Routing Request (0) initialize
+2025-09-10 22:40:18.649 +05:30 [VRB] Converting params for Request (0) initialize to OmniSharp.Extensions.LanguageServer.Protocol.Models.InternalInitializeParams
+2025-09-10 22:40:18.649 +05:30 [VRB] Converting params for Notification initialize to OmniSharp.Extensions.LanguageServer.Protocol.Models.InternalInitializeParams
+2025-09-10 22:40:19.106 +05:30 [VRB] Response value was OmniSharp.Extensions.LanguageServer.Protocol.Models.InitializeResult
+2025-09-10 22:40:19.114 +05:30 [DBG] Finished: Routing Request (0) initialize in 467ms
+2025-09-10 22:40:19.115 +05:30 [DBG] Finished: Processing request initialize 0 in 470ms
+2025-09-10 22:40:19.151 +05:30 [DBG] Finding descriptors for initialized
+2025-09-10 22:40:19.153 +05:30 [DBG] Queueing "Serial":initialized request for processing
+2025-09-10 22:40:19.157 +05:30 [DBG] Starting: Processing notification initialized
+2025-09-10 22:40:19.157 +05:30 [DBG] Starting: Routing Notification initialized
+2025-09-10 22:40:19.157 +05:30 [VRB] Converting params for Notification initialized to OmniSharp.Extensions.LanguageServer.Protocol.Models.InitializedParams
+2025-09-10 22:40:19.181 +05:30 [WRN] No ConfigurationItems have been defined, configuration won't surface any configuration from the client!
+2025-09-10 22:40:19.199 +05:30 [DBG] Finished: Routing Notification initialized in 41ms
+2025-09-10 22:40:19.199 +05:30 [DBG] Finished: Processing notification initialized in 42ms
