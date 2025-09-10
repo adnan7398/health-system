@@ -487,6 +487,26 @@ const UserDashboard = () => {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-gradient-to-r from-teal-700 to-emerald-800 py-8">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+          <div className="text-white text-center md:text-left mb-4 md:mb-0">
+            &copy; {new Date().getFullYear()} Arogyam. All rights reserved.
+          </div>
+          <div className="flex gap-6">
+            <a href="/privacy" className="text-white hover:underline transition-colors duration-200">
+              Privacy Policy
+            </a>
+            <a href="/terms" className="text-white hover:underline transition-colors duration-200">
+              Terms of Service
+            </a>
+            <a href="/contact" className="text-white hover:underline transition-colors duration-200">
+              Contact
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
