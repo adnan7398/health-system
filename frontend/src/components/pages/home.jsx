@@ -244,23 +244,22 @@ const Home = () => {
                 </span>
               </div>
 
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight">
-                <span className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 bg-clip-text text-transparent">
-                  {t("home.hero.aiPowered", "AI-Powered")}
+              <h1 className="text-5xl md:text-8xl lg:text-9xl font-bold mb-8 leading-tight">
+                <span className="bg-white bg-clip-text text-transparent font-semibold font-serif">
+                  {t("home.hero.aiPowered", "AI-Powered Healthcare")}
                 </span>
-                <br />
-                <span className="text-gray-800">
+                <span className="text-white ml-2 font-semibold font-serif">
                   {t("home.hero.healthcare", "Healthcare")}
                 </span>
               </h1>
 
-              <p className="text-xl md:text-2xl lg:text-3xl mb-12 max-w-5xl mx-auto leading-relaxed text-gray-600 font-light">
+              <p className="text-xl md:text-3xl lg:text-4xl mb-12 max-w-5xl mx-auto leading-relaxed text-white font-light">
                 {t(
                   "home.hero.subtitle1",
                   "Experience healthcare reimagined with cutting-edge AI technology."
                 )}
                 <br className="hidden md:block" />
-                <span className="font-medium text-emerald-700">
+                <span className="font-medium text-emerald-300">
                   {t(
                     "home.hero.subtitle2",
                     "Faster access, smarter diagnosis, and better lives."
@@ -269,9 +268,10 @@ const Home = () => {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
+                {/* Primary Button */}
                 <button
                   onClick={handleGetStarted}
-                  className="group px-10 py-5 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-2xl font-bold text-xl transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:-translate-y-2 flex items-center justify-center space-x-3 hover:from-emerald-700 hover:to-emerald-800"
+                  className="group px-10 border-2 py-3 bg-gradient-to-r from-emerald-500 to-emerald-700 text-white rounded-3xl font-bold text-xl shadow-lg hover:shadow-2xl transition-transform duration-300 transform hover:-translate-y-1 flex items-center justify-center space-x-3"
                 >
                   <span>
                     {userStatus.isAuthenticated &&
@@ -281,14 +281,15 @@ const Home = () => {
                       ? t("home.cta.goToScanner", "Go to Scanner (Entry Gate)")
                       : t("home.cta.startJourney", "Start Your Journey")}
                   </span>
-                  <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-200" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
                 </button>
 
+                {/* Secondary Button */}
                 <button
                   onClick={handleLearnMore}
-                  className="px-10 py-5 border-2 border-gray-300 text-gray-700 rounded-2xl font-bold text-xl transition-all duration-300 hover:border-emerald-400 hover:text-emerald-600 hover:bg-emerald-50 flex items-center justify-center space-x-3 backdrop-blur-sm"
+                  className="px-10 py-3 border-2 border-gray-300 text-gray-700 rounded-3xl font-bold text-xl flex items-center justify-center space-x-3 backdrop-blur-sm transition-all duration-300 hover:border-emerald-400 hover:text-emerald-600 hover:bg-emerald-50"
                 >
-                  <Play className="w-5 h-5" />
+                  <Play className="w-4 h-4" />
                   <span>{t("home.cta.watchDemo", "Watch Demo")}</span>
                 </button>
               </div>
@@ -312,35 +313,46 @@ const Home = () => {
           </div>
         </div>
       </section>
+
       {/* Floating Feature Cards */}
-      <div className="grid md:grid-cols-3 gap-8 mt-24">
+      <div className="grid md:grid-cols-3 gap-8 mt-24 px-6 md:px-16 lg:px-24">
         {features.map((feature, index) => (
           <div
             key={index}
-            className={`relative group cursor-pointer transition-all duration-500 ${
+            className={`relative group cursor-pointer transition-transform duration-500 ${
               activeFeature === index ? "scale-105" : "scale-100"
             }`}
             onMouseEnter={() => setActiveFeature(index)}
+            onMouseLeave={() => setActiveFeature(null)}
           >
+            {/* Gradient Glow Background */}
             <div
-              className={`absolute inset-0 bg-gradient-to-br ${feature.color} rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-300`}
+              className={`absolute inset-0 bg-gradient-to-br ${feature.color} rounded-3xl blur-3xl opacity-20 group-hover:opacity-50 transition-opacity duration-500`}
             ></div>
-            <div className="relative bg-white/90 backdrop-blur-lg p-8 rounded-3xl border border-white/30 shadow-2xl hover:shadow-3xl transition-all duration-300 group-hover:-translate-y-2">
+
+            {/* Card */}
+            <div className="relative bg-white/80 backdrop-blur-md p-8 rounded-3xl border border-white/30 shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-3">
+              {/* Icon */}
               <div
-                className={`w-20 h-20 bg-gradient-to-br ${feature.color} rounded-3xl flex items-center justify-center mx-auto mb-6 text-white shadow-xl group-hover:scale-110 transition-transform duration-300`}
+                className={`w-24 h-24 bg-gradient-to-br ${feature.color} rounded-3xl flex items-center justify-center mx-auto mb-6 text-white shadow-xl group-hover:scale-125 transition-transform duration-500`}
               >
-                <feature.icon className="w-10 h-10" />
+                <feature.icon className="w-12 h-12" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+
+              {/* Title */}
+              <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 text-center">
                 {feature.title}
               </h3>
-              <p className="text-gray-600 leading-relaxed text-center text-lg">
+
+              {/* Description */}
+              <p className="text-gray-600 leading-relaxed text-center text-lg md:text-xl">
                 {feature.description}
               </p>
             </div>
           </div>
         ))}
       </div>
+
       {/* Stats Section */}
       <section className="py-24 bg-white relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-50/50 to-teal-50/50"></div>
