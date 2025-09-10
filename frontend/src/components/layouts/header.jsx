@@ -139,17 +139,26 @@ const Header = () => {
   ];
 
   return (
-    <nav className="bg-teal-700 shadow-lg sticky top-0 z-50">
+    <nav className="bg-gradient-to-br from-[#008080] via-[#006666] to-[#004466] shadow-lg sticky top-0 z-50">
       {/* Main Header */}
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           {/* Logo Section */}
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md cursor-pointer" onClick={() => navigate("/")}>
-              <FaHeartbeat className="text-teal-700 text-2xl" />
+          <div className="flex items-center space-x-3 mr-10 -ml-25">
+            <div
+              className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              <img
+                src="/logo1.png" // Replace with your logo path
+                alt="Arogyam Logo"
+                className="w-10 h-10 object-contain"
+              />
             </div>
             <div className="cursor-pointer" onClick={() => navigate("/")}>
-              <h1 className="text-3xl font-bold text-white tracking-tight">Arogyam</h1>
+              <h1 className="text-2xl font-bold text-white tracking-tight">
+                Arogyam
+              </h1>
             </div>
           </div>
 
@@ -189,14 +198,18 @@ const Header = () => {
                   <div className="w-7 h-7 bg-white rounded-full flex items-center justify-center">
                     <FaUser className="text-teal-700 text-sm" />
                   </div>
-                  <span className="font-medium text-sm">{t("header.myAccount")}</span>
+                  <span className="font-medium text-sm">
+                    {t("header.myAccount")}
+                  </span>
                   <FaChevronDown className="text-white text-xs" />
                 </button>
 
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
                     <div className="px-3 py-2 border-b border-gray-100">
-                      <p className="text-sm text-gray-600 font-medium">{t("header.welcomeBack")}</p>
+                      <p className="text-sm text-gray-600 font-medium">
+                        {t("header.welcomeBack")}
+                      </p>
                     </div>
                     <a
                       href="/userdashboard"
@@ -210,14 +223,18 @@ const Header = () => {
                       className="block px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
                     >
                       <FaCalendarCheck className="text-teal-600 text-sm" />
-                      <span className="text-sm">{t("header.myAppointments")}</span>
+                      <span className="text-sm">
+                        {t("header.myAppointments")}
+                      </span>
                     </a>
                     <a
                       href="/medicalReport"
                       className="block px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
                     >
                       <FaFlask className="text-teal-600 text-sm" />
-                      <span className="text-sm">{t("header.medicalRecords")}</span>
+                      <span className="text-sm">
+                        {t("header.medicalRecords")}
+                      </span>
                     </a>
                     <div className="border-t border-gray-100 my-1"></div>
                     <button
@@ -231,19 +248,39 @@ const Header = () => {
                 )}
               </div>
             ) : (
-              <div className="flex items-center space-x-3">
+              <div className="relative">
                 <button
-                  onClick={() => navigate("/signin")}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-white border border-white/10 shadow-none focus:outline-none focus:ring-0 ${location.pathname === "/signin" ? "bg-green-700" : "bg-green-600 hover:bg-green-700"}`}
+                  onClick={toggleDropdown}
+                  className="px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-white border border-white/10 shadow-none focus:outline-none focus:ring-0 bg-green-600 hover:bg-green-700 flex items-center space-x-2"
                 >
-                  {t("auth.patientLogin")}
+                  <span>{t("Login")}</span>
+                  <FaChevronDown className="text-white text-xs" />
                 </button>
-                <button
-                  onClick={() => navigate("/doctorlogin")}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-white border border-white/10 shadow-none focus:outline-none focus:ring-0 ${location.pathname === "/doctorlogin" ? "bg-green-700" : "bg-green-600 hover:bg-green-700"}`}
-                >
-                  {t("auth.doctorLogin")}
-                </button>
+
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                    <button
+                      onClick={() => {
+                        navigate("/signin");
+                        setIsDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
+                    >
+                      <FaUser className="text-teal-600 text-sm" />
+                      <span className="text-sm">{t("auth.patientLogin")}</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate("/doctor/signin");
+                        setIsDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
+                    >
+                      <FaStethoscope className="text-teal-600 text-sm" />
+                      <span className="text-sm">{t("auth.doctorLogin")}</span>
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -285,7 +322,7 @@ const Header = () => {
                 <span className="font-medium">{item.name}</span>
               </a>
             ))}
-            
+
             <div className="border-t border-teal-600 pt-3 mt-3">
               {isAuthenticated ? (
                 <div className="space-y-2">
@@ -315,7 +352,11 @@ const Header = () => {
                       navigate("/signin");
                       setIsMenuOpen(false);
                     }}
-                    className={`w-full text-left text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-none focus:outline-none focus:ring-0 ${location.pathname === "/signin" ? "bg-green-700" : "bg-green-600 hover:bg-green-700"}`}
+                    className={`w-full text-left text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-none focus:outline-none focus:ring-0 ${
+                      location.pathname === "/signin"
+                        ? "bg-green-700"
+                        : "bg-green-600 hover:bg-green-700"
+                    }`}
                   >
                     {t("auth.patientLogin")}
                   </button>
@@ -324,7 +365,11 @@ const Header = () => {
                       navigate("/doctorlogin");
                       setIsMenuOpen(false);
                     }}
-                    className={`w-full text-left text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-none focus:outline-none focus:ring-0 ${location.pathname === "/doctorlogin" ? "bg-green-700" : "bg-green-600 hover:bg-green-700"}`}
+                    className={`w-full text-left text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-none focus:outline-none focus:ring-0 ${
+                      location.pathname === "/doctorlogin"
+                        ? "bg-green-700"
+                        : "bg-green-600 hover:bg-green-700"
+                    }`}
                   >
                     {t("auth.doctorLogin")}
                   </button>
