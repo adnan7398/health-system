@@ -82,11 +82,11 @@ const Auth = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-100 flex items-center justify-center p-4">
       <div className="max-w-7xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2">
           {/* Left Side - Welcome & Benefits */}
-          <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 text-white p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
+          <div className="bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
@@ -102,7 +102,7 @@ const Auth = () => {
                 <h2 className="text-4xl lg:text-5xl font-bold mb-4">
                   Welcome, Doctor
                 </h2>
-                <p className="text-blue-100 text-lg leading-relaxed">
+                <p className="text-emerald-100 text-lg leading-relaxed">
                   {isSignup 
                     ? "Join Arogyam's network of healthcare professionals and transform patient care"
                     : "Sign in to access your doctor dashboard and patient management tools"
@@ -119,7 +119,7 @@ const Auth = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-white">{benefit.title}</h3>
-                      <p className="text-blue-100 text-sm">{benefit.description}</p>
+                      <p className="text-emerald-100 text-sm">{benefit.description}</p>
                     </div>
                   </div>
                 ))}
@@ -127,13 +127,13 @@ const Auth = () => {
 
               {/* Trust Indicators */}
               <div className="mt-8 pt-6 border-t border-white/20">
-                <div className="flex items-center justify-center lg:justify-start gap-6 text-sm text-blue-100">
+                <div className="flex items-center justify-center lg:justify-start gap-6 text-sm text-emerald-100">
                   <div className="flex items-center gap-2">
-                    <FaShieldAlt className="text-blue-200" />
+                    <FaShieldAlt className="text-emerald-200" />
                     <span>HIPAA Compliant</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FaAward className="text-blue-200" />
+                    <FaAward className="text-emerald-200" />
                     <span>200+ Doctors</span>
                   </div>
                 </div>
@@ -187,7 +187,7 @@ const Auth = () => {
                           value={formData.firstName}
                           onChange={handleChange}
                           required
-                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                           placeholder="Dr. First Name"
                         />
                       </div>
@@ -201,7 +201,7 @@ const Auth = () => {
                           value={formData.lastName}
                           onChange={handleChange}
                           required
-                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                           placeholder="Last Name"
                         />
                       </div>
@@ -216,7 +216,7 @@ const Auth = () => {
                         value={formData.specialization}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                       >
                         <option value="">Select Specialization</option>
                         {specializations.map((spec) => (
@@ -234,7 +234,7 @@ const Auth = () => {
                         value={formData.experience}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                       >
                         <option value="">Select Experience</option>
                         {experienceYears.map((exp) => (
@@ -253,7 +253,7 @@ const Auth = () => {
                         value={formData.hospital}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                         placeholder="Hospital or Clinic Name"
                       />
                     </div>
@@ -268,7 +268,7 @@ const Auth = () => {
                         onChange={handleChange}
                         required
                         rows="3"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                         placeholder="Brief description of your expertise and experience..."
                       />
                     </div>
@@ -285,7 +285,7 @@ const Auth = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                     placeholder="Enter your email"
                   />
                 </div>
@@ -301,7 +301,7 @@ const Auth = () => {
                       value={formData.password}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                       placeholder="Enter your password"
                     />
                     <button
@@ -316,7 +316,7 @@ const Auth = () => {
                 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   <div className="flex items-center justify-center gap-2">
                     {isSignup ? "Create Doctor Account" : "Sign In"}
@@ -347,7 +347,7 @@ const Auth = () => {
                     onClick={() => handleSocialLogin("/facebook")}
                     className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors duration-200"
                   >
-                    <FaFacebook className="text-blue-600 text-lg" />
+                    <FaFacebook className="text-emerald-600 text-lg" />
                   </button>
                   <button
                     onClick={() => handleSocialLogin("/apple")}
@@ -364,7 +364,7 @@ const Auth = () => {
                   {isSignup ? "Already have a doctor account?" : "New to Arogyam?"}
                   <button
                     onClick={() => setIsSignup(!isSignup)}
-                    className="ml-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors duration-200"
+                    className="ml-2 text-emerald-600 hover:text-emerald-700 font-semibold transition-colors duration-200"
                   >
                     {isSignup ? "Sign In" : "Sign Up"}
                   </button>
@@ -375,9 +375,9 @@ const Auth = () => {
               {isSignup && (
                 <p className="mt-6 text-xs text-gray-500 text-center">
                   By creating an account, you agree to our{" "}
-                  <a href="#" className="text-blue-600 hover:underline">Terms of Service</a>{" "}
+                  <a href="#" className="text-emerald-600 hover:underline">Terms of Service</a>{" "}
                   and{" "}
-                  <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>
+                  <a href="#" className="text-emerald-600 hover:underline">Privacy Policy</a>
                 </p>
               )}
             </div>

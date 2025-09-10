@@ -58,20 +58,13 @@ const ProtectedRoute = ({ children, requireHealthCard = false, isScannerRoute = 
             setIsNewUser(true);
           }
 
-          // Check scanner verification status from localStorage
+          // Check scanner verification status from localStorage (persists until logout)
           let scannerVerified = false;
           try {
             const verificationData = localStorage.getItem("scannerVerified");
             if (verificationData) {
               const parsed = JSON.parse(verificationData);
               scannerVerified = parsed.verified === true;
-              
-              // Check if verification is not too old (24 hours)
-              if (parsed.timestamp && (Date.now() - parsed.timestamp) > 24 * 60 * 60 * 1000) {
-                console.log("Scanner verification expired, clearing");
-                localStorage.removeItem("scannerVerified");
-                scannerVerified = false;
-              }
             }
           } catch (error) {
             console.error("Error parsing scanner verification:", error);
@@ -108,7 +101,7 @@ const ProtectedRoute = ({ children, requireHealthCard = false, isScannerRoute = 
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Verifying access...</p>
         </div>
       </div>
@@ -126,7 +119,8 @@ const ProtectedRoute = ({ children, requireHealthCard = false, isScannerRoute = 
   }
 
   // For new users, redirect to health card registration (one-time setup)
-  if (userRole === 'patient' && isNewUser) {
+  // But if the user has already passed scanner verification, allow access
+  if (userRole === 'patient' && isNewUser && !isScannerVerified) {
     return <Navigate to="/aadhaar-registration" state={{ from: location }} replace />;
   }
 

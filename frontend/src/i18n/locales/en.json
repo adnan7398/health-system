@@ -70,5 +70,160 @@
   },
   "languageSelector": {
     "label": "Language"
+  },
+  "common": {
+    "viewAll": "View All",
+    "logout": "Logout"
+  },
+  "auth": {
+    "patientLogin": "Patient Login",
+    "doctorLogin": "Doctor Login"
+  },
+  "nav": {
+    "home": "Home",
+    "healthCard": "Health Card",
+    "healthMetrics": "Health Metrics",
+    "fitnessPlans": "Fitness Plans",
+    "healthAssistant": "Health Assistant",
+    "medicalRecords": "Medical Records"
+  },
+  "header": {
+    "myAccount": "My Account",
+    "welcomeBack": "Welcome back!",
+    "dashboard": "Dashboard",
+    "myAppointments": "My Appointments",
+    "medicalRecords": "Medical Records"
+  },
+  "home": {
+    "trusted": "Trusted by 50,000+ users worldwide",
+    "hero": {
+      "aiPowered": "AI-Powered",
+      "healthcare": "Healthcare",
+      "subtitle1": "Experience healthcare reimagined with cutting-edge AI technology.",
+      "subtitle2": "Faster access, smarter diagnosis, and better lives."
+    },
+    "cta": {
+      "goToDashboard": "Go to Dashboard",
+      "goToScanner": "Go to Scanner (Entry Gate)",
+      "startJourney": "Start Your Journey",
+      "watchDemo": "Watch Demo"
+    },
+    "notice": {
+      "scannerNext": "Next Step: Use Scanner as Entry Gate → Complete Health Card Registration (One-time Setup)",
+      "title": "Complete Your Setup",
+      "body": "Use the Scanner as your entry gate to complete your Health Card registration.",
+      "ctaScanner": "Go to Scanner",
+      "later": "Later"
+    },
+    "stats": {
+      "title": "Trusted by Healthcare Leaders",
+      "subtitle": "Join thousands of users who rely on our platform for their healthcare needs",
+      "activeUsers": "Active Users",
+      "uptime": "Uptime",
+      "support": "Support",
+      "diagnoses": "Diagnoses"
+    },
+    "services": {
+      "title": "Our Services",
+      "subtitle": "Comprehensive healthcare solutions designed for modern life",
+      "items": {
+        "Health Card": { "title": "Health Card", "desc": "Digital health records and QR code access" },
+        "Health Metrics": { "title": "Health Metrics", "desc": "Track vital signs and health indicators" },
+        "Fitness Plans": { "title": "Fitness Plans", "desc": "Personalized workout and nutrition plans" },
+        "Health Assistant": { "title": "Health Assistant", "desc": "AI-powered health guidance and support" },
+        "Respiratory Care": { "title": "Respiratory Care", "desc": "Specialized breathing and lung health monitoring" },
+        "Cardiac Care": { "title": "Cardiac Care", "desc": "Heart health monitoring and prevention" }
+      }
+    },
+    "finalCta": {
+      "title": "Ready to Transform Your Healthcare?",
+      "subtitle1": "Join thousands of users who trust Arogyam for their healthcare needs.",
+      "subtitle2": "Experience the future of medicine today.",
+      "getStarted": "Get Started Today",
+      "viewHealthCard": "View Health Card",
+      "learnScanner": "Learn About Scanner",
+      "learnMore": "Learn More"
+    },
+    "features": {
+      "aiDiagnostics": {
+        "title": "AI-Powered Diagnostics",
+        "description": "Get instant health insights and preliminary diagnoses powered by advanced artificial intelligence"
+      },
+      "access": {
+        "title": "24/7 Access",
+        "description": "Round-the-clock healthcare support and monitoring for your peace of mind"
+      },
+      "expertCare": {
+        "title": "Expert Care",
+        "description": "Connect with qualified healthcare professionals for personalized treatment plans"
+      }
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {{userName}}!",
+    "overview": "Here's your health overview for today",
+    "healthScore": "Health Score",
+    "healthStatusExcellent": "Excellent health status",
+    "quickActions": {
+      "title": "Quick Actions",
+      "subtitle": "Access your most frequently used health features with a single click",
+      "items": {
+        "bookAppointment": {
+          "name": "Book Appointment",
+          "description": "Schedule with specialists"
+        },
+        "viewReports": {
+          "name": "View Reports",
+          "description": "Access medical records"
+        },
+        "aiAssistant": {
+          "name": "AI Health Assistant",
+          "description": "Get instant health advice"
+        },
+        "healthCard": {
+          "name": "Health Card",
+          "description": "Digital health ID"
+        }
+      }
+    },
+    "metrics": {
+      "title": "Health Metrics",
+      "subtitle": "Monitor your vital signs and health indicators in real-time",
+      "heartRate": "Heart Rate",
+      "bloodPressure": "Blood Pressure",
+      "bmi": "BMI",
+      "oxygenLevel": "Oxygen Level",
+      "normalRange": "Normal range"
+    },
+    "appointments": {
+      "title": "Upcoming Appointments"
+    },
+    "reports": {
+      "title": "Recent Reports"
+    },
+    "tips": {
+      "title": "Daily Health Tips",
+      "subtitle": "Simple, actionable tips to maintain your health and wellness",
+      "stayHydrated": {
+        "title": "Stay Hydrated",
+        "description": "Drink 8 glasses of water daily for optimal health"
+      },
+      "exercise": {
+        "title": "Regular Exercise",
+        "description": "30 minutes of moderate activity keeps you fit"
+      },
+      "sleep": {
+        "title": "Quality Sleep",
+        "description": "7-9 hours of sleep improves mental clarity"
+      }
+    },
+    "cta": {
+      "title": "Need Medical Assistance?",
+      "subtitle": "Connect with our AI Health Assistant for instant guidance or book an appointment with a specialist",
+      "buttons": {
+        "askAI": "Ask AI Assistant",
+        "bookAppointment": "Book Appointment"
+      }
+    }
   }
 } 

@@ -96,11 +96,11 @@ const Auth = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-100 flex items-center justify-center p-4">
       <div className="max-w-6xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2">
           {/* Left Side - Welcome & Features */}
-          <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 text-white p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
+          <div className="bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
@@ -116,7 +116,7 @@ const Auth = () => {
                 <h2 className="text-4xl lg:text-5xl font-bold mb-4">
                   Welcome to Arogyam
                 </h2>
-                <p className="text-blue-100 text-lg leading-relaxed">
+                <p className="text-emerald-100 text-lg leading-relaxed">
                   {isSignup 
                     ? "Join millions of users who trust Arogyam for their healthcare needs"
                     : "Sign in to continue your healthcare journey with Arogyam"
@@ -133,7 +133,7 @@ const Auth = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-white">{feature.title}</h3>
-                      <p className="text-blue-100 text-sm">{feature.description}</p>
+                      <p className="text-emerald-100 text-sm">{feature.description}</p>
                     </div>
                   </div>
                 ))}
@@ -141,13 +141,13 @@ const Auth = () => {
 
               {/* Trust Indicators */}
               <div className="mt-8 pt-6 border-t border-white/20">
-                <div className="flex items-center justify-center lg:justify-start gap-6 text-sm text-blue-100">
+                <div className="flex items-center justify-center lg:justify-start gap-6 text-sm text-emerald-100">
                   <div className="flex items-center gap-2">
-                    <FaShieldAlt className="text-blue-200" />
+                    <FaShieldAlt className="text-emerald-200" />
                     <span>Secure & Private</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FaCheckCircle className="text-blue-200" />
+                    <FaCheckCircle className="text-emerald-200" />
                     <span>Trusted by 50K+</span>
                   </div>
                 </div>
@@ -195,7 +195,7 @@ const Auth = () => {
                         value={formData.firstName}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                         placeholder="First Name"
                       />
                     </div>
@@ -209,7 +209,7 @@ const Auth = () => {
                         value={formData.lastName}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                         placeholder="Last Name"
                       />
                     </div>
@@ -227,7 +227,7 @@ const Auth = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                   placeholder="Enter your email"
                 />
               </div>
@@ -243,7 +243,7 @@ const Auth = () => {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
                     placeholder="Enter your password"
                   />
                   <button
@@ -259,7 +259,7 @@ const Auth = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-3 px-6 rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white py-3 px-6 rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none"
               >
                 {loading ? (
                   <div className="flex items-center justify-center gap-2">
@@ -297,7 +297,7 @@ const Auth = () => {
                   onClick={() => handleSocialLogin("/auth/facebook")}
                   className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
                 >
-                  <FaFacebook className="text-blue-600 text-lg" />
+                  <FaFacebook className="text-emerald-600 text-lg" />
                 </button>
                 <button
                   onClick={() => handleSocialLogin("/auth/apple")}
@@ -314,7 +314,7 @@ const Auth = () => {
                 {isSignup ? "Already have an account?" : "Don't have an account?"}
                 <button
                   onClick={() => setIsSignup(!isSignup)}
-                  className="ml-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors duration-200"
+                  className="ml-2 text-emerald-600 hover:text-emerald-700 font-semibold transition-colors duration-200"
                 >
                   {isSignup ? "Sign In" : "Sign Up"}
                 </button>

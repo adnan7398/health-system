@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   FaCalendarCheck,
@@ -18,6 +19,7 @@ import {
 import LanguageSelector from "../language/LanguageSelector";
 
 const Header = () => {
+  const { t } = useTranslation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -96,47 +98,40 @@ const Header = () => {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
-  const toggleLoginDropdown = () =>
-    setIsLoginDropdownOpen(!isLoginDropdownOpen);
 
   const handleNavigation = (path) => {
-    if (path === "/") {
-      navigate(path);
-    } else if (isAuthenticated) {
-      navigate(path);
-    } else {
-      navigate("/signin");
-    }
+    // Always delegate access control to route guards
+    navigate(path);
   };
 
   const navigationItems = [
-    { name: "Home", path: "/", icon: FaHome, requiresAuth: false },
+    { name: t("nav.home"), path: "/", icon: FaHome, requiresAuth: false },
     {
-      name: "Health Card",
+      name: t("nav.healthCard"),
       path: "/arogyamcard",
       icon: FaQrcode,
       requiresAuth: true,
     },
     {
-      name: "Health Metrics",
+      name: t("nav.healthMetrics"),
       path: "/fitness",
       icon: FaStethoscope,
       requiresAuth: true,
     },
     {
-      name: "Fitness Plans",
+      name: t("nav.fitnessPlans"),
       path: "/fitness",
       icon: FaRunning,
       requiresAuth: true,
     },
     {
-      name: "Health Assistant",
+      name: t("nav.healthAssistant"),
       path: "/chatbot",
       icon: FaRobot,
       requiresAuth: true,
     },
     {
-      name: "Medical Records",
+      name: t("nav.medicalRecords"),
       path: "/medicalReport",
       icon: FaFlask,
       requiresAuth: true,
@@ -177,54 +172,52 @@ const Header = () => {
                 {item.path === location.pathname && (
                   <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full h-0.5 bg-white rounded-full"></div>
                 )}
-                {!isAuthenticated && item.requiresAuth && (
-                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-400 rounded-full"></div>
-                )}
+                {/* Removed auth-required red dot for a cleaner professional header */}
               </a>
             ))}
           </div>
 
           {/* User Actions */}
           <div className="hidden lg:flex items-center space-x-4">
-            <LanguageSelector />
+            <LanguageSelector variant="icon" />
             {isAuthenticated ? (
               <div className="relative">
                 <button
                   onClick={toggleDropdown}
-                  className="flex items-center space-x-2 text-white hover:text-teal-100 transition-colors duration-200 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg"
+                  className="flex items-center space-x-2 text-white hover:text-teal-100 transition-colors duration-200 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg border border-white/10 shadow-none focus:outline-none focus:ring-0"
                 >
                   <div className="w-7 h-7 bg-white rounded-full flex items-center justify-center">
                     <FaUser className="text-teal-700 text-sm" />
                   </div>
-                  <span className="font-medium text-sm">My Account</span>
+                  <span className="font-medium text-sm">{t("header.myAccount")}</span>
                   <FaChevronDown className="text-white text-xs" />
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                  <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
                     <div className="px-3 py-2 border-b border-gray-100">
-                      <p className="text-sm text-gray-600 font-medium">Welcome back!</p>
+                      <p className="text-sm text-gray-600 font-medium">{t("header.welcomeBack")}</p>
                     </div>
                     <a
                       href="/userdashboard"
                       className="block px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
                     >
                       <FaHome className="text-teal-600 text-sm" />
-                      <span className="text-sm">Dashboard</span>
+                      <span className="text-sm">{t("header.dashboard")}</span>
                     </a>
                     <a
                       href="/patientappointments"
                       className="block px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
                     >
                       <FaCalendarCheck className="text-teal-600 text-sm" />
-                      <span className="text-sm">My Appointments</span>
+                      <span className="text-sm">{t("header.myAppointments")}</span>
                     </a>
                     <a
                       href="/medicalReport"
                       className="block px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
                     >
                       <FaFlask className="text-teal-600 text-sm" />
-                      <span className="text-sm">Medical Records</span>
+                      <span className="text-sm">{t("header.medicalRecords")}</span>
                     </a>
                     <div className="border-t border-gray-100 my-1"></div>
                     <button
@@ -232,7 +225,7 @@ const Header = () => {
                       className="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 transition-colors duration-200 flex items-center gap-2"
                     >
                       <FaTimes className="text-red-600 text-sm" />
-                      <span className="text-sm">Logout</span>
+                      <span className="text-sm">{t("common.logout")}</span>
                     </button>
                   </div>
                 )}
@@ -241,15 +234,15 @@ const Header = () => {
               <div className="flex items-center space-x-3">
                 <button
                   onClick={() => navigate("/signin")}
-                  className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-white border border-white/10 shadow-none focus:outline-none focus:ring-0 ${location.pathname === "/signin" ? "bg-green-700" : "bg-green-600 hover:bg-green-700"}`}
                 >
-                  Patient Login
+                  {t("auth.patientLogin")}
                 </button>
                 <button
                   onClick={() => navigate("/doctorlogin")}
-                  className="bg-teal-800 hover:bg-teal-900 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-white border border-white/10 shadow-none focus:outline-none focus:ring-0 ${location.pathname === "/doctorlogin" ? "bg-green-700" : "bg-green-600 hover:bg-green-700"}`}
                 >
-                  Doctor Login
+                  {t("auth.doctorLogin")}
                 </button>
               </div>
             )}
@@ -269,21 +262,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Page Title Section - Only show if not on home page */}
-      {location.pathname !== "/" && (
-        <div className="bg-teal-600 border-t border-teal-500">
-          <div className="max-w-7xl mx-auto px-6 py-3">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                <FaHeartbeat className="text-white text-lg" />
-              </div>
-              <h2 className="text-xl font-semibold text-white">
-                {getCurrentPageTitle()}
-              </h2>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Removed page title strip below header for cleaner single-header layout */}
 
       {/* Mobile Navigation Menu */}
       {isMenuOpen && (
@@ -304,9 +283,6 @@ const Header = () => {
                   <item.icon className="text-white text-sm" />
                 </div>
                 <span className="font-medium">{item.name}</span>
-                {!isAuthenticated && item.requiresAuth && (
-                  <div className="ml-auto w-2 h-2 bg-red-400 rounded-full"></div>
-                )}
               </a>
             ))}
             
@@ -319,7 +295,7 @@ const Header = () => {
                     className="flex items-center gap-3 text-white hover:text-teal-100 transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-white/10"
                   >
                     <FaHome className="text-white text-sm" />
-                    <span>Dashboard</span>
+                    <span>{t("header.dashboard")}</span>
                   </a>
                   <button
                     onClick={() => {
@@ -329,7 +305,7 @@ const Header = () => {
                     className="w-full text-left flex items-center gap-3 text-red-300 hover:text-red-100 transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-red-500/20"
                   >
                     <FaTimes className="text-red-300 text-sm" />
-                    <span>Logout</span>
+                    <span>{t("common.logout")}</span>
                   </button>
                 </div>
               ) : (
@@ -339,18 +315,18 @@ const Header = () => {
                       navigate("/signin");
                       setIsMenuOpen(false);
                     }}
-                    className="w-full text-left bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                    className={`w-full text-left text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-none focus:outline-none focus:ring-0 ${location.pathname === "/signin" ? "bg-green-700" : "bg-green-600 hover:bg-green-700"}`}
                   >
-                    Patient Login
+                    {t("auth.patientLogin")}
                   </button>
                   <button
                     onClick={() => {
                       navigate("/doctorlogin");
                       setIsMenuOpen(false);
                     }}
-                    className="w-full text-left bg-teal-800 hover:bg-teal-900 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                    className={`w-full text-left text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-none focus:outline-none focus:ring-0 ${location.pathname === "/doctorlogin" ? "bg-green-700" : "bg-green-600 hover:bg-green-700"}`}
                   >
-                    Doctor Login
+                    {t("auth.doctorLogin")}
                   </button>
                 </div>
               )}

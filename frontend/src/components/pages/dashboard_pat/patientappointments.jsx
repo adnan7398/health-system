@@ -12,7 +12,7 @@ import {
   CheckCircle,
   Loader
 } from 'lucide-react';
-import UserDashboardSidebar from '../dashboard_pat/userdashboardsidebar';
+// Removed sidebar for a cleaner standalone appointments page
 
 const PatientAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -59,11 +59,11 @@ const PatientAppointments = () => {
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case 'confirmed':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-emerald-100 text-emerald-800 border-emerald-200';
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-amber-100 text-amber-800 border-amber-200';
       case 'completed':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
       case 'cancelled':
         return 'bg-red-100 text-red-800 border-red-200';
       default:
@@ -95,10 +95,8 @@ const PatientAppointments = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <UserDashboardSidebar />
-      <div className="flex-1 ml-64">
-        <div className="p-8">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-6xl mx-auto px-6 py-10">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">My Appointments</h1>
             <p className="text-gray-600">Manage and view your upcoming and past appointments</p>
@@ -106,7 +104,7 @@ const PatientAppointments = () => {
 
           {loading && (
             <div className="flex items-center justify-center py-12">
-              <Loader className="w-8 h-8 animate-spin text-blue-600" />
+              <Loader className="w-8 h-8 animate-spin text-emerald-600" />
               <span className="ml-2 text-gray-600">Loading appointments...</span>
             </div>
           )}
@@ -140,7 +138,7 @@ const PatientAppointments = () => {
                     <h3 className="text-lg font-semibold text-gray-900 mb-1">
                       Dr. {appointment.doctorId?.firstName} {appointment.doctorId?.lastName}
                     </h3>
-                    <p className="text-blue-600 text-sm font-medium">
+                    <p className="text-emerald-700 text-sm font-medium">
                       {appointment.doctorId?.specialization}
                     </p>
                   </div>
@@ -171,7 +169,6 @@ const PatientAppointments = () => {
               <p className="text-gray-600">You don't have any appointments scheduled yet.</p>
             </div>
           )}
-        </div>
       </div>
 
       {isModalOpen && selectedAppointment && (

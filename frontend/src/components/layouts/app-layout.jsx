@@ -9,23 +9,29 @@ const AppLayout = () => {
 
   useEffect(() => {
     const updateUserType = () => {
-      const doctorToken = localStorage.getItem("doctorToken");
-      const patientToken = localStorage.getItem("token");
+      // Prefer route-based header selection to avoid stale tokens showing the wrong header
+      const doctorRoutes = new Set([
+        "/doctordashboard",
+        "/appointment",
+        "/patient",
+        "/conference",
+        "/breastcancer",
+        "/heartdisease",
+        "/pcod",
+        "/pneumonia",
+      ]);
 
-      if (doctorToken) {
-        console.log("Doctor Logged In");
+      if (doctorRoutes.has(location.pathname) || location.pathname.startsWith("/doctor")) {
         setUserType("doctor");
-      } else if (patientToken) {
-        console.log("Patient Logged In");
-        setUserType("patient");
-      } else {
-        setUserType(null);
+        return;
       }
+
+      // Otherwise show patient/general header
+      setUserType("patient");
     };
 
     updateUserType();
 
-    // Listen for localStorage changes (Logout updates)
     window.addEventListener("storage", updateUserType);
     return () => window.removeEventListener("storage", updateUserType);
   }, [location]);
@@ -33,10 +39,6 @@ const AppLayout = () => {
   return (
     <div>
       <main>
-        {/* Debugging Output */}
-        {console.log("Rendering userType:", userType)}
-
-        {/* Show DoctorHeader only for doctors */}
         {userType === "doctor" ? <DoctorHeader /> : <Header />}
 
         <Outlet />

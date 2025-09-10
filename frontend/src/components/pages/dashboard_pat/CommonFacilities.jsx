@@ -110,7 +110,7 @@ const CommonFacilities = () => {
       title: "Dashboard",
       description: "Access your complete health overview and recent activities",
       icon: <FaUser className="text-2xl" />,
-      color: "from-teal-500 to-teal-600",
+      color: "from-emerald-500 to-emerald-600",
       protected: true
     },
     {
@@ -118,7 +118,7 @@ const CommonFacilities = () => {
       title: "Book Appointments",
       description: "Schedule consultations with healthcare professionals",
       icon: <FaCalendarCheck className="text-2xl" />,
-      color: "from-teal-600 to-teal-700",
+      color: "from-emerald-600 to-emerald-700",
       protected: true
     },
     {
@@ -126,7 +126,7 @@ const CommonFacilities = () => {
       title: "Medical Reports",
       description: "View and manage your medical test results and reports",
       icon: <FaFileMedical className="text-2xl" />,
-      color: "from-teal-700 to-teal-800",
+      color: "from-emerald-700 to-emerald-800",
       protected: true
     },
     {
@@ -134,7 +134,7 @@ const CommonFacilities = () => {
       title: "Health Assistant",
       description: "Get instant health guidance and support from AI",
       icon: <FaRobot className="text-2xl" />,
-      color: "from-teal-500 to-teal-600",
+      color: "from-emerald-500 to-emerald-600",
       protected: true
     },
     {
@@ -142,7 +142,7 @@ const CommonFacilities = () => {
       title: "Health Card",
       description: "Access your digital health card and QR code",
       icon: <FaQrcode className="text-2xl" />,
-      color: "from-teal-600 to-teal-700",
+      color: "from-emerald-600 to-emerald-700",
       protected: true
     },
     {
@@ -150,16 +150,16 @@ const CommonFacilities = () => {
       title: "Fitness Plans",
       description: "Personalized workout and nutrition recommendations",
       icon: <FaRunning className="text-2xl" />,
-      color: "from-teal-700 to-teal-800",
+      color: "from-emerald-700 to-emerald-800",
       protected: true
     }
   ];
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-teal-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading facilities...</p>
         </div>
       </div>
@@ -167,9 +167,9 @@ const CommonFacilities = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-teal-100">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-100">
       {/* Header Section */}
-      <section className="pt-20 pb-16 bg-gradient-to-br from-teal-600 via-teal-700 to-teal-800 text-white">
+      <section className="pt-20 pb-16 bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <FaCheckCircle className="text-white text-3xl" />
@@ -205,7 +205,7 @@ const CommonFacilities = () => {
             {features.map((feature) => (
               <div key={feature.id} className="group cursor-pointer" onClick={() => handleFeatureClick(feature.id)}>
                 <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300`}></div>
-                <div className="relative bg-white p-8 rounded-2xl border border-teal-200 shadow-lg hover:shadow-2xl transition-all duration-300 group-hover:-translate-y-2">
+                <div className="relative bg-white p-8 rounded-2xl border border-emerald-200 shadow-lg hover:shadow-2xl transition-all duration-300 group-hover:-translate-y-2">
                   <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mx-auto mb-6 text-white`}>
                     {feature.icon}
                   </div>
@@ -227,7 +227,7 @@ const CommonFacilities = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-teal-600 via-teal-700 to-teal-800 text-white">
+      <section className="py-20 bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold mb-6">Full Access Granted!</h2>
           <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
@@ -237,7 +237,7 @@ const CommonFacilities = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => navigate("/userdashboard")}
-              className="bg-white text-teal-600 hover:bg-gray-100 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center space-x-2"
+              className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center space-x-2"
             >
               <FaUser className="text-xl" />
               <span>Go to Dashboard</span>
@@ -246,7 +246,7 @@ const CommonFacilities = () => {
             
             <button
               onClick={() => navigate("/scanner")}
-              className="border-2 border-white text-white hover:bg-white hover:text-teal-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center space-x-2"
+              className="border-2 border-white text-white hover:bg-white hover:text-emerald-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center space-x-2"
             >
               <FaCamera className="text-xl" />
               <span>Scan Again</span>

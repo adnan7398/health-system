@@ -70,5 +70,160 @@
   },
   "languageSelector": {
     "label": "Idioma"
+  },
+  "common": {
+    "viewAll": "Ver todo",
+    "logout": "Cerrar sesión"
+  },
+  "auth": {
+    "patientLogin": "Ingreso Paciente",
+    "doctorLogin": "Ingreso Doctor"
+  },
+  "nav": {
+    "home": "Inicio",
+    "healthCard": "Tarjeta de Salud",
+    "healthMetrics": "Métricas de Salud",
+    "fitnessPlans": "Planes de Fitness",
+    "healthAssistant": "Asistente de Salud",
+    "medicalRecords": "Historial Médico"
+  },
+  "header": {
+    "myAccount": "Mi Cuenta",
+    "welcomeBack": "¡Bienvenido de nuevo!",
+    "dashboard": "Panel",
+    "myAppointments": "Mis Citas",
+    "medicalRecords": "Historial Médico"
+  },
+  "home": {
+    "trusted": "Con la confianza de más de 50,000 usuarios en todo el mundo",
+    "hero": {
+      "aiPowered": "Impulsado por IA",
+      "healthcare": "Salud",
+      "subtitle1": "Experimenta la salud reinventada con tecnología de IA de vanguardia.",
+      "subtitle2": "Acceso más rápido, diagnóstico más inteligente y mejores vidas."
+    },
+    "cta": {
+      "goToDashboard": "Ir al Panel",
+      "goToScanner": "Ir al Escáner (Puerta de Entrada)",
+      "startJourney": "Comienza tu Camino",
+      "watchDemo": "Ver Demostración"
+    },
+    "notice": {
+      "scannerNext": "Siguiente paso: Usa el Escáner como Puerta de Entrada → Completa el Registro de la Tarjeta de Salud (Configuración única)",
+      "title": "Completa tu Configuración",
+      "body": "Usa el Escáner como tu puerta de entrada para completar el registro de tu Tarjeta de Salud.",
+      "ctaScanner": "Ir al Escáner",
+      "later": "Más tarde"
+    },
+    "stats": {
+      "title": "Confiado por Líderes de la Salud",
+      "subtitle": "Únete a miles de usuarios que confían en nuestra plataforma para sus necesidades de salud",
+      "activeUsers": "Usuarios Activos",
+      "uptime": "Disponibilidad",
+      "support": "Soporte",
+      "diagnoses": "Diagnósticos"
+    },
+    "services": {
+      "title": "Nuestros Servicios",
+      "subtitle": "Soluciones de salud integrales diseñadas para la vida moderna",
+      "items": {
+        "Health Card": { "title": "Tarjeta de Salud", "desc": "Registros de salud digitales y acceso por código QR" },
+        "Health Metrics": { "title": "Métricas de Salud", "desc": "Supervisa signos vitales e indicadores de salud" },
+        "Fitness Plans": { "title": "Planes de Fitness", "desc": "Planes personalizados de ejercicio y nutrición" },
+        "Health Assistant": { "title": "Asistente de Salud", "desc": "Guía y soporte de salud impulsados por IA" },
+        "Respiratory Care": { "title": "Cuidado Respiratorio", "desc": "Monitoreo especializado de respiración y salud pulmonar" },
+        "Cardiac Care": { "title": "Cuidado Cardíaco", "desc": "Monitoreo y prevención de salud del corazón" }
+      }
+    },
+    "finalCta": {
+      "title": "¿Listo para Transformar tu Salud?",
+      "subtitle1": "Únete a miles de usuarios que confían en Arogyam para sus necesidades de salud.",
+      "subtitle2": "Experimenta el futuro de la medicina hoy.",
+      "getStarted": "Comienza Hoy",
+      "viewHealthCard": "Ver Tarjeta de Salud",
+      "learnScanner": "Conocer el Escáner",
+      "learnMore": "Saber Más"
+    },
+    "features": {
+      "aiDiagnostics": {
+        "title": "Diagnósticos Impulsados por IA",
+        "description": "Obtén información de salud instantánea y diagnósticos preliminares con IA avanzada"
+      },
+      "access": {
+        "title": "Acceso 24/7",
+        "description": "Soporte y monitoreo de salud todo el día para tu tranquilidad"
+      },
+      "expertCare": {
+        "title": "Atención de Expertos",
+        "description": "Conéctate con profesionales de salud calificados para planes de tratamiento personalizados"
+      }
+    }
+  },
+  "dashboard": {
+    "welcome": "¡Bienvenido de nuevo, {{userName}}!",
+    "overview": "Aquí está tu resumen de salud para hoy",
+    "healthScore": "Puntaje de Salud",
+    "healthStatusExcellent": "Estado de salud excelente",
+    "quickActions": {
+      "title": "Acciones Rápidas",
+      "subtitle": "Accede a tus funciones de salud más usadas con un solo clic",
+      "items": {
+        "bookAppointment": {
+          "name": "Reservar Cita",
+          "description": "Agenda con especialistas"
+        },
+        "viewReports": {
+          "name": "Ver Informes",
+          "description": "Accede a registros médicos"
+        },
+        "aiAssistant": {
+          "name": "Asistente de Salud IA",
+          "description": "Obtén consejos de salud al instante"
+        },
+        "healthCard": {
+          "name": "Tarjeta de Salud",
+          "description": "Identificación de salud digital"
+        }
+      }
+    },
+    "metrics": {
+      "title": "Métricas de Salud",
+      "subtitle": "Monitorea tus signos vitales e indicadores de salud en tiempo real",
+      "heartRate": "Frecuencia Cardíaca",
+      "bloodPressure": "Presión Arterial",
+      "bmi": "IMC",
+      "oxygenLevel": "Nivel de Oxígeno",
+      "normalRange": "Rango normal"
+    },
+    "appointments": {
+      "title": "Próximas Citas"
+    },
+    "reports": {
+      "title": "Informes Recientes"
+    },
+    "tips": {
+      "title": "Consejos de Salud Diarios",
+      "subtitle": "Consejos simples y prácticos para mantener tu salud y bienestar",
+      "stayHydrated": {
+        "title": "Mantente Hidratado",
+        "description": "Bebe 8 vasos de agua al día para una salud óptima"
+      },
+      "exercise": {
+        "title": "Ejercicio Regular",
+        "description": "30 minutos de actividad moderada te mantienen en forma"
+      },
+      "sleep": {
+        "title": "Sueño de Calidad",
+        "description": "Dormir 7-9 horas mejora la claridad mental"
+      }
+    },
+    "cta": {
+      "title": "¿Necesitas Asistencia Médica?",
+      "subtitle": "Conéctate con nuestro Asistente de Salud IA para guía instantánea o reserva una cita con un especialista",
+      "buttons": {
+        "askAI": "Preguntar al Asistente IA",
+        "bookAppointment": "Reservar Cita"
+      }
+    }
   }
 } 
