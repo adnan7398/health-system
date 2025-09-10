@@ -563,7 +563,7 @@ const Home = () => {
                 </div>
                 <span className="text-3xl font-bold">Arogyam</span>
               </div>
-              <p className="text-gray-400 mb-8 leading-relaxed text-lg">
+              <p className="text-white/70 mb-8 leading-relaxed text-lg">
                 Your most trusted healthcare brand, powered by AI technology and
                 designed for modern life.
               </p>
@@ -577,7 +577,7 @@ const Home = () => {
                   <a
                     key={index}
                     href={social.href}
-                    className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center text-gray-400 hover:text-white hover:bg-emerald-600 transition-all duration-300 hover:scale-110"
+                    className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-emerald-600 transition-all duration-300 hover:scale-110"
                   >
                     <social.icon className="w-6 h-6" />
                   </a>
@@ -586,7 +586,7 @@ const Home = () => {
             </div>
 
             <div>
-              <h4 className="text-xl font-bold mb-8 text-emerald-400">
+              <h4 className="text-xl font-bold mb-8 text-white">
                 Product
               </h4>
               <ul className="space-y-4">
@@ -600,7 +600,7 @@ const Home = () => {
                   <li key={index}>
                     <a
                       href="#"
-                      className="text-gray-400 hover:text-emerald-400 transition-colors duration-200 text-lg hover:translate-x-1 inline-block"
+                      className="text-white hover:text-white transition-colors duration-200 text-lg hover:translate-x-1 inline-block"
                     >
                       {item}
                     </a>
@@ -610,7 +610,7 @@ const Home = () => {
             </div>
 
             <div>
-              <h4 className="text-xl font-bold mb-8 text-emerald-400">
+              <h4 className="text-xl font-bold mb-8 text-white">
                 Company
               </h4>
               <ul className="space-y-4">
@@ -619,7 +619,7 @@ const Home = () => {
                     <li key={index}>
                       <a
                         href="#"
-                        className="text-gray-400 hover:text-emerald-400 transition-colors duration-200 text-lg hover:translate-x-1 inline-block"
+                        className="text-white hover:text-white transition-colors duration-200 text-lg hover:translate-x-1 inline-block"
                       >
                         {item}
                       </a>
@@ -630,7 +630,7 @@ const Home = () => {
             </div>
 
             <div>
-              <h4 className="text-xl font-bold mb-8 text-emerald-400">
+              <h4 className="text-xl font-bold mb-8 text-white">
                 Support
               </h4>
               <ul className="space-y-4">
@@ -644,7 +644,7 @@ const Home = () => {
                   <li key={index}>
                     <a
                       href="#"
-                      className="text-gray-400 hover:text-emerald-400 transition-colors duration-200 text-lg hover:translate-x-1 inline-block"
+                      className="text-white hover:text-white transition-colors duration-200 text-lg hover:translate-x-1 inline-block"
                     >
                       {item}
                     </a>
@@ -655,18 +655,18 @@ const Home = () => {
           </div>
 
           <div className="border-t border-gray-800 mt-16 pt-12 text-center">
-            <p className="text-gray-400 text-lg">
+            <p className="text-white text-lg">
               © 2024 Arogyam. All rights reserved. |
               <a
                 href="#"
-                className="hover:text-emerald-400 transition-colors duration-200 ml-2"
+                className="text-white hover:text-white transition-colors duration-200 ml-2"
               >
                 Privacy Policy
               </a>{" "}
               |
               <a
                 href="#"
-                className="hover:text-emerald-400 transition-colors duration-200 ml-2"
+                className="text-white hover:text-white transition-colors duration-200 ml-2"
               >
                 Terms of Service
               </a>
