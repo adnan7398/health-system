@@ -28,7 +28,6 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get current page title
   const getCurrentPageTitle = () => {
     const path = location.pathname;
     switch (path) {
@@ -100,7 +99,6 @@ const Header = () => {
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   const handleNavigation = (path) => {
-    // Always delegate access control to route guards
     navigate(path);
   };
 
@@ -140,7 +138,6 @@ const Header = () => {
 
   return (
     <nav className="bg-gradient-to-br from-[#008080] via-[#006666] to-[#004466] shadow-lg sticky top-0 z-50">
-      {/* Main Header */}
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           {/* Logo Section */}
@@ -150,7 +147,7 @@ const Header = () => {
               onClick={() => navigate("/")}
             >
               <img
-                src="/logo1.png" // Replace with your logo path
+                src="/logo1.png"
                 alt="Arogyam Logo"
                 className="w-10 h-10 object-contain"
               />
@@ -181,7 +178,6 @@ const Header = () => {
                 {item.path === location.pathname && (
                   <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full h-0.5 bg-white rounded-full"></div>
                 )}
-                {/* Removed auth-required red dot for a cleaner professional header */}
               </a>
             ))}
           </div>
@@ -249,12 +245,23 @@ const Header = () => {
               </div>
             ) : (
               <div className="relative">
+                {/* Patient & Doctor Login Buttons */}
                 <button
                   onClick={toggleDropdown}
                   className="px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-white border border-white/10 shadow-none focus:outline-none focus:ring-0 bg-green-600 hover:bg-green-700 flex items-center space-x-2"
                 >
-                  <span>{t("Login")}</span>
+                  <span>{t("auth.patientLogin")}</span>
                   <FaChevronDown className="text-white text-xs" />
+                </button>
+                <button
+                  onClick={() => navigate("/doctor/signin")}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-white border border-white/10 shadow-none focus:outline-none focus:ring-0 ${
+                    location.pathname === "/doctor/signin"
+                      ? "bg-green-700"
+                      : "bg-green-600 hover:bg-green-700"
+                  }`}
+                >
+                  {t("auth.doctorLogin")}
                 </button>
 
                 {isDropdownOpen && (
@@ -298,8 +305,6 @@ const Header = () => {
           </button>
         </div>
       </div>
-
-      {/* Removed page title strip below header for cleaner single-header layout */}
 
       {/* Mobile Navigation Menu */}
       {isMenuOpen && (
@@ -362,11 +367,11 @@ const Header = () => {
                   </button>
                   <button
                     onClick={() => {
-                      navigate("/doctorlogin");
+                      navigate("/doctor/signin");
                       setIsMenuOpen(false);
                     }}
                     className={`w-full text-left text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-none focus:outline-none focus:ring-0 ${
-                      location.pathname === "/doctorlogin"
+                      location.pathname === "/doctor/signin"
                         ? "bg-green-700"
                         : "bg-green-600 hover:bg-green-700"
                     }`}

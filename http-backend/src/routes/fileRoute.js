@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const path = require("path");
 
 const router = express.Router();
+const EncryptedFile = require("../models/file");
 const UPLOAD_DIR = path.join(__dirname, "../uploads");
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR);
 
@@ -64,7 +65,15 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
     try {
         const encryptedFile = await encryptFile(req.file.path, req.body.password);
-        res.json({ message: "File uploaded & encrypted successfully!", file: encryptedFile });
+        // Persist metadata so it survives restarts
+        const record = await EncryptedFile.create({
+            storedName: encryptedFile,
+            originalName: req.file.originalname,
+            mimeType: req.file.mimetype,
+            size: req.file.size,
+            ownerId: req.userId || undefined,
+        });
+        res.json({ message: "File uploaded & encrypted successfully!", file: encryptedFile, id: record._id });
     } catch (error) {
         res.status(500).json({ message: "Encryption failed!", error: error.message });
     }
@@ -89,8 +98,14 @@ router.post("/download", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-    const files = fs.readdirSync(UPLOAD_DIR).filter(file => file.endsWith(".enc"));
-    res.json({ files });
+    try {
+        const files = await EncryptedFile.find({}).sort({ createdAt: -1 }).lean();
+        res.json({ files });
+    } catch (e) {
+        // fallback to filesystem listing if db unavailable
+        const files = fs.readdirSync(UPLOAD_DIR).filter(file => file.endsWith(".enc"));
+        res.json({ files: files.map(f => ({ storedName: f })) });
+    }
 });
 
 module.exports = router;

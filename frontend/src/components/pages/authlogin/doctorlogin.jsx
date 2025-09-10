@@ -27,8 +27,9 @@ const Auth = () => {
     e.preventDefault();
     setMessage("");
 
-    const endpoint = isSignup ? "/signup" : "/signin";
-    const url = `doctor${endpoint}`;
+    const API_BASE = "http://localhost:3000";
+    const endpoint = isSignup ? "/doctor/signup" : "/doctor/signin";
+    const url = `${API_BASE}${endpoint}`;
 
     console.log("Sending request to:", url);
     console.log("Form Data:", formData);
@@ -41,7 +42,12 @@ const Auth = () => {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (_) {
+        data = {};
+      }
       console.log("Response:", data); 
 
       setMessage(data.message);
@@ -52,9 +58,15 @@ const Auth = () => {
       }
 
       if (response.ok && !isSignup) {
-        localStorage.setItem("doctorToken", data.token);
-        localStorage.setItem("doctorId", data.doctorId);
-        navigate("/DoctorDashboard");
+        if (data.token) {
+          localStorage.setItem("doctorToken", data.token);
+          localStorage.setItem("doctortoken", data.token);
+        }
+        if (data.doctorId) {
+          localStorage.setItem("doctorId", data.doctorId);
+        }
+        localStorage.setItem("userRole", "doctor");
+        navigate("/doctordashboard");
       }
     } catch (error) {
       console.error("Signup error:", error);

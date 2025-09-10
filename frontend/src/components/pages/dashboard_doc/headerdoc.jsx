@@ -1,16 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  FaHome,
-  FaRegListAlt,
-  FaUsersCog,
-  FaSignOutAlt,
-  FaStethoscope,
-  FaChevronDown,
-  FaMicrophoneAlt,
-  FaBloggerB,
-  FaHospital
-} from "react-icons/fa";
+import { useNavigate, useLocation } from "react-router-dom";
+import LanguageSelector from "../../language/LanguageSelector";
+import { Home, Calendar, Users, LogOut, Stethoscope, ChevronDown, Mic, FileText, Guitar as Hospital, Menu, X } from "lucide-react";
 
 const DoctorHeader = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -18,6 +9,7 @@ const DoctorHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const token = localStorage.getItem("doctorToken");
@@ -51,197 +43,193 @@ const DoctorHeader = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const isActivePath = (path) => location.pathname === path;
+
+  const navItems = [
+    { path: "/doctordashboard", label: "Dashboard", icon: Home },
+    { path: "/appointment", label: "Appointments", icon: Calendar },
+    { path: "/patient", label: "My Patients", icon: Users },
+    { path: "/conference", label: "Conferences", icon: Mic },
+  ];
+
+  const diseaseOptions = [
+    { value: "pcod", label: "PCOD Analysis" },
+    { value: "heartdisease", label: "Heart Disease" },
+    { value: "pneumonia", label: "Pneumonia Detection" },
+    { value: "breastcancer", label: "Breast Cancer Screening" },
+  ];
+
   return (
-    <nav className="bg-white shadow-lg border-b border-slate-200">
+    <nav className="bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-800 shadow-xl sticky top-0 z-50 border-b border-emerald-600/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <img src="/logo1.png" alt="Arogyam Logo" className="h-10 w-10" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-              Arogyam
-            </h1>
+        <div className="flex justify-between items-center h-20">
+          {/* Logo Section */}
+          <div className="flex items-center space-x-4">
+            <div 
+              className="w-12 h-12 bg-gradient-to-br from-white to-emerald-50 rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border-2 border-white/20"
+              onClick={() => navigate("/")}
+            >
+              <Hospital className="text-emerald-700 w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white tracking-tight">Arogyam</h1>
+              <p className="text-emerald-100 text-sm font-medium">Medical Professional Portal</p>
+            </div>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={() => handleNavigation("/doctordashboard")}
-              className="flex items-center space-x-2 text-slate-700 hover:text-blue-600 transition-colors duration-200 font-medium"
-            >
-              <FaHome />
-              <span>Dashboard</span>
-            </button>
-            
-            <button
-              onClick={() => handleNavigation("/appointment")}
-              className="flex items-center space-x-2 text-slate-700 hover:text-blue-600 transition-colors duration-200 font-medium"
-            >
-              <FaRegListAlt />
-              <span>Appointments</span>
-            </button>
-            
-            <button
-              onClick={() => handleNavigation("/patient")}
-              className="flex items-center space-x-2 text-slate-700 hover:text-blue-600 transition-colors duration-200 font-medium"
-            >
-              <FaUsersCog />
-              <span>My Patients</span>
-            </button>
-            
-            <button
-              onClick={() => handleNavigation("/conference")}
-              className="flex items-center space-x-2 text-slate-700 hover:text-blue-600 transition-colors duration-200 font-medium"
-            >
-              <FaMicrophoneAlt />
-              <span>Conferences</span>
-            </button>
+          <div className="hidden lg:flex items-center space-x-1">
+            {navItems.map(({ path, label, icon: Icon }) => (
+              <button
+                key={path}
+                onClick={() => handleNavigation(path)}
+                className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg transition-all duration-200 font-medium group ${
+                  isActivePath(path)
+                    ? "bg-white/15 text-white shadow-lg"
+                    : "text-emerald-100 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                <Icon className="w-4 h-4 transition-transform group-hover:scale-110" />
+                <span className="text-sm">{label}</span>
+              </button>
+            ))}
 
-            {/* Disease Selector Dropdown */}
+            {/* Disease Prediction Dropdown */}
             <div className="relative">
               <button
                 onClick={toggleDropdown}
-                className="flex items-center space-x-2 text-slate-700 hover:text-blue-600 transition-colors duration-200 font-medium"
+                className="flex items-center space-x-2 px-4 py-2.5 rounded-lg text-emerald-100 hover:bg-white/10 hover:text-white transition-all duration-200 font-medium group"
               >
-                <FaStethoscope />
-                <span>Disease Prediction</span>
-                <FaChevronDown className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                <Stethoscope className="w-4 h-4 transition-transform group-hover:scale-110" />
+                <span className="text-sm">Diagnostics</span>
+                <ChevronDown className={`w-4 h-4 transition-all duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
               
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-2 z-50">
-                  <button
-                    onClick={() => handleDiseaseChange("pcod")}
-                    className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    PCOD
-                  </button>
-                  <button
-                    onClick={() => handleDiseaseChange("heartdisease")}
-                    className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Heart Disease
-                  </button>
-                  <button
-                    onClick={() => handleDiseaseChange("pneumonia")}
-                    className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Pneumonia
-                  </button>
-                  <button
-                    onClick={() => handleDiseaseChange("breastcancer")}
-                    className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Breast Cancer
-                  </button>
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-emerald-100 py-2 z-50 backdrop-blur-sm">
+                  <div className="px-3 py-2 border-b border-gray-100">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Disease Prediction Tools</p>
+                  </div>
+                  {diseaseOptions.map(({ value, label }) => (
+                    <button
+                      key={value}
+                      onClick={() => handleDiseaseChange(value)}
+                      className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all duration-200 text-sm font-medium"
+                    >
+                      {label}
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
 
             <button
               onClick={() => handleNavigation("/blogging")}
-              className="flex items-center space-x-2 text-slate-700 hover:text-blue-600 transition-colors duration-200 font-medium"
+              className="flex items-center space-x-2 px-4 py-2.5 rounded-lg text-emerald-100 hover:bg-white/10 hover:text-white transition-all duration-200 font-medium group"
             >
-              <FaBloggerB />
-              <span>Health Blog</span>
+              <FileText className="w-4 h-4 transition-transform group-hover:scale-110" />
+              <span className="text-sm">Health Blog</span>
             </button>
+
+            <div className="px-2">
+              <LanguageSelector variant="icon" />
+            </div>
           </div>
 
-          {/* Authentication Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            {isAuthenticated ? (
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors duration-200"
-              >
-                <FaSignOutAlt />
-                <span>Logout</span>
-              </button>
-            ) : (
-              <button
-                onClick={() => handleNavigation("/doctor/signin")}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
-              >
-                Doctor Login
-              </button>
-            )}
-          </div>
+          {/* Authentication & Mobile Menu */}
+          <div className="flex items-center space-x-4">
+            {/* Desktop Auth Button */}
+            <div className="hidden lg:flex">
+              {isAuthenticated ? (
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-lg font-medium flex items-center space-x-2 transition-all duration-200 shadow-lg hover:shadow-xl"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="text-sm">Logout</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleNavigation("/doctor/signin")}
+                  className="bg-white text-emerald-700 px-5 py-2.5 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl hover:bg-emerald-50 border border-white/20"
+                >
+                  <span className="text-sm">Doctor Login</span>
+                </button>
+              )}
+            </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={toggleMenu}
-              className="text-slate-700 hover:text-blue-600 transition-colors duration-200"
-            >
-              <div className="w-6 h-6 flex flex-col justify-center items-center">
-                <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'}`}></span>
-                <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${isMenuOpen ? 'opacity-0' : 'opacity-100'}`}></span>
-                <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'}`}></span>
-              </div>
-            </button>
+            {/* Mobile menu button */}
+            <div className="lg:hidden">
+              <button
+                onClick={toggleMenu}
+                className="text-white hover:text-emerald-100 p-2 rounded-lg hover:bg-white/10 transition-all duration-200"
+              >
+                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-slate-200 py-4">
-            <div className="space-y-2">
-              <button
-                onClick={() => handleNavigation("/doctordashboard")}
-                className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 rounded-lg"
-              >
-                <FaHome className="inline mr-2" />
-                Dashboard
-              </button>
+          <div className="lg:hidden border-t border-emerald-600/30 bg-emerald-800/95 backdrop-blur-sm">
+            <div className="py-4 space-y-2">
+              {navItems.map(({ path, label, icon: Icon }) => (
+                <button
+                  key={path}
+                  onClick={() => handleNavigation(path)}
+                  className={`flex items-center space-x-3 w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${
+                    isActivePath(path)
+                      ? "bg-white/15 text-white"
+                      : "text-emerald-100 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="font-medium">{label}</span>
+                </button>
+              ))}
               
-              <button
-                onClick={() => handleNavigation("/appointment")}
-                className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 rounded-lg"
-              >
-                <FaRegListAlt className="inline mr-2" />
-                Appointments
-              </button>
-              
-              <button
-                onClick={() => handleNavigation("/patient")}
-                className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 rounded-lg"
-              >
-                <FaUsersCog className="inline mr-2" />
-                My Patients
-              </button>
-              
-              <button
-                onClick={() => handleNavigation("/conference")}
-                className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 rounded-lg"
-              >
-                <FaMicrophoneAlt className="inline mr-2" />
-                Conferences
-              </button>
+              <div className="px-4 py-2">
+                <p className="text-emerald-200 text-sm font-medium mb-2">Disease Prediction</p>
+                <div className="space-y-1 pl-4">
+                  {diseaseOptions.map(({ value, label }) => (
+                    <button
+                      key={value}
+                      onClick={() => handleDiseaseChange(value)}
+                      className="block w-full text-left py-2 text-emerald-100 hover:text-white transition-colors duration-200 text-sm"
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               
               <button
                 onClick={() => handleNavigation("/blogging")}
-                className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 rounded-lg"
+                className="flex items-center space-x-3 w-full text-left px-4 py-3 text-emerald-100 hover:bg-white/10 hover:text-white transition-all duration-200 rounded-lg"
               >
-                <FaBloggerB className="inline mr-2" />
-                Health Blog
+                <FileText className="w-5 h-5" />
+                <span className="font-medium">Health Blog</span>
               </button>
               
-              {isAuthenticated ? (
-                <button
-                  onClick={handleLogout}
-                  className="block w-full text-left px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-                >
-                  <FaSignOutAlt className="inline mr-2" />
-                  Logout
-                </button>
-              ) : (
-                <button
-                  onClick={() => handleNavigation("/doctor/signin")}
-                  className="block w-full text-left px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                >
-                  Doctor Login
-                </button>
-              )}
+              <div className="pt-4 border-t border-emerald-600/30 mt-4">
+                {isAuthenticated ? (
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center space-x-3 w-full text-left px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 font-medium"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span>Logout</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleNavigation("/doctor/signin")}
+                    className="flex items-center justify-center w-full px-4 py-3 bg-white text-emerald-700 rounded-lg hover:bg-emerald-50 transition-all duration-200 font-semibold"
+                  >
+                    Doctor Login
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}
