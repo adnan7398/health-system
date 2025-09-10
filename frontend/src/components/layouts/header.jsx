@@ -239,7 +239,7 @@ const Header = () => {
                   {t("auth.patientLogin")}
                 </button>
                 <button
-                  onClick={() => navigate("/doctorlogin")}
+                  onClick={() => navigate("/doctor/signin")}
                   className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-white border border-white/10 shadow-none focus:outline-none focus:ring-0 ${location.pathname === "/doctorlogin" ? "bg-green-700" : "bg-green-600 hover:bg-green-700"}`}
                 >
                   {t("auth.doctorLogin")}
@@ -324,7 +324,7 @@ const Header = () => {
                       navigate("/doctorlogin");
                       setIsMenuOpen(false);
                     }}
-                    className={`w-full text-left text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-none focus:outline-none focus:ring-0 ${location.pathname === "/doctorlogin" ? "bg-green-700" : "bg-green-600 hover:bg-green-700"}`}
+                    className={`w-full text-left text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-none focus:outline-none focus:ring-0 ${location.pathname === "/doctor/signin" ? "bg-green-700" : "bg-green-600 hover:bg-green-700"}`}
                   >
                     {t("auth.doctorLogin")}
                   </button>

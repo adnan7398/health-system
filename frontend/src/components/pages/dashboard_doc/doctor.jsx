@@ -19,14 +19,14 @@ const DoctorDashboard = () => {
   ]);
 
   const stats = [
-    { title: "Total Patients", value: "1,247", change: "+12%", icon: FaUsers, color: "from-blue-500 to-cyan-500" },
+    { title: "Total Patients", value: "1,247", change: "+12%", icon: FaUsers, color: "from-emerald-500 to-teal-600" },
     { title: "Today's Appointments", value: "8", change: "+2", icon: FaCalendarAlt, color: "from-emerald-500 to-teal-500" },
     { title: "Pending Reports", value: "23", change: "-5", icon: FaFileMedical, color: "from-orange-500 to-red-500" },
     { title: "Success Rate", value: "98.5%", change: "+1.2%", icon: FaChartLine, color: "from-purple-500 to-pink-500" }
   ];
 
   const mlTools = [
-    { name: "Pneumonia Detection", icon: FaLungs, description: "AI-powered X-ray analysis", path: "/pneumonia", color: "from-blue-500 to-cyan-500" },
+    { name: "Pneumonia Detection", icon: FaLungs, description: "AI-powered X-ray analysis", path: "/pneumonia", color: "from-emerald-500 to-teal-600" },
     { name: "Heart Disease Risk", icon: FaHeartbeat, description: "Predictive cardiovascular assessment", path: "/heartdisease", color: "from-red-500 to-pink-500" },
     { name: "Breast Cancer Prediction", icon: FaDna, description: "Early detection using ML models", path: "/breastcancer", color: "from-pink-500 to-purple-500" },
     { name: "PCOD Assessment", icon: FaBrain, description: "Polycystic ovary syndrome analysis", path: "/pcod", color: "from-purple-500 to-indigo-500" }
@@ -40,29 +40,29 @@ const DoctorDashboard = () => {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Main Content */}
       <div className="flex-1 p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 mb-8">
+          <div className="bg-gradient-to-r from-teal-600 via-teal-700 to-emerald-700 text-white rounded-2xl shadow-lg p-8 mb-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+                <h1 className="text-4xl font-bold mb-2">
                   Doctor Dashboard
                 </h1>
-                <p className="text-slate-600 text-lg">
-                  Welcome back, <span className="font-semibold text-blue-600">Dr. Sarah Wilson</span>
+                <p className="text-teal-100 text-lg">
+                  Welcome back, <span className="font-semibold text-white">Dr. Sarah Wilson</span>
                 </p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <FaBell className="text-2xl text-slate-600 cursor-pointer hover:text-blue-600 transition-colors duration-200" />
+                  <FaBell className="text-2xl text-white cursor-pointer hover:text-teal-100 transition-colors duration-200" />
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {notifications.length}
                   </span>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
                   <FaUserMd className="text-white text-xl" />
                 </div>
               </div>
@@ -71,19 +71,19 @@ const DoctorDashboard = () => {
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {stats.map((stat, index) => (
-                <div key={index} className="bg-gradient-to-br from-white to-slate-50 rounded-xl p-6 border border-slate-200 hover:shadow-lg transition-all duration-300">
+                <div key={index} className="bg-white/10 rounded-xl p-6 border border-white/20 hover:shadow-lg transition-all duration-300">
                   <div className="flex items-center justify-between mb-4">
                     <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center shadow-lg`}>
                       <stat.icon className="text-white text-xl" />
                     </div>
                     <span className={`text-sm font-medium ${
-                      stat.change.startsWith('+') ? 'text-green-600' : 'text-red-600'
+                      stat.change.startsWith('+') ? 'text-emerald-200' : 'text-red-200'
                     }`}>
                       {stat.change}
                     </span>
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-800 mb-1">{stat.value}</h3>
-                  <p className="text-slate-600 text-sm">{stat.title}</p>
+                  <h3 className="text-2xl font-bold text-white mb-1">{stat.value}</h3>
+                  <p className="text-teal-100 text-sm">{stat.title}</p>
                 </div>
               ))}
             </div>
@@ -95,10 +95,10 @@ const DoctorDashboard = () => {
               {/* Calendar */}
               <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
                 <h2 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
-                  <FaCalendarAlt className="text-blue-600" />
+                  <FaCalendarAlt className="text-emerald-600" />
                   Schedule Calendar
                 </h2>
-                <div className="bg-gradient-to-br from-slate-50 to-blue-50 rounded-xl p-4">
+                <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-4">
                   <Calendar
                     onChange={setSelectedDate}
                     value={selectedDate}
@@ -108,7 +108,7 @@ const DoctorDashboard = () => {
                         const hasAppointment = appointments.some(apt => 
                           new Date(apt.date).toDateString() === date.toDateString()
                         );
-                        return hasAppointment ? 'bg-blue-100 text-blue-800 rounded-lg' : '';
+                        return hasAppointment ? 'bg-emerald-100 text-emerald-800 rounded-lg' : '';
                       }
                     }}
                   />
@@ -123,10 +123,10 @@ const DoctorDashboard = () => {
                 </h2>
                 <div className="space-y-4">
                   {appointments.map((appointment) => (
-                    <div key={appointment.id} className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition-all duration-200">
+                    <div key={appointment.id} className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-4 border border-gray-200 hover:shadow-md transition-all duration-200">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                          <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
                             <FaUserMd className="text-white" />
                           </div>
                           <div>
@@ -138,8 +138,8 @@ const DoctorDashboard = () => {
                           <div className="text-lg font-semibold text-slate-800">{appointment.time}</div>
                           <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
                             appointment.status === 'Confirmed' 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-yellow-100 text-yellow-800'
+                              ? 'bg-emerald-100 text-emerald-800' 
+                              : 'bg-amber-100 text-amber-800'
                           }`}>
                             {appointment.status}
                           </span>
@@ -164,19 +164,19 @@ const DoctorDashboard = () => {
                     <a
                       key={index}
                       href={tool.path}
-                      className="group block bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-4 border border-slate-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                      className="group block bg-gradient-to-r from-gray-50 to-white rounded-xl p-4 border border-gray-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
                     >
                       <div className="flex items-center gap-4">
                         <div className={`w-12 h-12 bg-gradient-to-br ${tool.color} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                           <tool.icon className="text-white text-xl" />
                         </div>
                         <div className="flex-1">
-                          <h3 className="font-semibold text-slate-800 group-hover:text-blue-600 transition-colors duration-200">
+                          <h3 className="font-semibold text-slate-800 group-hover:text-emerald-600 transition-colors duration-200">
                             {tool.name}
                           </h3>
                           <p className="text-sm text-slate-600">{tool.description}</p>
                         </div>
-                        <div className="text-slate-400 group-hover:text-blue-600 transition-colors duration-200">
+                        <div className="text-slate-400 group-hover:text-emerald-600 transition-colors duration-200">
                           →
                         </div>
                       </div>
@@ -193,7 +193,7 @@ const DoctorDashboard = () => {
                 </h2>
                 <div className="space-y-4">
                   {recentPatients.map((patient, index) => (
-                    <div key={index} className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg hover:bg-blue-50 transition-colors duration-200">
+                    <div key={index} className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg hover:bg-emerald-50 transition-colors duration-200">
                       <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
                         <span className="text-white font-semibold text-sm">
                           {patient.name.split(' ').map(n => n[0]).join('')}
@@ -205,8 +205,8 @@ const DoctorDashboard = () => {
                       </div>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                         patient.status === 'Active' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-blue-100 text-blue-800'
+                          ? 'bg-emerald-100 text-emerald-800' 
+                          : 'bg-amber-100 text-amber-800'
                       }`}>
                         {patient.status}
                       </span>
@@ -223,10 +223,10 @@ const DoctorDashboard = () => {
                 </h2>
                 <div className="space-y-4">
                   {notifications.map((notification) => (
-                    <div key={notification.id} className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg hover:bg-blue-50 transition-colors duration-200">
+                    <div key={notification.id} className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg hover:bg-emerald-50 transition-colors duration-200">
                       <div className={`w-2 h-2 rounded-full mt-2 ${
-                        notification.type === 'success' ? 'bg-green-500' :
-                        notification.type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'
+                        notification.type === 'success' ? 'bg-emerald-500' :
+                        notification.type === 'warning' ? 'bg-amber-500' : 'bg-teal-500'
                       }`}></div>
                       <div className="flex-1">
                         <p className="text-sm font-medium text-slate-800">{notification.message}</p>
@@ -243,7 +243,7 @@ const DoctorDashboard = () => {
           <div className="mt-8 bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
             <h2 className="text-2xl font-semibold text-slate-800 mb-6">Quick Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <button className="flex items-center gap-3 p-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
+              <button className="flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-xl hover:from-emerald-700 hover:to-teal-800 transition-all duration-300 transform hover:scale-105 shadow-lg">
                 <FaQrcode className="text-xl" />
                 <span>Scan Patient QR</span>
               </button>
@@ -255,7 +255,7 @@ const DoctorDashboard = () => {
                 <FaCalendarAlt className="text-xl" />
                 <span>Schedule</span>
               </button>
-              <button className="flex items-center gap-3 p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
+              <button className="flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
                 <FaUsers className="text-xl" />
                 <span>Patients</span>
               </button>

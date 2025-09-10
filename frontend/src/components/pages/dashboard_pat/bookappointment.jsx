@@ -42,7 +42,8 @@ const BookAppointment = () => {
     const fetchDoctors = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:3000/doctors");
+        const API_BASE = "http://localhost:3000";
+        const response = await fetch(`${API_BASE}/doctor`);
         if (response.ok) {
           const data = await response.json();
           const transformed = data.map(doc => ({
@@ -56,7 +57,7 @@ const BookAppointment = () => {
             phone: "+1 (555) 000-0000",
             email: "doctor@example.com",
             image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face",
-            availableSlots: ["09:00 AM", "10:00 AM", "02:00 PM"],
+            availableSlots: [],
           }));
           setDoctors(transformed);
           setFilteredDoctors(transformed);
@@ -92,13 +93,34 @@ const BookAppointment = () => {
     ));
   };
 
-  const handleDoctorSelect = (doctor) => {
+  const handleDoctorSelect = async (doctor) => {
     setSelectedDoctor(doctor);
     setCurrentStep(2);
+    setSelectedDate("");
+    setSelectedTime("");
+    // Clear previous slots until a date is picked
   };
 
-  const handleDateSelect = (date) => {
+  const handleDateSelect = async (date) => {
     setSelectedDate(date);
+    if (!selectedDoctor) return;
+    try {
+      setLoading(true);
+      const API_BASE = "http://localhost:3000";
+      const params = new URLSearchParams({ doctorId: selectedDoctor.id, date });
+      const res = await fetch(`${API_BASE}/doctor-availability?${params.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        const slots = data.available ? data.availableTimeSlots : [];
+        setSelectedTime("");
+        // Update selected doctor's available slots locally
+        setSelectedDoctor(prev => prev ? { ...prev, availableSlots: slots } : prev);
+      }
+    } catch (e) {
+      console.error("Failed to fetch availability", e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleTimeSelect = (time) => {
@@ -110,19 +132,44 @@ const BookAppointment = () => {
     setAppointmentDetails(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedDoctor || !selectedDate || !selectedTime) {
       setMessage("Please fill all required fields.");
       setMessageType("error");
       return;
     }
-    setLoading(true);
-    setTimeout(() => {
-      setMessage("Appointment booked successfully!");
+    try {
+      setLoading(true);
+      const API_BASE = "http://localhost:3000";
+      const res = await fetch(`${API_BASE}/book-appointment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          doctorId: selectedDoctor.id,
+          date: selectedDate,
+          time: selectedTime,
+          visitType: appointmentDetails.visitType,
+          medicalReason: appointmentDetails.medicalReason,
+          notes: appointmentDetails.notes,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Booking failed");
+      }
+      setMessage(data.message || "Appointment booked successfully!");
       setMessageType("success");
+      setCurrentStep(4);
+    } catch (e) {
+      console.error(e);
+      setMessage(e.message || "Booking failed");
+      setMessageType("error");
+    } finally {
       setLoading(false);
-      setCurrentStep(3);
-    }, 1500);
+    }
   };
 
   const resetForm = () => {
@@ -226,7 +273,7 @@ const BookAppointment = () => {
             <div className="mb-4">
               <h3 className="font-semibold mb-2">Select Time</h3>
               <div className="grid grid-cols-3 gap-2">
-                {selectedDoctor.availableSlots.map(slot => (
+                {(selectedDoctor.availableSlots && selectedDoctor.availableSlots.length > 0 ? selectedDoctor.availableSlots : ["09:00 AM", "09:30 AM", "10:00 AM"]).map(slot => (
                   <button
                     key={slot}
                     onClick={() => handleTimeSelect(slot)}
