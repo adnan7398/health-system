@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
-  FaHeartbeat,
-  FaEye,
-  FaEyeSlash,
-  FaGoogle,
-  FaFacebook,
-  FaApple,
-  FaArrowRight,
-  FaCheckCircle,
-  FaShieldAlt,
-  FaUserMd,
-  FaQrcode,
-  FaRobot,
-  FaFlask,
-  FaAmbulance,
-} from "react-icons/fa";
+  Heart,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  CheckCircle,
+  Shield,
+  UserCheck,
+  QrCode,
+  Bot,
+  FlaskConical,
+  Ambulance,
+  Chrome,
+  Facebook,
+  Apple,
+} from "lucide-react";
 
 const Auth = () => {
   const [isSignup, setIsSignup] = useState(false);
@@ -28,6 +28,8 @@ const Auth = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [rememberMe, setRememberMe] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,13 +40,36 @@ const Auth = () => {
     if (token) navigate(from, { replace: true });
   }, [navigate, from]);
 
-  const handleChange = (e) =>
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  };
+
+  const validate = () => {
+    const errs = {};
+    if (!formData.email) errs.email = "Email is required.";
+    else if (!/^\S+@\S+\.\S+$/.test(formData.email))
+      errs.email = "Enter a valid email.";
+    if (!formData.password) errs.password = "Password is required.";
+    else if (formData.password.length < 6)
+      errs.password = "Password must be at least 6 characters.";
+    if (isSignup && !formData.firstName)
+      errs.firstName = "First name is required.";
+    if (isSignup && !formData.lastName)
+      errs.lastName = "Last name is required.";
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
     setLoading(true);
+
+    if (!validate()) {
+      setLoading(false);
+      return;
+    }
 
     const endpoint = isSignup ? "/signup" : "/signin";
     try {
@@ -66,14 +91,15 @@ const Auth = () => {
       }
 
       if (response.ok && !isSignup) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("userRole", "patient");
-        if (data.userId) localStorage.setItem("userId", data.userId);
-        else {
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem("token", data.token);
+        storage.setItem("userRole", "patient");
+        if (data.userId) {
+          storage.setItem("userId", data.userId);
+        } else {
           try {
             const tokenPayload = JSON.parse(atob(data.token.split(".")[1]));
-            if (tokenPayload.id)
-              localStorage.setItem("userId", tokenPayload.id);
+            if (tokenPayload.id) storage.setItem("userId", tokenPayload.id);
           } catch (error) {
             console.error("Error parsing token:", error);
           }
@@ -93,268 +119,280 @@ const Auth = () => {
 
   const features = [
     {
-      icon: FaUserMd,
+      icon: UserCheck,
       title: "Online Doctor Consultation",
       description: "Connect with top specialists 24/7",
     },
     {
-      icon: FaQrcode,
+      icon: QrCode,
       title: "Digital Health Records",
       description: "Secure access to medical history",
     },
     {
-      icon: FaFlask,
+      icon: FlaskConical,
       title: "Lab Tests at Home",
       description: "Convenient diagnostic services",
     },
     {
-      icon: FaRobot,
+      icon: Bot,
       title: "AI Health Assistant",
       description: "24/7 medical guidance",
     },
     {
-      icon: FaAmbulance,
+      icon: Ambulance,
       title: "Emergency Support",
       description: "Quick medical assistance",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 flex items-center justify-center p-6">
-      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* Left Panel */}
-        <div className="hidden lg:flex flex-col justify-center bg-gradient-to-br from-[#008080] via-[#006666] to-[#004466] text-white rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 flex items-center justify-center p-4 antialiased">
+      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        {/* Left - Brand & Features */}
+        <div className="hidden lg:flex flex-col justify-center bg-gradient-to-br from-[#008080] via-[#006666] to-[#004466] text-white rounded-3xl p-12 shadow-2xl overflow-hidden relative">
           {/* Decorative Background Circles */}
           <div className="absolute inset-0 opacity-10 pointer-events-none">
-            <div className="absolute top-0 left-0 w-28 h-28 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
-            <div className="absolute bottom-0 right-0 w-20 h-20 bg-white rounded-full translate-x-12 translate-y-12"></div>
+            <div className="absolute top-0 left-0 w-40 h-40 bg-white rounded-full -translate-x-20 -translate-y-20"></div>
+            <div className="absolute top-1/2 right-0 w-32 h-32 bg-white rounded-full translate-x-16 -translate-y-1/2"></div>
+            <div className="absolute bottom-0 right-0 w-28 h-28 bg-white rounded-full translate-x-14 translate-y-14"></div>
           </div>
 
-          <div className="relative z-10 text-center">
-            {/* Header */}
-            <div className="flex flex-col items-center mb-6">
-              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-3">
-                <FaHeartbeat className="text-3xl text-white" />
+          {/* Content */}
+          <div className="relative z-10">
+            {/* Brand Title */}
+            <div className="flex items-center mb-8">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+                <Heart className="w-8 h-8 text-white" fill="currentColor" />
               </div>
-              <h2 className="text-3xl font-extrabold text-white">
-                Welcome to Arogyam
-              </h2>
-              <p className="text-emerald-100 mt-1 max-w-xs">
-                Better care, powered by AI — secure and always available.
-              </p>
+              <div>
+                <h2 className="text-4xl font-bold tracking-tight text-white mr-16">
+                  Welcome to Arogyam
+                </h2>
+                <p className="text-emerald-100 mt-2 text-lg">
+                  Better care, powered by AI — secure and always available.
+                </p>
+              </div>
             </div>
 
-            {/* Features */}
-            <ul className="space-y-3 mt-4 text-left">
+            {/* Features List */}
+            <div className="space-y-6 mt-8">
               {features.map((feature, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center mt-1">
-                    <feature.icon className="text-white text-lg" />
+                <div key={i} className="flex items-start gap-4 group">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:bg-white/30 transition-colors duration-300">
+                    <feature.icon className="w-6 h-6 text-white" />
                   </div>
-                  <div>
-                    <div className="font-semibold text-white">
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg text-white mb-1">
                       {feature.title}
-                    </div>
-                    <div className="text-emerald-100 text-sm">
+                    </h3>
+                    <p className="text-emerald-100 text-sm leading-relaxed">
                       {feature.description}
-                    </div>
+                    </p>
                   </div>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
 
-            {/* Footer Info */}
-            <div className="mt-6 pt-4 border-t border-white/20 flex flex-col sm:flex-row justify-center gap-6 text-sm text-emerald-100">
-              <div className="flex items-center gap-2 justify-center">
-                <FaShieldAlt /> Secure & Private
-              </div>
-              <div className="flex items-center gap-2 justify-center">
-                <FaCheckCircle /> Trusted by 50K+
+            {/* Bottom Highlights */}
+            <div className="mt-10 pt-8 border-t border-white/20">
+              <div className="flex items-center gap-8 text-emerald-100">
+                <div className="flex items-center gap-3">
+                  <Shield className="w-5 h-5" />
+                  <span className="font-medium">Secure & Private</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5" />
+                  <span className="font-medium">Trusted by 50K+</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Panel */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-          <div className="max-w-md mx-auto p-8 lg:p-10">
-            {/* Header */}
-            <div className="text-center mb-6">
-              <h3 className="text-2xl font-bold text-slate-800 mb-2">
+        {/* Right - Authentication Form */}
+        <div
+          className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100"
+          style={{ WebkitTapHighlightColor: "transparent" }}
+        >
+          <div className="bg-gradient-to-br from-[#008080] via-[#006666] to-[#004466] text-white p-6 flex items-center justify-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#008080] via-[#006666] to-[#004466] opacity-90"></div>
+            <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center relative z-10">
+              <Heart className="w-7 h-7 text-white" fill="currentColor" />
+            </div>
+          </div>
+          <div
+            className="p-8 lg:p-10 text-slate-800"
+            style={{ WebkitTapHighlightColor: "transparent" }}
+          >
+            <div className="text-center mb-8">
+              <h3 className="text-3xl font-bold text-slate-800 mb-3">
                 {isSignup ? "Create Account" : "Welcome Back"}
               </h3>
-              <p className="text-sm text-slate-500">
+              <p className="text-slate-600 leading-relaxed">
                 {isSignup
-                  ? "Join Arogyam and take control of your health."
-                  : "Sign in to access your personalized health dashboard."}
+                  ? "Join Arogyam and take control of your health journey with personalized care."
+                  : "Sign in to access your personalized health dashboard and continue your wellness journey."}
               </p>
             </div>
 
-            {/* Message */}
             {message && (
               <div
-                className={`mb-4 p-3 rounded-md text-center text-sm ${
-                  message.toLowerCase().includes("success") ||
-                  message.toLowerCase().includes("created")
-                    ? "bg-green-50 text-green-700 border border-green-100"
-                    : "bg-red-50 text-red-700 border border-red-100"
+                className={`mb-6 p-4 rounded-xl text-center font-medium ${
+                  response.ok
+                    ? "bg-emerald-100 text-emerald-800"
+                    : "bg-red-100 text-red-800"
                 }`}
               >
                 {message}
               </div>
             )}
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {isSignup && (
-                <div className="grid grid-cols-2 gap-3">
-                  <input
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    placeholder="First Name"
-                    required
-                    className="w-full px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 text-sm"
-                  />
-                  <input
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    placeholder="Last Name"
-                    required
-                    className="w-full px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 text-sm"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <input
+                      type="text"
+                      name="firstName"
+                      placeholder="First Name"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500"
+                    />
+                    {errors.firstName && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.firstName}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      name="lastName"
+                      placeholder="Last Name"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500"
+                    />
+                    {errors.lastName && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.lastName}
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Email"
-                required
-                className="w-full px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 text-sm"
-              />
+
+              <div>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500"
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
+              </div>
+
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
+                  placeholder="Password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Password"
-                  required
-                  className="w-full px-2 py-2 pr-9 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 text-sm mt-3"
+                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500"
                 />
-                <button
-                  type="button"
+                <span
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm mt-2"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-400"
                 >
                   {showPassword ? (
-                    <FaEyeSlash className="text-xs" />
+                    <EyeOff className="w-5 h-5" />
                   ) : (
-                    <FaEye className="text-xs" />
+                    <Eye className="w-5 h-5" />
                   )}
-                </button>
+                </span>
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                )}
               </div>
 
-              {/* Remember me + Forgot */}
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2 cursor-pointer">
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 text-sm text-slate-600">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+                    checked={rememberMe}
+                    onChange={() => setRememberMe(!rememberMe)}
+                    className="form-checkbox"
                   />
-                  <span className="text-slate-600">Remember me</span>
+                  Remember me
                 </label>
-                <a
-                  href="/forgot-password"
-                  className="text-emerald-600 hover:underline text-sm"
-                >
-                  Forgot password?
-                </a>
+                {!isSignup && (
+                  <a
+                    href="#"
+                    className="text-sm text-emerald-600 hover:underline"
+                  >
+                    Forgot password?
+                  </a>
+                )}
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold text-sm transition disabled:opacity-50 shadow-md"
+                className="w-full py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50"
               >
-                {loading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    {isSignup ? "Creating..." : "Signing in..."}
-                  </div>
-                ) : (
-                  <>
-                    <span>{isSignup ? "Create Account" : "Sign In"}</span>
-                    <FaArrowRight className="text-sm" />
-                  </>
-                )}
+                {loading ? "Please wait..." : isSignup ? "Sign Up" : "Sign In"}
               </button>
             </form>
 
-            {/* Divider */}
-            <div className="my-4 relative">
-              <div className="absolute inset-0 flex items-center" aria-hidden>
-                <div className="w-full border-t border-gray-200"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-3 bg-white text-slate-500">
-                  Or continue with
-                </span>
-              </div>
+            <div className="mt-6 text-center text-sm text-slate-500">
+              {isSignup ? (
+                <>
+                  Already have an account?{" "}
+                  <button
+                    onClick={() => setIsSignup(false)}
+                    className="text-emerald-600 font-medium hover:underline"
+                  >
+                    Sign In
+                  </button>
+                </>
+              ) : (
+                <>
+                  Don't have an account?{" "}
+                  <button
+                    onClick={() => setIsSignup(true)}
+                    className="text-emerald-600 font-medium hover:underline"
+                  >
+                    Sign Up
+                  </button>
+                </>
+              )}
             </div>
 
-            {/* Social Buttons */}
-            <div className="grid grid-cols-3 gap-2">
+            <div className="mt-6 flex items-center justify-center gap-4">
               <button
                 onClick={() => handleSocialLogin("/auth/google")}
-                className="flex items-center justify-center gap-2 px-2 py-2 bg-white border rounded-lg shadow hover:shadow-md transition text-sm"
+                className="p-3 rounded-full bg-red-50 hover:bg-red-100 transition"
               >
-                <FaGoogle className="text-red-500 text-base" />
+                <Chrome className="w-5 h-5 text-red-500" />
               </button>
               <button
                 onClick={() => handleSocialLogin("/auth/facebook")}
-                className="flex items-center justify-center gap-2 px-2 py-2 bg-white border rounded-lg shadow hover:shadow-md transition text-sm"
+                className="p-3 rounded-full bg-blue-50 hover:bg-blue-100 transition"
               >
-                <FaFacebook className="text-blue-600 text-base" />
+                <Facebook className="w-5 h-5 text-blue-500" />
               </button>
               <button
                 onClick={() => handleSocialLogin("/auth/apple")}
-                className="flex items-center justify-center gap-2 px-2 py-2 bg-white border rounded-lg shadow hover:shadow-md transition text-sm"
+                className="p-3 rounded-full bg-black/10 hover:bg-black/20 transition"
               >
-                <FaApple className="text-slate-800 text-base" />
+                <Apple className="w-5 h-5 text-black" />
               </button>
-            </div>
-
-            {/* Toggle Sign Up / Sign In */}
-            <div className="mt-6 text-center text-sm">
-              <span className="text-slate-600">
-                {isSignup
-                  ? "Already have an account?"
-                  : "Don't have an account?"}
-              </span>
-              <button
-                onClick={() => setIsSignup(!isSignup)}
-                className="ml-2 text-emerald-600 font-semibold hover:underline text-sm"
-              >
-                {isSignup ? "Sign In" : "Sign Up"}
-              </button>
-            </div>
-
-            {/* Terms */}
-            <div className="mt-4 text-center text-xs text-slate-400">
-              By continuing you agree to our{" "}
-              <a href="/terms" className="underline">
-                Terms
-              </a>{" "}
-              and{" "}
-              <a href="/privacy" className="underline">
-                Privacy Policy
-              </a>
-              .
             </div>
           </div>
         </div>
