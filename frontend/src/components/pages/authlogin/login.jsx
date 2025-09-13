@@ -34,16 +34,8 @@ const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get the intended destination from the ProtectedRoute, but default to scanner
-  const from = (location.state)?.from?.pathname || "/scanner";
-
-  useEffect(() => {
-    // Check if user is already logged in
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate(from, { replace: true });
-    }
-  }, [navigate, from]);
+  // Do NOT auto-navigate on mount (avoids redirect loops).
+  // We'll redirect only after successful sign-in inside handleSubmit.
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -93,25 +85,32 @@ const Auth = () => {
       }
 
       if (response.ok && !isSignup) {
-        // Persist token according to "Remember me"
-        const storage = rememberMe ? localStorage : sessionStorage;
-        storage.setItem("token", data.token);
-        storage.setItem("userRole", "patient");
-        if (data.userId) {
-          storage.setItem("userId", data.userId);
-        } else {
-          // Attempt to extract user ID from token if available
+        // Persist token consistently:
+        // - Always store in sessionStorage so SPA checks work during the session.
+        // - Mirror to localStorage only when "Remember me" is checked.
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("userRole", "patient");
+        if (data.userId) sessionStorage.setItem("userId", data.userId);
+        else {
           try {
-            const tokenPayload = JSON.parse(atob(data.token.split('.')[1]));
-            if (tokenPayload.id) {
-              storage.setItem("userId", tokenPayload.id);
-            }
-          } catch (error) {
-            console.error("Error parsing token:", error);
+            const payload = JSON.parse(atob(data.token.split(".")[1] || ""));
+            if (payload && payload.id) sessionStorage.setItem("userId", payload.id);
+          } catch (err) {
+            console.error("Error parsing token payload:", err);
           }
         }
-        
-        // Redirect to scanner page after successful login
+        if (rememberMe) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("userRole", "patient");
+          if (sessionStorage.getItem("userId")) localStorage.setItem("userId", sessionStorage.getItem("userId"));
+        } else {
+          // ensure no stale localStorage values remain
+          localStorage.removeItem("token");
+          localStorage.removeItem("userRole");
+          localStorage.removeItem("userId");
+        }
+
+        // Redirect to scanner after successful login
         navigate("/scanner", { replace: true });
       }
     } catch (error) {
