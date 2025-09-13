@@ -264,7 +264,7 @@ const Header = () => {
                       }}
                       className=" text-left px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-3"
                     >
-                      <FaUser className="text-teal-600 text-sm" />
+                      <FaUser className="text-white text-sm" />
                       <span className="text-sm font-medium">
                         {t("auth.patientLogin")}
                       </span>
@@ -278,7 +278,7 @@ const Header = () => {
                       }}
                       className=" text-left px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-3"
                     >
-                      <FaStethoscope className="text-teal-600 text-sm" />
+                      <FaStethoscope className="text-white text-sm" />
                       <span className="text-sm font-medium">
                         {t("auth.doctorLogin")}
                       </span>

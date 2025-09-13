@@ -362,10 +362,10 @@ const Home = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Heading */}
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">
+            <h2 className="text-4xl md:text-7xl font-extrabold text-white mb-4">
               {t("home.stats.title", "Trusted by Healthcare Leaders")}
             </h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-white max-w-3xl mx-auto">
               {t(
                 "home.stats.subtitle",
                 "Join thousands of users who rely on our platform for their healthcare needs"
@@ -424,7 +424,7 @@ const Home = () => {
       {/* Services Grid */}
       <section
         id="services"
-        className="py-28 relative overflow-hidden bg-gradient-to-br from-emerald-100 via-white to-teal-50"
+        className="py-20 relative overflow-hidden bg-gradient-to-br from-emerald-100 via-white to-teal-50"
       >
         {/* Background shapes */}
         <div className="absolute inset-0 opacity-10">
@@ -492,7 +492,7 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white relative overflow-hidden">
+      <section className="py-16 bg-gradient-to-br from-[#008080] via-[#006666] to-[#004466] text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-10 left-20 w-32 h-32 bg-white rounded-full blur-2xl animate-pulse"></div>
           <div className="absolute bottom-10 right-20 w-24 h-24 bg-white rounded-full blur-xl animate-pulse delay-1000"></div>
@@ -506,7 +506,7 @@ const Home = () => {
             </div>
           </div>
 
-          <h2 className="text-4xl md:text-6xl font-bold mb-8 leading-tight">
+          <h2 className="text-4xl md:text-6xl font-bold mb-8 leading-tight text-white">
             {t("home.finalCta.title", "Ready to Transform Your Healthcare?")}
           </h2>
           <p className="text-xl md:text-2xl mb-12 opacity-90 max-w-4xl mx-auto leading-relaxed">
@@ -520,10 +520,10 @@ const Home = () => {
             )}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mt-12">
             <button
               onClick={handleGetStarted}
-              className="bg-white text-emerald-600 hover:bg-gray-100 px-10 py-5 rounded-2xl font-bold text-xl transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:-translate-y-2 flex items-center justify-center space-x-3"
+              className="bg-white text-emerald-600 hover:bg-gray-100 px-10 py-3 rounded-2xl font-bold text-xl transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:-translate-y-2 flex items-center justify-center space-x-3"
             >
               <span>
                 {userStatus.isAuthenticated && userStatus.isHealthCardRegistered
@@ -537,7 +537,7 @@ const Home = () => {
 
             <button
               onClick={handleLearnMore}
-              className="border-2 border-white text-white hover:bg-white hover:text-emerald-600 px-10 py-5 rounded-2xl font-bold text-xl transition-all duration-300 hover:shadow-2xl flex items-center justify-center space-x-3"
+              className="border-2 border-white text-white hover:bg-white hover:text-emerald-600 px-10 py-3 rounded-2xl font-bold text-xl transition-all duration-300 hover:shadow-2xl flex items-center justify-center space-x-3"
             >
               <Play className="w-5 h-5" />
               <span>
@@ -586,9 +586,7 @@ const Home = () => {
             </div>
 
             <div>
-              <h4 className="text-xl font-bold mb-8 text-white">
-                Product
-              </h4>
+              <h4 className="text-xl font-bold mb-8 text-white">Product</h4>
               <ul className="space-y-4">
                 {[
                   "Features",
@@ -610,9 +608,7 @@ const Home = () => {
             </div>
 
             <div>
-              <h4 className="text-xl font-bold mb-8 text-white">
-                Company
-              </h4>
+              <h4 className="text-xl font-bold mb-8 text-white">Company</h4>
               <ul className="space-y-4">
                 {["About", "Blog", "Careers", "Press", "Partners"].map(
                   (item, index) => (
@@ -630,9 +626,7 @@ const Home = () => {
             </div>
 
             <div>
-              <h4 className="text-xl font-bold mb-8 text-white">
-                Support
-              </h4>
+              <h4 className="text-xl font-bold mb-8 text-white">Support</h4>
               <ul className="space-y-4">
                 {[
                   "Help Center",
