@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Heart,
@@ -26,6 +26,7 @@ const Auth = () => {
     password: "",
   });
   const [message, setMessage] = useState("");
+  const [authSuccess, setAuthSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
@@ -34,16 +35,8 @@ const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get the intended destination from the ProtectedRoute, but default to scanner
+  // Get the intended destination from the ProtectedRoute, default to scanner
   const from = (location.state)?.from?.pathname || "/scanner";
-
-  useEffect(() => {
-    // Check if user is already logged in
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate(from, { replace: true });
-    }
-  }, [navigate, from]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -69,6 +62,7 @@ const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    setAuthSuccess(false);
     setLoading(true);
 
     if (!validate()) {
@@ -93,32 +87,48 @@ const Auth = () => {
       if (response.ok && isSignup) {
         setIsSignup(false);
         setMessage("Account created successfully! Please login.");
+        setAuthSuccess(true);
       }
 
       if (response.ok && !isSignup) {
-        // Persist token according to "Remember me"
-        const storage = rememberMe ? localStorage : sessionStorage;
-        storage.setItem("token", data.token);
-        storage.setItem("userRole", "patient");
-        if (data.userId) {
-          storage.setItem("userId", data.userId);
-        } else {
-          // Attempt to extract user ID from token if available
+        // Persist token consistently:
+        // - always sessionStorage for SPA checks
+        // - mirror to localStorage only when rememberMe is true
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("userRole", "patient");
+        if (data.userId) sessionStorage.setItem("userId", data.userId);
+        else {
           try {
-            const tokenPayload = JSON.parse(atob(data.token.split('.')[1]));
-            if (tokenPayload.id) {
-              storage.setItem("userId", tokenPayload.id);
-            }
-          } catch (error) {
-            console.error("Error parsing token:", error);
+            const payload = JSON.parse(atob((data.token || "").split(".")[1] || ""));
+            if (payload && payload.id) sessionStorage.setItem("userId", payload.id);
+          } catch (err) {
+            console.error("Error parsing token payload:", err);
           }
         }
-        
-        // Redirect to scanner page after successful login
-        navigate("/scanner", { replace: true });
+
+        if (rememberMe) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("userRole", "patient");
+          const uid = sessionStorage.getItem("userId");
+          if (uid) localStorage.setItem("userId", uid);
+        } else {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userRole");
+          localStorage.removeItem("userId");
+        }
+
+        setAuthSuccess(true);
+
+        // Delay navigation one tick so ProtectedRoute/readers see the sessionStorage token
+        setTimeout(() => {
+          navigate(from || "/scanner", { replace: true });
+        }, 20);
+      } else {
+        setAuthSuccess(false);
       }
     } catch (error) {
       setMessage("Something went wrong! Try again.");
+      setAuthSuccess(false);
       console.error("Login error:", error);
     } finally {
       setLoading(false);
@@ -249,9 +259,9 @@ const Auth = () => {
             {message && (
               <div
                 className={`mb-6 p-4 rounded-xl text-center font-medium ${
-                  response.ok
-                    ? "bg-emerald-100 text-emerald-800"
-                    : "bg-red-100 text-red-800"
+                  authSuccess
+                    ? "bg-green-50 text-green-800 border border-green-200"
+                    : "bg-red-50 text-red-800 border border-red-200"
                 }`}
               >
                 {message}
@@ -333,14 +343,30 @@ const Auth = () => {
               </div>
 
               <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 text-sm text-slate-600">
+                {/* accessible checkbox-toggle for "Remember me" */}
+                <label className="flex items-center gap-3 cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={rememberMe}
-                    onChange={() => setRememberMe(!rememberMe)}
-                    className="form-checkbox"
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="sr-only"
+                    aria-label="Remember me"
                   />
-                  Remember me
+                  <div
+                    className={`w-10 h-6 rounded-full p-1 flex items-center transition-colors ${
+                      rememberMe ? "bg-emerald-600" : "bg-slate-200"
+                    }`}
+                    onClick={() => setRememberMe((v) => !v)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(ev) => { if (ev.key === " " || ev.key === "Enter") setRememberMe((v) => !v); }}
+                  >
+                    <div className={`w-4 h-4 bg-white rounded-full shadow transform transition-transform ${rememberMe ? "translate-x-4" : ""}`} />
+                  </div>
+                  <div className="text-sm text-slate-600">
+                    <div className="font-medium">Remember me</div>
+                    <div className="text-xs text-slate-400">Stay signed in on this device</div>
+                  </div>
                 </label>
                 {!isSignup && (
                   <a
