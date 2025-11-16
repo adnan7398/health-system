@@ -56,7 +56,7 @@ const Userdashboardsidebar = () => {
     {
       name: "Calorie Calculator",
       icon: FaCalculator,
-      path: "/calorieconverter",
+      path: "/calorieconvertor",
       color: "from-green-500 to-emerald-500",
       description: "Track your nutrition"
     },

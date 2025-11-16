@@ -63,7 +63,7 @@ export default function BreastCancerPredictor() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-pink-50 to-purple-50 p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-emerald-50 to-cyan-50 p-6 relative overflow-hidden">
       {/* AI/ML Background Pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute inset-0" style={{
@@ -71,8 +71,8 @@ export default function BreastCancerPredictor() {
         }}></div>
       </div>
       <div className="max-w-4xl mx-auto relative z-10">
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8">
-          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-8">
+        <div className="bg-white rounded-xl shadow-lg border border-teal-100 p-8">
+          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-8">
             Breast Cancer Prediction
           </h2>
           
@@ -106,7 +106,7 @@ export default function BreastCancerPredictor() {
               <button 
                 type="submit" 
                 disabled={loading}
-                className="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white py-3 px-8 rounded-lg font-medium text-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white py-3 px-8 rounded-lg font-medium text-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {loading ? (
                   <div className="flex items-center justify-center gap-2">
@@ -123,22 +123,22 @@ export default function BreastCancerPredictor() {
           {prediction !== null && (
             <div className="mt-8 space-y-4">
               <div className={`p-6 rounded-xl border-2 ${
-                prediction === 0 
-                  ? "bg-green-50 border-green-200 text-green-800" 
-                  : "bg-red-50 border-red-200 text-red-800"
-              }`}>
-                <h3 className="text-xl font-bold text-center mb-2">
-                  Prediction Result
-                </h3>
-                <p className="text-center text-lg">
-                  {prediction === 0 ? "Benign (Non-cancerous)" : "Malignant (Cancerous)"}
-                </p>
-                <p className="text-center text-sm mt-2 opacity-80">
-                  {prediction === 0 
-                    ? "The mass appears to be non-cancerous based on the analysis." 
-                    : "The mass shows characteristics associated with cancer. Please consult a healthcare professional immediately."
-                  }
-                </p>
+              prediction === 0 
+                ? "bg-green-50 border-green-200 text-green-800" 
+                : "bg-red-50 border-red-200 text-red-800"
+            }`}>
+              <h3 className="text-xl font-bold text-center mb-2">
+                Prediction Result
+              </h3>
+              <p className="text-center text-lg">
+                {prediction === 0 ? "Benign (Non-cancerous)" : "Malignant (Cancerous)"}
+              </p>
+              <p className="text-center text-sm mt-2 opacity-80">
+                {prediction === 0 
+                  ? "The mass appears to be non-cancerous based on the analysis." 
+                  : "The mass shows characteristics associated with cancer. Please consult a healthcare professional immediately."
+                }
+              </p>
               </div>
               {confidence > 0 && (
                 <div className="bg-slate-50 rounded-xl p-6">

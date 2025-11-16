@@ -104,7 +104,7 @@ const HeartRiskPredictor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-red-50 to-pink-50 p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-emerald-50 to-cyan-50 p-6 relative overflow-hidden">
       {/* AI/ML Background Pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute inset-0" style={{
@@ -112,8 +112,8 @@ const HeartRiskPredictor = () => {
         }}></div>
       </div>
       <div className="max-w-2xl mx-auto relative z-10">
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8">
-          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent mb-8">
+        <div className="bg-white rounded-xl shadow-lg border border-teal-100 p-8">
+          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-8">
             Heart Disease Risk Predictor
           </h2>
 
@@ -191,7 +191,7 @@ const HeartRiskPredictor = () => {
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white py-3 px-6 rounded-lg font-medium text-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white py-3 px-6 rounded-lg font-medium text-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {loading ? (
                 <div className="flex items-center justify-center gap-2">
@@ -207,7 +207,7 @@ const HeartRiskPredictor = () => {
           {prediction && (
             <div className="mt-8 space-y-4">
               <div className={`p-6 rounded-xl border-2 ${getRiskColor(prediction.split(': ')[1])}`}>
-                <h3 className="text-xl font-bold text-center">{prediction}</h3>
+              <h3 className="text-xl font-bold text-center">{prediction}</h3>
               </div>
               {confidence > 0 && (
                 <div className="bg-slate-50 rounded-xl p-6">

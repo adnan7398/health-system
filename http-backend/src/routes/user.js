@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const { UserModel, DoctorModel, AppointmentModel } = require("../models/userschema");
 const bcrypt = require("bcryptjs");
 const userRouter = express.Router();
@@ -211,35 +212,144 @@ userRouter.get("/register/:id", userMiddleware, async (req, res) => {
 
 
 userRouter.post("/book-appointment", userMiddleware, async (req, res) => {
-    const doctorId = req.body.doctorId;
+    const { doctorId, date, time, visitType, medicalReason, notes, phone } = req.body;
 
     try {
-        const user = await UserModel.findById(req.userId);
-        const doctor = await DoctorModel.findById(doctorId);
-
-        if (!user || !doctor) {
-            return res.status(404).json({ message: "User or Doctor not found" });
+        console.log("Booking appointment - userId:", req.userId, "doctorId:", doctorId);
+        console.log("userId type:", typeof req.userId, "doctorId type:", typeof doctorId);
+        
+        // Validate doctorId is provided
+        if (!doctorId) {
+            return res.status(400).json({ message: "Doctor ID is required" });
         }
-        const currentDate = new Date();
-        const authKey = Math.random().toString(36).substring(2, 8);
+
+        // Check if doctorId is a valid MongoDB ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+            console.log("Invalid doctorId format:", doctorId);
+            return res.status(400).json({ message: "Invalid Doctor ID format" });
+        }
+
+        // Validate userId is valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(req.userId)) {
+            console.log("Invalid userId format:", req.userId);
+            return res.status(400).json({ message: "Invalid User ID format. Please login again." });
+        }
+
+        // Convert doctorId to ObjectId if it's a string
+        let doctorObjectId;
+        try {
+            doctorObjectId = mongoose.Types.ObjectId.isValid(doctorId) 
+                ? new mongoose.Types.ObjectId(doctorId) 
+                : doctorId;
+        } catch (e) {
+            console.error("Error converting doctorId to ObjectId:", e);
+            return res.status(400).json({ message: "Invalid Doctor ID format" });
+        }
+
+        // Convert userId to ObjectId if it's a string
+        let userObjectId;
+        try {
+            userObjectId = mongoose.Types.ObjectId.isValid(req.userId) 
+                ? new mongoose.Types.ObjectId(req.userId) 
+                : req.userId;
+        } catch (e) {
+            console.error("Error converting userId to ObjectId:", e);
+            return res.status(400).json({ message: "Invalid User ID format. Please login again." });
+        }
+
+        // Try to find user and doctor
+        const user = await UserModel.findById(userObjectId);
+        let doctor = await DoctorModel.findById(doctorObjectId);
+
+        console.log("User search - ID:", req.userId, "ObjectId:", userObjectId, "Found:", !!user);
+        console.log("Doctor search - ID:", doctorId, "ObjectId:", doctorObjectId.toString(), "Found:", !!doctor);
+        
+        // If doctor not found by ObjectId, try to find by string match
+        if (!doctor) {
+            console.log("Doctor not found with ObjectId, trying string match...");
+            const allDoctors = await DoctorModel.find().select('_id firstName lastName email');
+            
+            // Try exact string match
+            doctor = allDoctors.find(d => d._id.toString() === doctorId);
+            
+            if (!doctor) {
+                // Try without leading/trailing whitespace
+                doctor = allDoctors.find(d => d._id.toString().trim() === doctorId.trim());
+            }
+            
+            if (doctor) {
+                console.log("Found doctor by string comparison:", doctor._id.toString());
+                doctorObjectId = doctor._id; // Update to use the found doctor's ObjectId
+            } else {
+                console.log("Available doctors in database:", allDoctors.map(d => ({ 
+                    id: d._id.toString(), 
+                    name: d.firstName + ' ' + d.lastName 
+                })));
+            }
+        }
+
+        if (!user) {
+            console.log("User not found with ID:", req.userId);
+            const allUsers = await UserModel.find().select('_id email firstName lastName').limit(5);
+            console.log("Available users in database:", allUsers.map(u => ({ 
+                id: u._id.toString(), 
+                email: u.email,
+                name: u.firstName + ' ' + u.lastName 
+            })));
+            return res.status(404).json({ message: "User not found. Please login again." });
+        }
+
+        if (!doctor) {
+            return res.status(404).json({ 
+                message: "Doctor not found. Please select a valid doctor from the list.",
+                debug: {
+                    requestedDoctorId: doctorId,
+                    doctorIdType: typeof doctorId
+                }
+            });
+        }
+
+        // Parse date - handle both string and Date objects
+        let appointmentDate;
+        if (date) {
+            appointmentDate = new Date(date);
+            if (isNaN(appointmentDate.getTime())) {
+                return res.status(400).json({ message: "Invalid date format" });
+            }
+        } else {
+            appointmentDate = new Date();
+        }
+
+        const authKey = Math.random().toString(36).substring(2, 8).toUpperCase();
         const appointment = new AppointmentModel({
             userId: user._id,
-            doctorId,
+            doctorId: doctor._id, // Use the found doctor's _id
             status: "pending",
             authKey,
-            date: currentDate,
+            date: appointmentDate,
+            time: time || null,
+            visitType: visitType || "in-person",
+            medicalReason: medicalReason || "",
+            notes: notes || "",
+            phone: phone || user.phoneNumber || "",
         });
 
         await appointment.save();
-        await DoctorModel.findByIdAndUpdate(doctorId, {
+        await DoctorModel.findByIdAndUpdate(doctor._id, {
             $push: { appointments: appointment._id }
         });
 
+        // Populate appointment data for response
+        const populatedAppointment = await AppointmentModel.findById(appointment._id)
+            .populate("doctorId", "firstName lastName specialization hospital")
+            .populate("userId", "firstName lastName email");
+
         res.json({
             message: "Appointment booked successfully",
-            appointment,
+            appointment: populatedAppointment,
         });
     } catch (err) {
+        console.error("Book appointment error:", err);
         res.status(500).json({ message: "Server Error", error: err.message });
     }
 });
@@ -247,19 +357,56 @@ userRouter.post("/book-appointment", userMiddleware, async (req, res) => {
 userRouter.get("/appointments", userMiddleware, async (req, res) => {
     try {
         const appointments = await AppointmentModel.find({ userId: req.userId })
-            .populate("doctorId", "firstName lastName specialization")
-            .populate("userId", "firstName lastName email").lean();
+            .populate("doctorId", "firstName lastName specialization hospital email")
+            .populate("userId", "firstName lastName email phoneNumber")
+            .sort({ date: -1, createdAt: -1 })
+            .lean();
         console.log("Fetched Appointments:", JSON.stringify(appointments, null, 2));
         res.json({ appointments });
     } catch (error) {
+        console.error("Error fetching appointments:", error);
         res.status(500).json({ message: "Error fetching appointments", error: error.message });
     }
 });
 userRouter.get("/doctors", async (req, res) => {
     try {
-        const doctors = await DoctorModel.find({}, { firstName: 1, lastName: 1, _id: 1, bio: 1, specialization: 1, experience: 1 }); // Explicitly select fields
-        res.json(doctors);
+        console.log("=== /doctors endpoint called ===");
+        const doctors = await DoctorModel.find({}).select({
+            firstName: 1, 
+            lastName: 1, 
+            _id: 1, 
+            bio: 1, 
+            specialization: 1, 
+            experience: 1,
+            hospital: 1,
+            profileImage: 1,
+            email: 1,
+            password: 0 // Explicitly exclude password
+        }).lean(); // Use lean() for better performance
+        
+        console.log("Fetched doctors count:", doctors.length);
+        
+        if (doctors.length > 0) {
+            console.log("Sample doctor:", {
+                id: doctors[0]._id.toString(),
+                name: `${doctors[0].firstName} ${doctors[0].lastName}`,
+                specialization: doctors[0].specialization,
+                email: doctors[0].email
+            });
+        } else {
+            console.log("⚠️ No doctors found in database!");
+        }
+        
+        // Ensure _id is included and properly formatted
+        const formattedDoctors = doctors.map(doctor => ({
+            ...doctor,
+            _id: doctor._id.toString() // Ensure _id is a string
+        }));
+        
+        console.log("Returning", formattedDoctors.length, "doctors to client");
+        res.json(formattedDoctors);
     } catch (err) {
+        console.error("❌ Error fetching doctors:", err);
         res.status(500).json({ message: "Server Error", error: err.message });
     }
 });

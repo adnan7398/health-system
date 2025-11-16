@@ -19,20 +19,23 @@ from difflib import SequenceMatcher
 # Load VGG19 Pneumonia Model
 # -------------------------------
 
+# Load VGG19 Pneumonia Model
+# -------------------------------
+
 model_03 = None
 try:
-    base_model = VGG19(include_top=False, input_shape=(224, 224, 3))
-    x = base_model.output
-    flat = Flatten()(x)
-    dense1 = Dense(4608, activation='relu')(flat)
-    drop_out = Dropout(0.2)(dense1)
-    dense2 = Dense(1152, activation='relu')(drop_out)
-    output = Dense(2, activation='softmax')(dense2)
+base_model = VGG19(include_top=False, input_shape=(224, 224, 3))
+x = base_model.output
+flat = Flatten()(x)
+dense1 = Dense(4608, activation='relu')(flat)
+drop_out = Dropout(0.2)(dense1)
+dense2 = Dense(1152, activation='relu')(drop_out)
+output = Dense(2, activation='softmax')(dense2)
 
-    model_03 = Model(inputs=base_model.input, outputs=output)
+model_03 = Model(inputs=base_model.input, outputs=output)
     
     if os.path.exists('vgg_unfrozen.h5'):
-        model_03.load_weights('vgg_unfrozen.h5')
+model_03.load_weights('vgg_unfrozen.h5')
         print("Pneumonia model loaded successfully")
     else:
         print("Warning: vgg_unfrozen.h5 not found. Pneumonia detection may not work.")
@@ -116,11 +119,21 @@ try:
     from semantic_search import SemanticRemedySearch
     semantic_search = SemanticRemedySearch()
     # Try to load existing index first
-    if not semantic_search._load_index():
+    index_loaded = semantic_search._load_index()
+    
+    # Check if index needs to be rebuilt (dataset size changed)
+    if index_loaded:
+        if semantic_search.index and semantic_search.index.ntotal != len(desi_remedies_data):
+            print(f"Dataset size changed ({len(desi_remedies_data)} entries vs {semantic_search.index.ntotal} in index). Rebuilding index...")
+            semantic_search.update_dataset(desi_remedies_data)
+        else:
+            print(f"✓ Loaded existing index with {semantic_search.index.ntotal if semantic_search.index else 0} entries")
+    else:
         # If no index exists, build it
         print("Building semantic index (this may take a few minutes on first run)...")
         semantic_search._build_index()
-    print(f"✓ Semantic search engine ready (Model: {semantic_search.model_name})")
+    
+    print(f"✓ Semantic search engine ready (Model: {semantic_search.model_name}, {len(desi_remedies_data)} remedies indexed)")
 except Exception as e:
     print(f"Warning: Could not initialize semantic search: {e}")
     import traceback
@@ -237,18 +250,18 @@ def get_result(img_path):
 @app.route('/pneumoniapredict', methods=['POST'])
 def pneumonia_predict():
     try:
-        if 'file' not in request.files:
+    if 'file' not in request.files:
             return jsonify({"error": "No file uploaded"}), 400
 
-        f = request.files['file']
-        if f.filename == '':
+    f = request.files['file']
+    if f.filename == '':
             return jsonify({"error": "No file selected"}), 400
 
-        uploads_dir = os.path.join(os.path.dirname(__file__), 'uploads')
-        os.makedirs(uploads_dir, exist_ok=True)
+    uploads_dir = os.path.join(os.path.dirname(__file__), 'uploads')
+    os.makedirs(uploads_dir, exist_ok=True)
 
-        file_path = os.path.join(uploads_dir, secure_filename(f.filename))
-        f.save(file_path)
+    file_path = os.path.join(uploads_dir, secure_filename(f.filename))
+    f.save(file_path)
 
         result, confidence = get_result(file_path)
         if result is None:
@@ -534,22 +547,108 @@ def get_remedy_stats():
 
 @app.route('/analyzelabreport', methods=['POST'])
 def analyze_lab_report():
-    """Analyze lab report and provide desi remedy suggestions"""
+    """Analyze lab report and provide desi remedy suggestions - supports both text and image upload"""
     try:
         from lab_report_analyzer import get_analyzer
         
-        data = request.get_json()
-        report_text = data.get('report_text', '').strip()
-        gender = data.get('gender', '').strip()
+        report_text = ""
+        gender = ""
+        
+        # Check if image is uploaded
+        if 'image' in request.files:
+            image_file = request.files['image']
+            if image_file and image_file.filename:
+                # Extract text from image using OCR
+                try:
+                    import pytesseract
+                    from PIL import Image
+                    import io
+                    import numpy as np
+                    import cv2
+                    
+                    # Read image
+                    image_bytes = image_file.read()
+                    image = Image.open(io.BytesIO(image_bytes))
+                    
+                    # Convert to RGB if needed
+                    if image.mode != 'RGB':
+                        image = image.convert('RGB')
+                    
+                    # Convert PIL to numpy array for preprocessing
+                    img_array = np.array(image)
+                    
+                    # Preprocess image for better OCR results
+                    # Convert to grayscale
+                    if len(img_array.shape) == 3:
+                        gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
+                    else:
+                        gray = img_array
+                    
+                    # Apply additional preprocessing for better decimal detection
+                    # Resize if too small (helps with decimal point detection)
+                    height, width = gray.shape
+                    if height < 300 or width < 300:
+                        scale = max(300 / height, 300 / width)
+                        new_width = int(width * scale)
+                        new_height = int(height * scale)
+                        gray = cv2.resize(gray, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+                    
+                    # Apply denoising
+                    gray = cv2.fastNlMeansDenoising(gray, None, 10, 7, 21)
+                    
+                    # Apply adaptive thresholding for better text extraction
+                    thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+                    
+                    # Also try OTSU thresholding as fallback
+                    _, thresh_otsu = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+                    
+                    # Convert back to PIL Image
+                    processed_image = Image.fromarray(thresh)
+                    processed_image_otsu = Image.fromarray(thresh_otsu)
+                    
+                    # Extract text using OCR with custom config for better number/decimal detection
+                    # Config: --psm 6 (assume uniform block of text), -c tessedit_char_whitelist includes digits and decimal
+                    custom_config = r'--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789.ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz /()-:'
+                    report_text = pytesseract.image_to_string(processed_image, lang='eng', config=custom_config)
+                    
+                    # If first attempt doesn't get good results, try with OTSU
+                    if len(report_text.strip()) < 50:
+                        report_text_otsu = pytesseract.image_to_string(processed_image_otsu, lang='eng', config=custom_config)
+                        if len(report_text_otsu.strip()) > len(report_text.strip()):
+                            report_text = report_text_otsu
+                    
+                    if not report_text.strip():
+                        return jsonify({"error": "Could not extract text from image. Please ensure the image is clear and contains readable text."}), 400
+                    
+                except ImportError:
+                    return jsonify({"error": "OCR libraries not installed. Please install pytesseract and Pillow."}), 500
+                except Exception as e:
+                    import traceback
+                    traceback.print_exc()
+                    return jsonify({"error": f"Error processing image: {str(e)}"}), 500
+                
+                # Get gender from form data if provided
+                gender = request.form.get('gender', '').strip()
+        else:
+            # Handle JSON data (text input)
+            data = request.get_json()
+            if not data:
+                return jsonify({"error": "Please provide lab report text or upload an image"}), 400
+            report_text = data.get('report_text', '').strip()
+            gender = data.get('gender', '').strip()
         
         if not report_text:
-            return jsonify({"error": "Please provide lab report text"}), 400
+            return jsonify({"error": "Please provide lab report text or upload an image"}), 400
         
         # Get analyzer instance
         analyzer = get_analyzer()
         
         # Analyze report
         analysis = analyzer.analyze_report(report_text, gender)
+        
+        # Add extracted text to response if image was uploaded
+        if 'image' in request.files:
+            analysis['extracted_text'] = report_text
         
         return jsonify(analysis), 200
     

@@ -10,11 +10,20 @@ const AllDoctors = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/doctor");
+        const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
+        // Use /doctors endpoint which returns all doctor fields
+        const response = await axios.get(`${API_BASE}/doctors`);
         console.log("Fetched Doctors:", response.data); // Debugging
-        setDoctors(response.data);
+        if (Array.isArray(response.data)) {
+          setDoctors(response.data);
+        } else if (response.data.doctors && Array.isArray(response.data.doctors)) {
+          setDoctors(response.data.doctors);
+        } else {
+          setDoctors([]);
+        }
       } catch (error) {
         console.error("Error fetching doctors:", error);
+        setDoctors([]);
       }
     };
     fetchDoctors();
@@ -31,31 +40,51 @@ const AllDoctors = () => {
         <div className="doctors-grid">
           {doctors.length > 0 ? (
             doctors.map((doctor) => (
-              <div key={doctor._id} className="doctor-card">
+              <div key={doctor._id || doctor.id} className="doctor-card">
+                {doctor.profileImage && (
+                  <div className="doctor-image-container">
+                    <img 
+                      src={doctor.profileImage} 
+                      alt={`Dr. ${doctor.firstName} ${doctor.lastName}`}
+                      className="doctor-image"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
                 <h3>
-                  {" "}
-                  <strong>Doctor Name: </strong>
-                  {doctor.firstName} {doctor.lastName}
+                  <strong>Dr. {doctor.firstName} {doctor.lastName}</strong>
                 </h3>
-                <p>
-                  <strong>Email: </strong> {doctor.email}
-                </p>
-                <p>
-                  <strong>Hospital: </strong> {doctor.hospital}
-                </p>
-                <p>
-                  <strong>Specialization:</strong> {doctor.specialization}
-                </p>
-                <p>
-                  <strong>Experience:</strong> {doctor.experience} years
-                </p>
-                <p>
-                  <strong>Bio:</strong> {doctor.bio}
-                </p>
+                {doctor.specialization && (
+                  <p className="specialization">
+                    <strong>Specialization:</strong> {doctor.specialization}
+                  </p>
+                )}
+                {doctor.hospital && (
+                  <p>
+                    <strong>Hospital: </strong> {doctor.hospital}
+                  </p>
+                )}
+                {doctor.experience && (
+                  <p>
+                    <strong>Experience:</strong> {doctor.experience} years
+                  </p>
+                )}
+                {doctor.bio && (
+                  <p className="bio">
+                    <strong>Bio:</strong> {doctor.bio}
+                  </p>
+                )}
+                {doctor.email && (
+                  <p className="email">
+                    <strong>Email: </strong> {doctor.email}
+                  </p>
+                )}
 
                 <button
                   onClick={() =>
-                    navigate(`/bookappointment?doctorId=${doctor._id}`)
+                    navigate(`/bookappointment?doctorId=${doctor._id || doctor.id}`)
                   }
                   className="doctor-btn"
                 >

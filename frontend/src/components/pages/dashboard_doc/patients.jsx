@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import DoctorSidebar from "./doctorsidebar";
+import DoctorLayout from "./DoctorLayout";
 import { 
   FaUser, 
   FaUserPlus, 
@@ -151,7 +151,7 @@ const PatientsPage = () => {
   const [sortBy, setSortBy] = useState("name");
   const [apiPatients, setApiPatients] = useState([]);
   const token = localStorage.getItem("doctorToken");
-  const API_BASE = "https://arogyam-15io.onrender.com";
+  const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
   
   // Fetch real patients from API
   useEffect(() => {
@@ -378,17 +378,15 @@ const PatientsPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <DoctorSidebar />
-      <div className="flex-1 ml-64 p-6 transition-all duration-300">
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
+    <DoctorLayout>
+      <div className="bg-white rounded-xl shadow-lg border border-teal-100 p-6">
           {/* Header Section */}
-          <div className="flex justify-between items-center mb-8 pb-6 border-b border-slate-200">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent flex items-center gap-3">
-              <FaUserMd className="text-blue-600" />
+          <div className="flex justify-between items-center mb-8 pb-6 border-b border-teal-200">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent flex items-center gap-3">
+              <FaUserMd className="text-teal-600" />
               My Patients
             </h1>
-            <button className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg" onClick={() => setShowAddForm(true)}>
+            <button className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg" onClick={() => setShowAddForm(true)}>
               <FaUserPlus /> Add New Patient
             </button>
           </div>
@@ -396,13 +394,13 @@ const PatientsPage = () => {
           {/* Search and Filter Section */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
             <div className="relative flex-1 max-w-md">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 text-sm" />
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-400 text-sm" />
               <input 
                 type="text" 
                 placeholder="Search by name, email or phone..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                className="w-full pl-10 pr-4 py-3 border border-teal-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300"
               />
             </div>
             
@@ -410,8 +408,8 @@ const PatientsPage = () => {
               <button 
                 className={`px-4 py-3 rounded-lg font-medium flex items-center gap-2 transition-all duration-300 ${
                   isFilterOpen 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                    ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white' 
+                    : 'bg-teal-100 hover:bg-teal-200 text-teal-700'
                 }`}
                 onClick={toggleFilterPanel}
               >
@@ -425,7 +423,7 @@ const PatientsPage = () => {
           
           {/* Filter Panel */}
           {isFilterOpen && (
-            <div className="bg-slate-50 rounded-xl p-6 mb-6 border border-slate-200">
+            <div className="bg-teal-50 rounded-xl p-6 mb-6 border border-teal-200">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Gender</h3>
@@ -474,8 +472,8 @@ const PatientsPage = () => {
           )}
           
           {/* Results Summary */}
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-blue-800 font-medium">
+          <div className="mb-6 p-4 bg-teal-50 rounded-lg border border-teal-200">
+            <p className="text-teal-800 font-medium">
               Showing {filteredPatients.length} patients {filteredPatients.length !== patients.length && `(filtered from ${patients.length})`}
             </p>
           </div>
@@ -484,7 +482,7 @@ const PatientsPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPatients.length > 0 ? (
               filteredPatients.map((patient) => (
-                <div key={patient.id} className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 hover:shadow-xl transition-all duration-300">
+                <div key={patient.id} className="bg-white rounded-xl shadow-lg border border-teal-100 p-6 hover:shadow-xl hover:border-teal-300 transition-all duration-300">
                   <div className="flex items-center gap-4 mb-4 pb-4 border-b border-slate-100">
                     <div className="text-4xl">
                       {patient.gender === "Male" ? "👨" : "👩"}
@@ -754,7 +752,7 @@ const PatientsPage = () => {
                       </button>
                       <button 
                         type="submit" 
-                        className="flex-1 bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300"
+                        className="flex-1 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300"
                       >
                         <FaUserPlus /> Add Patient
                       </button>
@@ -765,8 +763,7 @@ const PatientsPage = () => {
             </div>
           )}
         </div>
-      </div>
-    </div>
+    </DoctorLayout>
   );
 };
 

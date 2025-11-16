@@ -233,32 +233,32 @@ const ArogyamCard = () => {
                 ) : user ? (
                   <div className="space-y-4">
                     {(user.firstName || user.lastName) && (
-                      <div className="flex items-center gap-3">
-                        <FaUser className="text-teal-200" />
+                    <div className="flex items-center gap-3">
+                      <FaUser className="text-teal-200" />
                         <span><strong>Name:</strong> {user.firstName || ''} {user.lastName || ''}</span>
-                      </div>
+                    </div>
                     )}
                     {user.bloodGroup && (
-                      <div className="flex items-center gap-3">
-                        <FaTint className="text-teal-200" />
+                    <div className="flex items-center gap-3">
+                      <FaTint className="text-teal-200" />
                         <span><strong>Blood Group:</strong> {user.bloodGroup}</span>
-                      </div>
+                    </div>
                     )}
                     {user.age && (
-                      <div className="flex items-center gap-3">
-                        <FaUser className="text-teal-200" />
+                    <div className="flex items-center gap-3">
+                      <FaUser className="text-teal-200" />
                         <span><strong>Age:</strong> {user.age}</span>
-                      </div>
+                    </div>
                     )}
                     {user.phoneNumber && (
-                      <div className="flex items-center gap-3">
-                        <FaPhone className="text-teal-200" />
+                    <div className="flex items-center gap-3">
+                      <FaPhone className="text-teal-200" />
                         <span><strong>Phone:</strong> {user.phoneNumber}</span>
-                      </div>
+                    </div>
                     )}
                     {user.address && (
-                      <div className="flex items-center gap-3">
-                        <FaMapMarkerAlt className="text-teal-200" />
+                    <div className="flex items-center gap-3">
+                      <FaMapMarkerAlt className="text-teal-200" />
                         <span><strong>Address:</strong> {user.address}</span>
                       </div>
                     )}
@@ -266,7 +266,7 @@ const ArogyamCard = () => {
                       <div className="text-center py-4">
                         <p className="text-teal-200">No user information available yet.</p>
                         <p className="text-teal-300 text-sm mt-2">Register your health card to see your details here.</p>
-                      </div>
+                    </div>
                     )}
                   </div>
                 ) : (
@@ -301,37 +301,37 @@ const ArogyamCard = () => {
                   </div>
                 ) : hasQRCode ? (
                   <>
-                    <div className="mb-6">
-                      <QRCodeCanvas 
+                  <div className="mb-6">
+                    <QRCodeCanvas 
                         value={localStorage.getItem("userId") || sessionStorage.getItem("userId") || "no-user-id"} 
-                        size={200}
-                        className="mx-auto border-4 border-teal-200 rounded-lg"
-                      />
-                    </div>
+                      size={200}
+                      className="mx-auto border-4 border-teal-200 rounded-lg"
+                    />
+                  </div>
 
-                    <div className="space-y-4">
-                      <button
-                        onClick={downloadCard}
-                        className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 px-6 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2"
-                      >
-                        <FaDownload />
-                        Download Card
-                      </button>
-                      
-                      <button
-                        onClick={shareCard}
-                        className="w-full border-2 border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white py-3 px-6 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2"
-                      >
-                        <FaShare />
-                        Share Card
-                      </button>
-                    </div>
+                <div className="space-y-4">
+                  <button
+                    onClick={downloadCard}
+                    className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 px-6 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2"
+                  >
+                    <FaDownload />
+                    Download Card
+                  </button>
+                  
+                  <button
+                    onClick={shareCard}
+                    className="w-full border-2 border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white py-3 px-6 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2"
+                  >
+                    <FaShare />
+                    Share Card
+                  </button>
+                </div>
 
-                    <div className="mt-6 p-4 bg-teal-50 rounded-lg border border-teal-200">
-                      <p className="text-sm text-teal-800">
-                        <strong>Tip:</strong> Keep this QR code handy for quick access to your health information during medical visits or emergencies.
-                      </p>
-                    </div>
+                <div className="mt-6 p-4 bg-teal-50 rounded-lg border border-teal-200">
+                  <p className="text-sm text-teal-800">
+                    <strong>Tip:</strong> Keep this QR code handy for quick access to your health information during medical visits or emergencies.
+                  </p>
+                </div>
                   </>
                 ) : (
                   <div className="mb-6">

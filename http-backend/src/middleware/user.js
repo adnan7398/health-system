@@ -10,10 +10,12 @@ function userMiddleware(req, res, next) {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decoded.id);
+        console.log("Token decoded - id:", decoded.id, "type:", typeof decoded.id);
         req.userId = decoded.id;
+        console.log("req.userId set to:", req.userId, "type:", typeof req.userId);
         next();
     } catch (error) {
+        console.error("JWT verification error:", error.message);
         return res.status(403).json({ message: "Invalid token" });
     }
 }

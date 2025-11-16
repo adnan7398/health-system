@@ -22,6 +22,23 @@ class LabReportAnalyzer:
             'hemoglobin': {'normal': (12.0, 16.0), 'unit': 'g/dL', 'gender_specific': True, 'male': (13.5, 17.5), 'female': (12.0, 15.5)},
             'hb': {'normal': (12.0, 16.0), 'unit': 'g/dL', 'gender_specific': True, 'male': (13.5, 17.5), 'female': (12.0, 15.5)},
             'rbc': {'normal': (4.5, 5.5), 'unit': 'million/μL'},
+            'rbc count': {'normal': (3.8, 4.8), 'unit': 'millions/cmm'},
+            'haemoglobin': {'normal': (12.0, 16.0), 'unit': 'gm/dl', 'gender_specific': True, 'male': (13.5, 17.5), 'female': (12.0, 15.5)},
+            'hb': {'normal': (12.0, 16.0), 'unit': 'gm/dl', 'gender_specific': True, 'male': (13.5, 17.5), 'female': (12.0, 15.5)},
+            'pcv': {'normal': (36, 46), 'unit': '%', 'gender_specific': True, 'male': (40, 50), 'female': (36, 46)},
+            'hematocrit': {'normal': (36, 46), 'unit': '%', 'gender_specific': True, 'male': (40, 50), 'female': (36, 46)},
+            'mcv': {'normal': (83, 101), 'unit': 'fL'},
+            'mch': {'normal': (27, 32), 'unit': 'pg'},
+            'mchc': {'normal': (31.5, 34.5), 'unit': 'g/dL'},
+            'rdw': {'normal': (11.6, 14.0), 'unit': '%'},
+            'mpv': {'normal': (6, 9), 'unit': 'fL'},
+            'pdw': {'normal': (11, 18), 'unit': '%'},
+            'neutrophil': {'normal': (40, 80), 'unit': '%'},
+            'lymphocytes': {'normal': (20, 40), 'unit': '%'},
+            'eosinophils': {'normal': (1, 6), 'unit': '%'},
+            'monocytes': {'normal': (2, 10), 'unit': '%'},
+            'basophils': {'normal': (0, 1), 'unit': '%'},
+            'tlc': {'normal': (4000, 11000), 'unit': '/cumm'},
             'wbc': {'normal': (4000, 11000), 'unit': '/μL'},
             'platelet': {'normal': (150000, 450000), 'unit': '/μL'},
             'platelets': {'normal': (150000, 450000), 'unit': '/μL'},
@@ -55,17 +72,15 @@ class LabReportAnalyzer:
         return {
             'hemoglobin': {
                 'low': {
-                    'meaning': 'Body me lahu (blood) kam ban raha hai. Isse weakness, thakaan, aur chakkar aa sakte hain.',
+                    'meaning': 'Body me lahu kam ban raha hai, energy kam ho sakti hai.',
                     'remedies': [
-                        'Roz 1 glass anaar ka juice piyein',
-                        'Chukandar (beetroot) + gajar ka salad khayein',
-                        'Palak, bathua, aur leafy greens khayein',
-                        'Gur (jaggery) ka paani piyein',
-                        'Black raisins (kishmish) pani me bhigo kar khayein',
-                        'Dates (khajur) aur dry fruits khayein',
-                        'Iron-rich foods: chana, dal, rajma'
+                        'Roz 1 glass anaar ka juice',
+                        'Chukandar + gajar ka salad',
+                        'Palak / bathua / leafy greens',
+                        'Gur (jaggery) ka paani',
+                        'Black raisins (kishmish) pani me bhigo kar'
                     ],
-                    'doctor_note': 'Agar weakness bahut zyada ho ya chakkar aaye toh doctor se checkup karwa lena.'
+                    'doctor_note': 'Agar weakness bahut zyada ho toh checkup karwa lena.'
                 },
                 'high': {
                     'meaning': 'Body me lahu zyada ban raha hai. Yeh polycythemia ka sign ho sakta hai.',
@@ -194,12 +209,71 @@ class LabReportAnalyzer:
                     ],
                     'doctor_note': 'Agar acidity bahut zyada ho ya regular ho toh doctor se consult karein.'
                 }
+            },
+            'rbc': {
+                'low': {
+                    'meaning': 'RBC count kam hai. Isse anemia ho sakta hai, weakness ho sakti hai. Body me lahu (blood) cells kam ban rahe hain.',
+                    'remedies': [
+                        'Roz 1 glass anaar ka juice piyein',
+                        'Chukandar (beetroot) + gajar ka salad khayein',
+                        'Palak, bathua, aur leafy greens khayein',
+                        'Gur (jaggery) ka paani piyein',
+                        'Black raisins (kishmish) pani me bhigo kar khayein',
+                        'Dates (khajur) aur dry fruits khayein',
+                        'Iron-rich foods: chana, dal, rajma'
+                    ],
+                    'doctor_note': 'Agar weakness bahut zyada ho ya chakkar aaye toh doctor se checkup karwa lena.'
+                }
+            },
+            'rbc count': {
+                'low': {
+                    'meaning': 'RBC count kam hai. Isse anemia ho sakta hai, weakness ho sakti hai. Body me lahu (blood) cells kam ban rahe hain.',
+                    'remedies': [
+                        'Roz 1 glass anaar ka juice piyein',
+                        'Chukandar (beetroot) + gajar ka salad khayein',
+                        'Palak, bathua, aur leafy greens khayein',
+                        'Gur (jaggery) ka paani piyein',
+                        'Black raisins (kishmish) pani me bhigo kar khayein',
+                        'Dates (khajur) aur dry fruits khayein',
+                        'Iron-rich foods: chana, dal, rajma'
+                    ],
+                    'doctor_note': 'Agar weakness bahut zyada ho ya chakkar aaye toh doctor se checkup karwa lena.'
+                }
+            },
+            'pcv': {
+                'low': {
+                    'meaning': 'PCV/Hematocrit kam hai. Yeh bhi anemia ka sign hai. Body me lahu (blood) volume kam hai.',
+                    'remedies': [
+                        'Roz 1 glass anaar ka juice piyein',
+                        'Chukandar (beetroot) ka juice',
+                        'Palak aur leafy greens khayein',
+                        'Gur (jaggery) ka paani piyein',
+                        'Dates (khajur) aur dry fruits khayein',
+                        'Iron-rich foods: chana, dal, rajma, spinach'
+                    ],
+                    'doctor_note': 'Agar weakness bahut zyada ho ya chakkar aaye toh doctor se checkup karwa lena.'
+                }
+            },
+            'hematocrit': {
+                'low': {
+                    'meaning': 'Hematocrit kam hai. Yeh bhi anemia ka sign hai. Body me lahu (blood) volume kam hai.',
+                    'remedies': [
+                        'Roz 1 glass anaar ka juice piyein',
+                        'Chukandar (beetroot) ka juice',
+                        'Palak aur leafy greens khayein',
+                        'Gur (jaggery) ka paani piyein',
+                        'Dates (khajur) aur dry fruits khayein',
+                        'Iron-rich foods: chana, dal, rajma, spinach'
+                    ],
+                    'doctor_note': 'Agar weakness bahut zyada ho ya chakkar aaye toh doctor se checkup karwa lena.'
+                }
             }
         }
     
     def parse_lab_report(self, report_text: str) -> List[Dict]:
         """
         Parse lab report text and extract test values
+        Handles both structured format and tabular OCR output
         
         Args:
             report_text: Raw lab report text
@@ -208,9 +282,140 @@ class LabReportAnalyzer:
             List of parsed test results
         """
         results = []
-        lines = report_text.split('\n')
+        lines = [line.strip() for line in report_text.split('\n')]
         
-        for line in lines:
+        # Try to detect table format with column headers (Result, Unit, Range)
+        # Look for "Result", "Unit", "BRI/Range Value" headers - can be on same or different lines
+        result_header_idx = -1
+        unit_header_idx = -1
+        range_header_idx = -1
+        
+        for i, line in enumerate(lines):
+            line_lower = line.lower()
+            if 'result' in line_lower and result_header_idx == -1:
+                result_header_idx = i
+            if 'unit' in line_lower and unit_header_idx == -1:
+                unit_header_idx = i
+            if ('range' in line_lower or 'bri' in line_lower) and range_header_idx == -1:
+                range_header_idx = i
+        
+        # If we found at least Result header, try to parse as table
+        if result_header_idx >= 0:
+            # Collect test names before first header
+            first_header = min([idx for idx in [result_header_idx, unit_header_idx, range_header_idx] if idx >= 0])
+            test_names = []
+            for i in range(first_header):
+                line = lines[i]
+                if not line:
+                    continue
+                # Skip header keywords
+                if any(keyword in line.lower() for keyword in ['test', 'result', 'unit', 'range', 'value', 'bri']):
+                    continue
+                # Check if it looks like a test name (all caps, has letters, no numbers)
+                # More flexible pattern to catch test names
+                if (re.match(r'^[A-Z][A-Z\s/()]+(?:\([A-Za-z]+\))?\s*$', line) or 
+                    (line[0].isupper() and len(line) > 3 and not re.search(r'^\d', line))):
+                    if not re.search(r'\d', line):  # No digits in test name
+                        test_names.append(line)
+            
+            # Collect values from lines after Result header
+            values = []
+            if result_header_idx >= 0:
+                for i in range(result_header_idx + 1, len(lines)):
+                    line = lines[i]
+                    if not line:
+                        continue
+                    # Stop if we hit another header
+                    if unit_header_idx > 0 and i >= unit_header_idx:
+                        break
+                    # Check if line is a number (including decimals)
+                    # Pattern: whole number or decimal (e.g., "38", "1.24", "10.8", "87.10")
+                    num_match = re.match(r'^([\d]+\.?[\d]*)\s*$', line)
+                    if num_match:
+                        try:
+                            value_str = num_match.group(1)
+                            # Ensure it's a valid number
+                            if value_str.replace('.', '', 1).isdigit():
+                                values.append(float(value_str))
+                        except ValueError:
+                            pass
+            
+            # Collect units from lines after Unit header
+            units = []
+            if unit_header_idx >= 0:
+                for i in range(unit_header_idx + 1, len(lines)):
+                    line = lines[i]
+                    if not line:
+                        continue
+                    # Stop if we hit range header or end
+                    if range_header_idx > 0 and i >= range_header_idx:
+                        break
+                    # Check if line looks like a unit
+                    unit_match = re.match(r'^([a-zA-Z/%]+)\s*$', line)
+                    if unit_match and line.lower() not in ['result', 'unit', 'range', 'value', 'bri']:
+                        units.append(line)
+            
+            # Collect reference ranges from lines after Range header
+            reference_ranges = []
+            if range_header_idx >= 0:
+                for i in range(range_header_idx + 1, len(lines)):
+                    line = lines[i]
+                    if not line:
+                        continue
+                    # Extract range pattern: "12-15", "3.8-4.8", "36 - 46", etc.
+                    # Pattern: number-number or number - number
+                    range_match = re.search(r'([\d]+\.?[\d]*)\s*[-–]\s*([\d]+\.?[\d]*)', line)
+                    if range_match:
+                        try:
+                            min_val = float(range_match.group(1))
+                            max_val = float(range_match.group(2))
+                            reference_ranges.append((min_val, max_val))
+                        except ValueError:
+                            pass
+                    # Also check for single numbers (might be a range indicator)
+                    elif re.match(r'^[\d]+\.?[\d]*\s*$', line):
+                        # Single number - might be a threshold, skip for now
+                        pass
+            
+            # Match test names with values, units, and reference ranges by index
+            # Only match if we have at least one value
+            if values:
+                # Match up to the minimum of test names and values
+                max_matches = min(len(test_names), len(values))
+                for idx in range(max_matches):
+                    test_name = test_names[idx]
+                    value = values[idx]
+                    unit = units[idx] if idx < len(units) else ''
+                    # Get reference range if available
+                    ref_range = reference_ranges[idx] if idx < len(reference_ranges) else None
+                    
+                    # Determine status based on reference range from table
+                    status = None
+                    if ref_range:
+                        min_val, max_val = ref_range
+                        if value < min_val:
+                            status = 'Low'
+                        elif value > max_val:
+                            status = 'High'
+                        else:
+                            status = 'Normal'
+                    
+                    results.append({
+                        'test_name': test_name,
+                        'value': value,
+                        'unit': unit,
+                        'status': status,
+                        'reference_range': ref_range,
+                        'raw_line': f"{test_name} | {value} | {unit} | {ref_range if ref_range else 'N/A'}"
+                    })
+            
+            if results:
+                return results
+        
+        # Fallback: line-by-line parsing
+        current_test = None
+        
+        for i, line in enumerate(lines):
             line = line.strip()
             if not line:
                 continue
@@ -222,39 +427,158 @@ class LabReportAnalyzer:
             # "Calcium: 7.2 mg/dL (Low)"
             
             # Pattern 1: "Test Name: Value Unit (Status)"
-            pattern1 = r'([^:]+):\s*([\d.]+)\s*([a-zA-Z/%]+)?\s*\(?(Low|High|Critical|Normal|Abnormal)\)?'
+            # Updated to capture decimals: \d+\.?\d* matches whole numbers and decimals
+            pattern1 = r'([^:]+):\s*([\d]+\.?[\d]*)\s*([a-zA-Z/%]+)?\s*\(?(Low|High|Critical|Normal|Abnormal)\)?'
             match = re.search(pattern1, line, re.IGNORECASE)
             if match:
                 test_name = match.group(1).strip()
-                value = float(match.group(2))
-                unit = match.group(3).strip() if match.group(3) and match.group(3) not in ['Low', 'High', 'Critical', 'Normal', 'Abnormal'] else ''
-                status = match.group(4) if match.group(4) in ['Low', 'High', 'Critical', 'Normal', 'Abnormal'] else None
-                
-                results.append({
-                    'test_name': test_name,
-                    'value': value,
-                    'unit': unit,
-                    'status': status,
-                    'raw_line': line
-                })
+                try:
+                    value = float(match.group(2))
+                    unit = match.group(3).strip() if match.group(3) and match.group(3) not in ['Low', 'High', 'Critical', 'Normal', 'Abnormal'] else ''
+                    status = match.group(4) if match.group(4) in ['Low', 'High', 'Critical', 'Normal', 'Abnormal'] else None
+                    
+                    results.append({
+                        'test_name': test_name,
+                        'value': value,
+                        'unit': unit,
+                        'status': status,
+                        'raw_line': line
+                    })
+                except ValueError:
+                    pass
                 continue
             
             # Pattern 2: "Test Name: Value (Status)"
-            pattern2 = r'([^:]+):\s*([\d.]+)\s*\(?(Low|High|Critical|Normal|Abnormal)\)?'
+            # Updated to capture decimals
+            pattern2 = r'([^:]+):\s*([\d]+\.?[\d]*)\s*\(?(Low|High|Critical|Normal|Abnormal)\)?'
             match = re.search(pattern2, line, re.IGNORECASE)
             if match:
                 test_name = match.group(1).strip()
-                value = float(match.group(2))
-                status = match.group(3) if match.group(3) in ['Low', 'High', 'Critical', 'Normal', 'Abnormal'] else None
-                
-                results.append({
-                    'test_name': test_name,
-                    'value': value,
-                    'unit': '',
-                    'status': status,
-                    'raw_line': line
-                })
+                try:
+                    value = float(match.group(2))
+                    status = match.group(3) if match.group(3) in ['Low', 'High', 'Critical', 'Normal', 'Abnormal'] else None
+                    
+                    results.append({
+                        'test_name': test_name,
+                        'value': value,
+                        'unit': '',
+                        'status': status,
+                        'raw_line': line
+                    })
+                except ValueError:
+                    pass
                 continue
+            
+            # Pattern 3: Tabular format - Test name on one line, value on next
+            # Look for test names (usually all caps or title case)
+            test_name_pattern = r'^([A-Z][A-Z\s/()]+(?:\([A-Za-z]+\))?)\s*$'
+            test_match = re.match(test_name_pattern, line)
+            if test_match and len(line) > 3 and not re.search(r'\d+', line):
+                # This might be a test name
+                potential_test = test_match.group(1).strip()
+                # Check if next line has a number (value)
+                if i + 1 < len(lines):
+                    next_line = lines[i + 1].strip()
+                    # Updated to capture decimals: \d+\.?\d* matches whole numbers and decimals
+                    value_match = re.search(r'([\d]+\.?[\d]*)', next_line)
+                    if value_match:
+                        try:
+                            value_str = value_match.group(1)
+                            if value_str.replace('.', '', 1).isdigit():
+                                value = float(value_str)
+                            # Extract unit from next line or line after
+                            unit = ''
+                            unit_match = re.search(r'([a-zA-Z/%]+)', next_line)
+                            if unit_match:
+                                unit = unit_match.group(1).strip()
+                            
+                            results.append({
+                                'test_name': potential_test,
+                                'value': value,
+                                'unit': unit,
+                                'status': None,
+                                'raw_line': f"{line} | {next_line}"
+                            })
+                        except ValueError:
+                            pass
+                continue
+            
+            # Pattern 4: Single line with test name and value separated by spaces/tabs
+            # Format: "HAEMOGLOBIN (Hb)    38    gm/dl    12-15" or "RBC Count    1.24    millions/cmm"
+            # Updated to capture decimals
+            tabular_pattern = r'^([A-Z][A-Z\s/()]+(?:\([A-Za-z]+\))?)\s+([\d]+\.?[\d]*)\s+([a-zA-Z/%]+)?\s*([\d.-]+)?'
+            tab_match = re.match(tabular_pattern, line)
+            if tab_match:
+                test_name = tab_match.group(1).strip()
+                try:
+                    value = float(tab_match.group(2))
+                    unit = tab_match.group(3).strip() if tab_match.group(3) else ''
+                    
+                    results.append({
+                        'test_name': test_name,
+                        'value': value,
+                        'unit': unit,
+                        'status': None,
+                        'raw_line': line
+                    })
+                except ValueError:
+                    pass
+                continue
+            
+            # Pattern 6: Multi-line tabular format (OCR common output)
+            # Test name on line, value on next line, unit on next, range on next
+            # Store test name if it looks like one
+            if re.match(r'^[A-Z][A-Z\s/()]+(?:\([A-Za-z]+\))?\s*$', line) and len(line) > 3:
+                # This looks like a test name - store it and check next lines
+                potential_test_name = line.strip()
+                # Look ahead 1-3 lines for value
+                for lookahead in range(1, min(4, len(lines) - i)):
+                    next_line = lines[i + lookahead].strip() if i + lookahead < len(lines) else ""
+                    if not next_line:
+                        continue
+                    # Check if this line has a number (value) - including decimals
+                    value_match = re.search(r'^([\d]+\.?[\d]*)\s*$', next_line)
+                    if value_match:
+                        try:
+                            value_str = value_match.group(1)
+                            if value_str.replace('.', '', 1).isdigit():
+                                value = float(value_str)
+                            # Check next line for unit
+                            unit = ''
+                            if i + lookahead + 1 < len(lines):
+                                unit_line = lines[i + lookahead + 1].strip()
+                                unit_match = re.search(r'^([a-zA-Z/%]+)\s*$', unit_line)
+                                if unit_match:
+                                    unit = unit_match.group(1).strip()
+                            
+                            results.append({
+                                'test_name': potential_test_name,
+                                'value': value,
+                                'unit': unit,
+                                'status': None,
+                                'raw_line': f"{line} | {next_line}"
+                            })
+                            break  # Found value, move on
+                        except ValueError:
+                            pass
+                continue
+            
+            # Pattern 5: Just a number on a line (might be a value for previous test)
+            # This is a fallback for poorly formatted OCR - updated to capture decimals
+            number_only = re.match(r'^([\d]+\.?[\d]*)\s*$', line)
+            if number_only and current_test:
+                try:
+                    value = float(number_only.group(1))
+                    results.append({
+                        'test_name': current_test,
+                        'value': value,
+                        'unit': '',
+                        'status': None,
+                        'raw_line': line
+                    })
+                    current_test = None
+                except ValueError:
+                    pass
         
         return results
     
@@ -360,15 +684,106 @@ class LabReportAnalyzer:
         # Analyze each result
         findings = []
         for result in parsed_results:
-            analysis = self.analyze_value(
-                result['test_name'],
-                result['value'],
-                result.get('unit', ''),
-                gender
-            )
-            
-            if analysis and analysis['status'] != 'Normal':
-                findings.append(analysis)
+            # If reference range was extracted from table, use it directly
+            if result.get('reference_range') and result.get('status'):
+                # Use the status and range from the table
+                ref_range = result['reference_range']
+                min_val, max_val = ref_range
+                status = result['status']
+                
+                # Only analyze if abnormal
+                if status != 'Normal':
+                    # Calculate severity
+                    severity = 'mild'
+                    if status == 'Low':
+                        deviation = (min_val - result['value']) / min_val if min_val > 0 else 0
+                        if deviation > 0.3:
+                            severity = 'critical'
+                        elif deviation > 0.15:
+                            severity = 'moderate'
+                    elif status == 'High':
+                        deviation = (result['value'] - max_val) / max_val if max_val > 0 else 0
+                        if deviation > 0.3:
+                            severity = 'critical'
+                        elif deviation > 0.15:
+                            severity = 'moderate'
+                    
+                    # Get remedy suggestions
+                    test_name_lower = result['test_name'].lower().strip()
+                    remedy_info = None
+                    test_key = None
+                    
+                    # Try to find matching key in knowledge base
+                    # Remove common words and extract key terms
+                    test_clean = test_name_lower
+                    # Remove common words
+                    for word in ['total', 'count', 'mean', 'corp', 'distribution', 'width', 'concentration', 'conc']:
+                        test_clean = test_clean.replace(word, '')
+                    test_clean = ' '.join(test_clean.split())  # Normalize spaces
+                    
+                    # Try multiple matching strategies
+                    for key in self.remedy_knowledge_base.keys():
+                        # Direct match
+                        if key in test_name_lower or test_name_lower in key:
+                            test_key = key
+                            break
+                        # Match after cleaning
+                        if key in test_clean or test_clean in key:
+                            test_key = key
+                            break
+                        # Match key parts (e.g., "haemoglobin" matches "hemoglobin")
+                        key_words = key.split()
+                        test_words = test_name_lower.split()
+                        if any(kw in test_name_lower for kw in key_words if len(kw) > 3):
+                            test_key = key
+                            break
+                    
+                    # Special cases for common test name variations
+                    if not test_key:
+                        if 'haemoglobin' in test_name_lower or 'hb' in test_name_lower or 'hemoglobin' in test_name_lower:
+                            test_key = 'hemoglobin'
+                        elif 'rbc' in test_name_lower and 'count' in test_name_lower:
+                            test_key = 'rbc count'
+                        elif 'rbc' in test_name_lower:
+                            test_key = 'rbc'
+                        elif 'hematocrit' in test_name_lower or 'hamatocrit' in test_name_lower:
+                            test_key = 'hematocrit'
+                        elif 'pcv' in test_name_lower or 'p.c.v' in test_name_lower:
+                            test_key = 'pcv'
+                        elif 'mchc' in test_name_lower or 'mean corp hb conc' in test_name_lower:
+                            # MCHC doesn't have remedies, skip
+                            pass
+                        elif 'rdw' in test_name_lower:
+                            # RDW doesn't have remedies, skip
+                            pass
+                        elif 'pdw' in test_name_lower:
+                            # PDW doesn't have remedies, skip
+                            pass
+                    
+                    if test_key and test_key in self.remedy_knowledge_base:
+                        if status.lower() in self.remedy_knowledge_base[test_key]:
+                            remedy_info = self.remedy_knowledge_base[test_key][status.lower()]
+                    
+                    findings.append({
+                        'test_name': result['test_name'],
+                        'value': result['value'],
+                        'unit': result.get('unit', ''),
+                        'normal_range': f"{min_val}-{max_val} {result.get('unit', '')}",
+                        'status': status,
+                        'severity': severity,
+                        'remedy_info': remedy_info
+                    })
+            else:
+                # Fallback to standard analysis if no table range found
+                analysis = self.analyze_value(
+                    result['test_name'],
+                    result['value'],
+                    result.get('unit', ''),
+                    gender
+                )
+                
+                if analysis and analysis['status'] != 'Normal':
+                    findings.append(analysis)
         
         # Generate response
         response = {
@@ -379,8 +794,15 @@ class LabReportAnalyzer:
         }
         
         for finding in findings:
+            # Format test name - remove extra spaces and normalize
+            test_name = finding['test_name'].strip()
+            # If test name has parentheses, keep it simple
+            if '(' in test_name:
+                # Extract main name before parentheses
+                test_name = test_name.split('(')[0].strip()
+            
             finding_response = {
-                'problem': f"{finding['test_name']} {finding['status'].lower()} hai.",
+                'problem': f"{test_name} {finding['status'].lower()} hai.",
                 'meaning': '',
                 'remedies': [],
                 'doctor_note': ''
@@ -389,10 +811,8 @@ class LabReportAnalyzer:
             if finding['remedy_info']:
                 finding_response['meaning'] = finding['remedy_info']['meaning']
                 finding_response['remedies'] = finding['remedy_info']['remedies']
-                if finding['severity'] in ['moderate', 'critical']:
-                    finding_response['doctor_note'] = finding['remedy_info'].get('doctor_note', 'Please consult doctor for confirmation.')
-                else:
-                    finding_response['doctor_note'] = finding['remedy_info'].get('doctor_note', '')
+                # Always include doctor note if available, otherwise use default
+                finding_response['doctor_note'] = finding['remedy_info'].get('doctor_note', '')
             else:
                 finding_response['meaning'] = f"Yeh value normal se {finding['status'].lower()} hai."
                 finding_response['doctor_note'] = 'Please consult doctor for proper evaluation.'

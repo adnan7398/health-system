@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FaUpload, FaFileAlt, FaSpinner, FaCheckCircle, FaExclamationTriangle, FaFlask, FaStethoscope, FaLightbulb, FaUserMd } from "react-icons/fa";
+import React, { useState, useRef } from "react";
+import { FaUpload, FaFileAlt, FaSpinner, FaCheckCircle, FaExclamationTriangle, FaFlask, FaStethoscope, FaLightbulb, FaUserMd, FaImage, FaTimes } from "react-icons/fa";
 import Userdashboardsidebar from "./userdashboardsidebar";
 
 const LabReportAnalyzer = () => {
@@ -8,33 +8,90 @@ const LabReportAnalyzer = () => {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [extractedText, setExtractedText] = useState("");
+  const fileInputRef = useRef(null);
+
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.type.startsWith('image/')) {
+        setSelectedImage(file);
+        setError(null);
+        
+        // Create preview
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+        
+        // Clear text input when image is selected
+        setReportText("");
+      } else {
+        setError("Please select a valid image file");
+      }
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleAnalyze = async () => {
-    if (!reportText.trim()) {
-      setError("Please enter your lab report text");
+    if (!reportText.trim() && !selectedImage) {
+      setError("Please enter lab report text or upload an image");
       return;
     }
 
     setLoading(true);
     setError(null);
     setAnalysis(null);
+    setExtractedText("");
 
     try {
-      const response = await fetch("http://127.0.0.1:5001/analyzelabreport", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          report_text: reportText,
-          gender: gender,
-        }),
-      });
+      let response;
+      
+      if (selectedImage) {
+        // Upload image
+        const formData = new FormData();
+        formData.append('image', selectedImage);
+        if (gender) {
+          formData.append('gender', gender);
+        }
+        
+        response = await fetch("http://127.0.0.1:5001/analyzelabreport", {
+          method: "POST",
+          body: formData,
+        });
+      } else {
+        // Send text
+        response = await fetch("http://127.0.0.1:5001/analyzelabreport", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            report_text: reportText,
+            gender: gender,
+          }),
+        });
+      }
 
       const data = await response.json();
 
       if (response.ok) {
         setAnalysis(data);
+        // If text was extracted from image, show it
+        if (data.extracted_text) {
+          setExtractedText(data.extracted_text);
+          setReportText(data.extracted_text);
+        }
       } else {
         setError(data.error || "Failed to analyze report");
       }
@@ -89,39 +146,97 @@ const LabReportAnalyzer = () => {
             </select>
           </div>
 
+          {/* Image Upload Section */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Lab Report Text
+              Upload Lab Report Image (or enter text below)
+            </label>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-teal-500 transition-colors">
+              {imagePreview ? (
+                <div className="relative">
+                  <img 
+                    src={imagePreview} 
+                    alt="Lab report preview" 
+                    className="max-h-64 mx-auto rounded-lg shadow-md mb-4"
+                  />
+                  <button
+                    onClick={handleRemoveImage}
+                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors"
+                  >
+                    <FaTimes />
+                  </button>
+                  <p className="text-sm text-gray-600">Image selected: {selectedImage.name}</p>
+                </div>
+              ) : (
+                <div>
+                  <FaImage className="text-4xl text-gray-400 mx-auto mb-4" />
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    className="hidden"
+                    id="image-upload"
+                  />
+                  <label
+                    htmlFor="image-upload"
+                    className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
+                  >
+                    <FaUpload />
+                    Choose Image
+                  </label>
+                  <p className="text-sm text-gray-500 mt-2">Supports JPG, PNG, PDF images</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Text Input Section */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Or Enter Lab Report Text Manually
             </label>
             <textarea
               value={reportText}
-              onChange={(e) => setReportText(e.target.value)}
+              onChange={(e) => {
+                setReportText(e.target.value);
+                // Clear image when text is entered
+                if (e.target.value.trim() && selectedImage) {
+                  handleRemoveImage();
+                }
+              }}
               placeholder="Paste your lab report here. Example format:&#10;Hemoglobin: 8.5 g/dL (Low)&#10;Vitamin D: 15 ng/mL (Low)&#10;Calcium: 7.2 mg/dL (Low)"
               className="w-full h-48 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
             />
+            {extractedText && (
+              <p className="text-xs text-teal-600 mt-2">
+                ✓ Text extracted from image. You can edit it if needed.
+              </p>
+            )}
           </div>
 
           <div className="flex gap-4">
             <button
               onClick={handleAnalyze}
-              disabled={loading || !reportText.trim()}
+              disabled={loading || (!reportText.trim() && !selectedImage)}
               className="flex-1 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
                   <FaSpinner className="animate-spin" />
-                  Analyzing...
+                  {selectedImage ? "Extracting & Analyzing..." : "Analyzing..."}
                 </>
               ) : (
                 <>
                   <FaFileAlt />
-                  Analyze Report
+                  {selectedImage ? "Extract & Analyze" : "Analyze Report"}
                 </>
               )}
             </button>
             <button
               onClick={handleExample}
-              className="px-6 py-3 border-2 border-teal-600 text-teal-600 hover:bg-teal-50 rounded-lg font-semibold transition-all duration-200"
+              disabled={!!selectedImage}
+              className="px-6 py-3 border-2 border-teal-600 text-teal-600 hover:bg-teal-50 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Load Example
             </button>
@@ -253,12 +368,19 @@ const LabReportAnalyzer = () => {
         <div className="mt-8 bg-gray-50 rounded-xl p-6 border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-3">How to Use:</h3>
           <ol className="list-decimal list-inside space-y-2 text-gray-700">
-            <li>Copy your lab report text or type it manually</li>
+            <li><strong>Option 1:</strong> Upload a clear image of your lab report (JPG, PNG) - we'll extract all details automatically</li>
+            <li><strong>Option 2:</strong> Copy your lab report text or type it manually</li>
             <li>Select your gender (optional, helps with accurate analysis)</li>
-            <li>Click "Analyze Report" to get instant analysis</li>
+            <li>Click "Extract & Analyze" or "Analyze Report" to get instant analysis</li>
             <li>Review the findings and desi home remedy suggestions</li>
             <li>Always consult a doctor for medical diagnosis and treatment</li>
           </ol>
+          <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <p className="text-sm text-blue-800">
+              <strong>💡 Tip:</strong> For best OCR results, ensure the image is clear, well-lit, and the text is readable. 
+              Avoid blurry or low-resolution images.
+            </p>
+          </div>
         </div>
       </div>
     </div>

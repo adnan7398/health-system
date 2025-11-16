@@ -1270,5 +1270,383 @@
     "query": "muscle cramps",
     "remedy": "Apply warm compress, gentle massage, or drink electrolyte solution. These are traditional methods. Consult doctor if cramps are severe or frequent.",
     "intensity": "mild"
+  },
+  {
+    "category": "cold_cough",
+    "query": "phlegm and mucus",
+    "remedy": "Steam inhalation with ajwain and salt, drink warm water with honey and lemon, or have tulsi-ginger tea. These are traditional methods. Not a replacement for medical care.",
+    "intensity": "mild"
+  },
+  {
+    "category": "cold_cough",
+    "query": "runny nose",
+    "remedy": "Steam inhalation, drink warm fluids, or apply eucalyptus oil on chest. Traditional remedy only. Consult doctor if symptoms persist.",
+    "intensity": "mild"
+  },
+  {
+    "category": "cold_cough",
+    "query": "chest congestion",
+    "remedy": "Steam inhalation with ajwain, apply warm mustard oil on chest, or drink haldi doodh. These are traditional household remedies. Seek medical help if breathing difficulty occurs.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "cold_cough",
+    "query": "sinus congestion",
+    "remedy": "Steam inhalation with eucalyptus, apply warm compress on face, or drink ginger tea. Traditional remedy only. Consult doctor if symptoms persist.",
+    "intensity": "mild"
+  },
+  {
+    "category": "stomach",
+    "query": "stomach pain",
+    "remedy": "Drink ajwain water, apply warm compress on stomach, or have ginger tea. These are traditional methods. Seek medical help if pain is severe or persistent.",
+    "intensity": "mild"
+  },
+  {
+    "category": "stomach",
+    "query": "loss of appetite",
+    "remedy": "Have jeera water, include ginger in meals, or have aam panna. Traditional remedy only. Consult doctor if appetite loss is significant.",
+    "intensity": "mild"
+  },
+  {
+    "category": "stomach",
+    "query": "vomiting",
+    "remedy": "Suck on ginger, drink lemon water, or have mint tea. Stay hydrated with ORS. These are traditional methods. Seek immediate medical help if vomiting is severe or persistent.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "stomach",
+    "query": "stomach ulcer pain",
+    "remedy": "Have cold milk, avoid spicy food, or drink aloe vera juice. Traditional remedy only. Always consult doctor for ulcer treatment.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "stomach",
+    "query": "irritable bowel syndrome",
+    "remedy": "Have isabgol, include fiber-rich foods, or drink jeera water. These are traditional methods. Always consult doctor for IBS management.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "headache",
+    "query": "tension headache",
+    "remedy": "Apply clove oil on temples, drink ginger tea, or rest in dark room. Traditional remedy only. Consult doctor if headaches are frequent.",
+    "intensity": "mild"
+  },
+  {
+    "category": "headache",
+    "query": "sinus headache",
+    "remedy": "Steam inhalation, apply warm compress, or drink tulsi tea. These are traditional methods. Consult doctor if pain persists.",
+    "intensity": "mild"
+  },
+  {
+    "category": "skin",
+    "query": "eczema",
+    "remedy": "Apply coconut oil, use neem paste, or apply aloe vera gel. These are traditional skincare methods. Always consult dermatologist for eczema treatment.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "skin",
+    "query": "dark circles",
+    "remedy": "Apply cucumber slices, use potato juice, or apply almond oil. Traditional remedy only. Consult dermatologist if condition persists.",
+    "intensity": "mild"
+  },
+  {
+    "category": "skin",
+    "query": "dark spots",
+    "remedy": "Apply lemon juice, use turmeric paste, or apply aloe vera. These are traditional methods. Consult dermatologist for proper treatment.",
+    "intensity": "mild"
+  },
+  {
+    "category": "skin",
+    "query": "stretch marks",
+    "remedy": "Apply coconut oil, use almond oil, or apply aloe vera gel. Traditional remedy only. Consult dermatologist for treatment options.",
+    "intensity": "mild"
+  },
+  {
+    "category": "skin",
+    "query": "chapped lips",
+    "remedy": "Apply ghee, use coconut oil, or apply honey. These are traditional methods. Not a replacement for medical care.",
+    "intensity": "mild"
+  },
+  {
+    "category": "skin",
+    "query": "hair fall",
+    "remedy": "Apply coconut oil with amla, use onion juice, or apply aloe vera. Traditional remedy only. Consult dermatologist if hair fall is excessive.",
+    "intensity": "mild"
+  },
+  {
+    "category": "skin",
+    "query": "dandruff",
+    "remedy": "Apply lemon juice, use neem oil, or apply curd. These are traditional methods. Consult dermatologist if dandruff persists.",
+    "intensity": "mild"
+  },
+  {
+    "category": "skin",
+    "query": "hair thinning",
+    "remedy": "Apply amla oil, use onion juice, or massage with coconut oil. Traditional remedy only. Consult dermatologist for proper treatment.",
+    "intensity": "mild"
+  },
+  {
+    "category": "immunity",
+    "query": "low immunity",
+    "remedy": "Have chyawanprash daily, include amla in diet, or drink tulsi-ginger tea. These are traditional methods. Not a replacement for medical care.",
+    "intensity": "mild"
+  },
+  {
+    "category": "immunity",
+    "query": "frequent colds",
+    "remedy": "Have haldi doodh, include vitamin C rich foods, or drink tulsi tea. Traditional remedy only. Consult doctor if colds are very frequent.",
+    "intensity": "mild"
+  },
+  {
+    "category": "immunity",
+    "query": "weak immune system",
+    "remedy": "Have chyawanprash, include amla and giloy, or drink kadha. These are traditional household remedies. Always consult doctor for immune system issues.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "women",
+    "query": "irregular periods",
+    "remedy": "Have ajwain water, include fennel seeds, or drink aloe vera juice. Traditional remedy only. Always consult gynecologist for irregular periods.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "women",
+    "query": "heavy periods",
+    "remedy": "Have coriander water, include iron-rich foods, or rest properly. These are traditional methods. Always consult gynecologist for heavy bleeding.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "women",
+    "query": "pms symptoms",
+    "remedy": "Have chamomile tea, include magnesium-rich foods, or practice yoga. Traditional remedy only. Consult doctor if symptoms are severe.",
+    "intensity": "mild"
+  },
+  {
+    "category": "women",
+    "query": "menopause symptoms",
+    "remedy": "Have soy products, include flax seeds, or practice meditation. These are traditional methods. Always consult gynecologist for menopause management.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "women",
+    "query": "breast pain",
+    "remedy": "Apply warm compress, wear supportive bra, or reduce caffeine. Traditional remedy only. Always consult doctor for breast pain.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "pain",
+    "query": "back pain",
+    "remedy": "Apply warm mustard oil, gentle massage, or practice yoga. These are traditional methods. Consult doctor if pain is severe or persistent.",
+    "intensity": "mild"
+  },
+  {
+    "category": "pain",
+    "query": "joint pain",
+    "remedy": "Apply warm oil massage, include turmeric in diet, or apply ginger paste. Traditional remedy only. Consult doctor if pain is severe.",
+    "intensity": "mild"
+  },
+  {
+    "category": "pain",
+    "query": "knee pain",
+    "remedy": "Apply warm compress, gentle massage with oil, or include turmeric. These are traditional methods. Consult doctor if pain persists.",
+    "intensity": "mild"
+  },
+  {
+    "category": "pain",
+    "query": "neck pain",
+    "remedy": "Apply warm compress, gentle neck exercises, or massage with oil. Traditional remedy only. Consult doctor if pain is severe.",
+    "intensity": "mild"
+  },
+  {
+    "category": "pain",
+    "query": "shoulder pain",
+    "remedy": "Apply warm oil, gentle stretching, or rest. These are traditional methods. Consult doctor if pain persists.",
+    "intensity": "mild"
+  },
+  {
+    "category": "pain",
+    "query": "toothache",
+    "remedy": "Apply clove oil, rinse with salt water, or apply garlic paste. Traditional remedy only. Always consult dentist for toothache.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "pain",
+    "query": "ear pain",
+    "remedy": "Apply warm compress, use garlic oil drops, or apply onion juice. These are traditional methods. Always consult doctor for ear pain.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "digestion",
+    "query": "bloating after eating",
+    "remedy": "Chew ajwain seeds, drink jeera water, or have buttermilk. Traditional remedy only. Consult doctor if bloating is frequent.",
+    "intensity": "mild"
+  },
+  {
+    "category": "digestion",
+    "query": "burping",
+    "remedy": "Drink jeera water, chew fennel seeds, or have ginger tea. These are traditional methods. Not a replacement for medical care.",
+    "intensity": "mild"
+  },
+  {
+    "category": "digestion",
+    "query": "heartburn",
+    "remedy": "Drink cold milk, have saunf, or avoid spicy food. Traditional remedy only. Consult doctor if heartburn is frequent.",
+    "intensity": "mild"
+  },
+  {
+    "category": "digestion",
+    "query": "food poisoning",
+    "remedy": "Stay hydrated with ORS, have curd rice, or drink jeera water. These are traditional methods. Seek immediate medical help if symptoms are severe.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "respiratory",
+    "query": "asthma symptoms",
+    "remedy": "Steam inhalation, drink tulsi tea, or practice breathing exercises. Traditional remedy only. Always consult doctor for asthma management.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "respiratory",
+    "query": "breathing difficulty",
+    "remedy": "Sit upright, practice deep breathing, or steam inhalation. These are traditional methods. Seek immediate medical help for breathing difficulty.",
+    "intensity": "emergency"
+  },
+  {
+    "category": "respiratory",
+    "query": "wheezing",
+    "remedy": "Steam inhalation, drink warm fluids, or practice breathing exercises. Traditional remedy only. Always consult doctor for wheezing.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "eye",
+    "query": "red eyes",
+    "remedy": "Apply cold compress, use rose water, or rest eyes. Traditional remedy only. Consult doctor if redness persists.",
+    "intensity": "mild"
+  },
+  {
+    "category": "eye",
+    "query": "dry eyes",
+    "remedy": "Blink frequently, use rose water, or apply cucumber slices. These are traditional methods. Consult doctor if dryness persists.",
+    "intensity": "mild"
+  },
+  {
+    "category": "eye",
+    "query": "puffy eyes",
+    "remedy": "Apply cold compress, use cucumber slices, or apply potato slices. Traditional remedy only. Consult doctor if puffiness persists.",
+    "intensity": "mild"
+  },
+  {
+    "category": "sleep",
+    "query": "insomnia",
+    "remedy": "Drink warm milk with turmeric, practice meditation, or have chamomile tea. These are traditional methods. Consult doctor if insomnia persists.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "sleep",
+    "query": "restless sleep",
+    "remedy": "Have warm milk, practice yoga, or create calm environment. Traditional remedy only. Consult doctor if sleep problems persist.",
+    "intensity": "mild"
+  },
+  {
+    "category": "sleep",
+    "query": "waking up tired",
+    "remedy": "Maintain sleep schedule, practice yoga, or have warm milk before bed. These are traditional methods. Consult doctor if fatigue persists.",
+    "intensity": "mild"
+  },
+  {
+    "category": "stress",
+    "query": "anxiety",
+    "remedy": "Practice meditation, drink chamomile tea, or practice deep breathing. Traditional remedy only. Seek professional help if anxiety is severe.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "stress",
+    "query": "panic attacks",
+    "remedy": "Practice deep breathing, focus on present moment, or have chamomile tea. These are traditional methods. Always seek professional help for panic attacks.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "stress",
+    "query": "work stress",
+    "remedy": "Practice meditation, take breaks, or practice yoga. Traditional remedy only. Seek professional help if stress is overwhelming.",
+    "intensity": "mild"
+  },
+  {
+    "category": "weight",
+    "query": "weight gain",
+    "remedy": "Have lemon water in morning, include fiber, or practice yoga. These are traditional methods. Consult nutritionist for weight management.",
+    "intensity": "mild"
+  },
+  {
+    "category": "weight",
+    "query": "slow metabolism",
+    "remedy": "Have green tea, include spices like ginger, or practice regular exercise. Traditional remedy only. Consult doctor for metabolism issues.",
+    "intensity": "mild"
+  },
+  {
+    "category": "general",
+    "query": "vitamin d deficiency",
+    "remedy": "Get morning sunlight 15-20 minutes, include fortified foods, or have mushrooms. These are traditional methods. Always consult doctor for vitamin D deficiency.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "general",
+    "query": "vitamin b12 deficiency",
+    "remedy": "Include dairy products, have fortified foods, or include eggs. Traditional remedy only. Always consult doctor for B12 deficiency treatment.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "general",
+    "query": "low hemoglobin",
+    "remedy": "Have dates, include green leafy vegetables, or have pomegranate juice. These are traditional methods. Always consult doctor for low hemoglobin treatment.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "general",
+    "query": "weakness",
+    "remedy": "Have dates with milk, include protein-rich foods, or have chyawanprash. Traditional remedy only. Consult doctor if weakness is severe.",
+    "intensity": "mild"
+  },
+  {
+    "category": "general",
+    "query": "fatigue",
+    "remedy": "Have amla juice, include iron-rich foods, or practice yoga. These are traditional methods. Consult doctor if fatigue is persistent.",
+    "intensity": "mild"
+  },
+  {
+    "category": "children",
+    "query": "baby colic",
+    "remedy": "Gentle tummy massage, warm compress, or gripe water. Traditional remedy only. Always consult pediatrician for baby colic.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "children",
+    "query": "teething pain",
+    "remedy": "Cold teething ring, gentle gum massage, or chamomile tea (for older babies). Traditional remedy only. Always consult pediatrician for teething issues.",
+    "intensity": "mild"
+  },
+  {
+    "category": "children",
+    "query": "baby constipation",
+    "remedy": "Gentle tummy massage, include fiber in diet, or consult pediatrician. Traditional remedy only. Always consult pediatrician for baby constipation.",
+    "intensity": "mild"
+  },
+  {
+    "category": "elderly",
+    "query": "joint stiffness",
+    "remedy": "Gentle exercises, warm oil massage, or include turmeric. These are traditional methods. Consult doctor if stiffness is severe.",
+    "intensity": "mild"
+  },
+  {
+    "category": "elderly",
+    "query": "memory problems",
+    "remedy": "Include almonds, practice brain exercises, or have brahmi. Traditional remedy only. Always consult doctor for memory problems.",
+    "intensity": "moderate"
+  },
+  {
+    "category": "elderly",
+    "query": "balance issues",
+    "remedy": "Practice gentle exercises, use support, or include calcium. These are traditional methods. Always consult doctor for balance issues.",
+    "intensity": "moderate"
   }
 ]

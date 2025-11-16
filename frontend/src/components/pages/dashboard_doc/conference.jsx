@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import DoctorSidebar from "./doctorsidebar";
+import DoctorLayout from "./DoctorLayout";
 import DatePicker from "react-datepicker"; // Ensure this is correct
 import "react-datepicker/dist/react-datepicker.css"; // Ensure the CSS is imported
 import { 
@@ -164,40 +164,38 @@ const Conferences = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <DoctorSidebar />
-      <div className="flex-1 ml-64 p-6 transition-all duration-300">
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
+    <DoctorLayout>
+      <div className="bg-white rounded-xl shadow-lg border border-teal-100 p-6">
           {/* Header Section */}
-          <div className="flex justify-between items-center mb-8 pb-6 border-b border-slate-200">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent flex items-center gap-3">
-              <FaCalendarAlt className="text-blue-600" />
+          <div className="flex justify-between items-center mb-8 pb-6 border-b border-teal-200">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent flex items-center gap-3">
+              <FaCalendarAlt className="text-teal-600" />
               Medical Conferences
             </h1>
-            <div className="bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
-              <span className="text-blue-800 font-medium">Total CME Credits: </span>
-              <span className="text-blue-600 font-bold text-xl">{totalCredits}</span>
+            <div className="bg-teal-50 px-4 py-2 rounded-lg border border-teal-200">
+              <span className="text-teal-800 font-medium">Total CME Credits: </span>
+              <span className="text-teal-600 font-bold text-xl">{totalCredits}</span>
             </div>
           </div>
           
           {/* Search and Filter Section */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
             <div className="relative flex-1 max-w-md">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 text-sm" />
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-400 text-sm" />
               <input 
                 type="text" 
                 placeholder="Search by name or location..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                className="w-full pl-10 pr-4 py-3 border border-teal-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300"
               />
             </div>
             
             <button 
               className={`px-4 py-3 rounded-lg font-medium flex items-center gap-2 transition-all duration-300 ${
                 isFilterOpen 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                  ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white' 
+                  : 'bg-teal-100 hover:bg-teal-200 text-teal-700'
               }`}
               onClick={toggleFilterPanel}
             >
@@ -207,25 +205,25 @@ const Conferences = () => {
           
           {/* Filter Panel */}
           {isFilterOpen && (
-            <div className="bg-slate-50 rounded-xl p-6 mb-6 border border-slate-200">
+            <div className="bg-teal-50 rounded-xl p-6 mb-6 border border-teal-200">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Date Range</h3>
+                  <h3 className="text-sm font-semibold text-teal-800 uppercase tracking-wider mb-3">Date Range</h3>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="block text-xs text-slate-600">Start Date</label>
+                      <label className="block text-xs text-teal-700 font-medium">Start Date</label>
                       <input 
                         type="date" 
                         onChange={(e) => setStartDate(e.target.value ? new Date(e.target.value) : null)}
-                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-sm"
+                        className="w-full px-3 py-2 border border-teal-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 text-sm bg-white"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="block text-xs text-slate-600">End Date</label>
+                      <label className="block text-xs text-teal-700 font-medium">End Date</label>
                       <input 
                         type="date" 
                         onChange={(e) => setEndDate(e.target.value ? new Date(e.target.value) : null)}
-                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-sm"
+                        className="w-full px-3 py-2 border border-teal-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 text-sm bg-white"
                         min={startDate ? startDate.toISOString().split('T')[0] : ''}
                       />
                     </div>
@@ -233,11 +231,11 @@ const Conferences = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Event Type</h3>
+                  <h3 className="text-sm font-semibold text-teal-800 uppercase tracking-wider mb-3">Event Type</h3>
                   <select 
                     value={selectedType} 
                     onChange={(e) => setSelectedType(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                    className="w-full px-3 py-2 border border-teal-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 bg-white"
                   >
                     <option value="">All Types</option>
                     {eventTypes.map(type => (
@@ -247,11 +245,11 @@ const Conferences = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Specialty</h3>
+                  <h3 className="text-sm font-semibold text-teal-800 uppercase tracking-wider mb-3">Specialty</h3>
                   <select 
                     value={selectedSpecialty} 
                     onChange={(e) => setSelectedSpecialty(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                    className="w-full px-3 py-2 border border-teal-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 bg-white"
                   >
                     <option value="">All Specialties</option>
                     {specialties.map(specialty => (
@@ -273,8 +271,8 @@ const Conferences = () => {
           )}
           
           {/* Results Summary */}
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-blue-800 font-medium">
+          <div className="mb-6 p-4 bg-teal-50 rounded-lg border border-teal-200">
+            <p className="text-teal-800 font-medium">
               Showing {filteredEvents.length} conferences {filteredEvents.length !== eventsData.length && `(filtered from ${eventsData.length})`}
             </p>
           </div>
@@ -283,42 +281,42 @@ const Conferences = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {filteredEvents.length > 0 ? (
               filteredEvents.map((event) => (
-                <div key={event.id} className="bg-white rounded-xl shadow-lg border border-slate-200 p-6 hover:shadow-xl transition-all duration-300">
+                <div key={event.id} className="bg-white rounded-xl shadow-lg border border-teal-100 p-6 hover:shadow-xl hover:border-teal-300 transition-all duration-300 flex flex-col">
                   <div className="flex justify-between items-start mb-4">
-                    <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">{event.type}</span>
-                    <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">{event.specialty}</span>
+                    <span className="px-3 py-1 bg-teal-100 text-teal-700 text-xs font-semibold rounded-full whitespace-nowrap">{event.type}</span>
+                    <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full whitespace-nowrap ml-2">{event.specialty}</span>
                   </div>
-                  <h2 className="text-xl font-bold text-slate-800 mb-4 line-clamp-2">{event.name}</h2>
-                  <div className="space-y-3 mb-6">
+                  <h2 className="text-xl font-bold text-slate-800 mb-4 line-clamp-2 min-h-[3rem]">{event.name}</h2>
+                  <div className="space-y-3 mb-6 flex-grow">
                     <div className="flex items-center gap-3 text-sm text-slate-600">
-                      <FaCalendarAlt className="text-blue-500 flex-shrink-0" />
-                      <span>{formatDate(event.date)}</span>
+                      <FaCalendarAlt className="text-teal-500 flex-shrink-0 w-4" />
+                      <span className="truncate">{formatDate(event.date)}</span>
                     </div>
                     <div className="flex items-center gap-3 text-sm text-slate-600">
-                      <FaClock className="text-green-500 flex-shrink-0" />
-                      <span>{event.time}</span>
+                      <FaClock className="text-emerald-500 flex-shrink-0 w-4" />
+                      <span className="truncate">{event.time}</span>
                     </div>
                     <div className="flex items-center gap-3 text-sm text-slate-600">
-                      <FaMapMarkerAlt className="text-red-500 flex-shrink-0" />
-                      <span>{event.location}</span>
+                      <FaMapMarkerAlt className="text-teal-500 flex-shrink-0 w-4" />
+                      <span className="truncate">{event.location}</span>
                     </div>
                     <div className="flex items-center gap-3 text-sm text-slate-600">
-                      <FaRegCalendarCheck className="text-purple-500 flex-shrink-0" />
-                      <span>{event.credits} CME Credits</span>
+                      <FaRegCalendarCheck className="text-emerald-500 flex-shrink-0 w-4" />
+                      <span className="truncate">{event.credits} CME Credits</span>
                     </div>
                   </div>
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 mt-auto">
                     <button
-                      className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-300"
+                      className="flex-1 bg-teal-100 hover:bg-teal-200 text-teal-700 px-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-300"
                       onClick={() => handleShowDetails(event)}
                     >
                       <FaInfoCircle /> Details
                     </button>
                     <button
-                      className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-300 ${
+                      className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-300 ${
                         registeredEvents.some(e => e.id === event.id)
-                          ? 'bg-green-100 text-green-700 cursor-not-allowed'
-                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                          ? 'bg-emerald-100 text-emerald-700 cursor-not-allowed'
+                          : 'bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white'
                       }`}
                       onClick={() => handleRegister(event)}
                       disabled={registeredEvents.some(e => e.id === event.id)}
@@ -334,25 +332,28 @@ const Conferences = () => {
               ))
             ) : (
               <div className="col-span-full flex flex-col items-center justify-center py-16">
-                <FaCalendarAlt className="text-6xl text-slate-300 mb-4" />
-                <h3 className="text-xl font-semibold text-slate-600 mb-2">No events found</h3>
-                <p className="text-slate-500">Try adjusting your filters or search term</p>
+                <FaCalendarAlt className="text-6xl text-teal-300 mb-4" />
+                <h3 className="text-xl font-semibold text-teal-700 mb-2">No events found</h3>
+                <p className="text-teal-600">Try adjusting your filters or search term</p>
               </div>
             )}
           </div>
           
           {/* My Registered Events Section */}
           {registeredEvents.length > 0 && (
-            <div className="bg-slate-50 rounded-xl p-6 border border-slate-200">
-              <h2 className="text-xl font-semibold text-slate-800 mb-4">My Registered Events</h2>
+            <div className="bg-teal-50 rounded-xl p-6 border border-teal-200 mt-8">
+              <h2 className="text-xl font-semibold text-teal-800 mb-4 flex items-center gap-2">
+                <FaRegCalendarCheck className="text-teal-600" />
+                My Registered Events
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {registeredEvents.map(event => (
-                  <div key={event.id} className="bg-white rounded-lg p-4 border border-slate-200">
+                  <div key={event.id} className="bg-white rounded-lg p-4 border border-teal-200 hover:border-teal-300 transition-all duration-300">
                     <div className="mb-3">
-                      <h3 className="font-semibold text-slate-800 mb-1">{event.name}</h3>
+                      <h3 className="font-semibold text-slate-800 mb-1 line-clamp-2">{event.name}</h3>
                       <p className="text-sm text-slate-600">{formatDate(event.date)} | {event.time}</p>
                     </div>
-                    <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium text-center">
+                    <div className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm font-medium text-center">
                       {event.credits} Credits
                     </div>
                   </div>
@@ -361,21 +362,25 @@ const Conferences = () => {
             </div>
           )}
         </div>
-      </div>
       
       {/* Event Details Modal */}
       {selectedEvent && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedEvent(null)}>
           <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between items-start p-6 border-b border-slate-200">
-              <div className="flex-1">
-                <h2 className="text-2xl font-bold text-slate-800 mb-2">{selectedEvent.name}</h2>
-                <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded-full">
-                  {selectedEvent.type} | {selectedEvent.specialty}
-                </span>
+            <div className="flex justify-between items-start p-6 border-b border-teal-200">
+              <div className="flex-1 pr-4">
+                <h2 className="text-2xl font-bold text-slate-800 mb-3">{selectedEvent.name}</h2>
+                <div className="flex flex-wrap gap-2">
+                  <span className="inline-block px-3 py-1 bg-teal-100 text-teal-700 text-sm font-medium rounded-full">
+                    {selectedEvent.type}
+                  </span>
+                  <span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 text-sm font-medium rounded-full">
+                    {selectedEvent.specialty}
+                  </span>
+                </div>
               </div>
               <button 
-                className="text-slate-400 hover:text-slate-600 text-2xl transition-colors duration-200 ml-4" 
+                className="text-slate-400 hover:text-slate-600 text-2xl transition-colors duration-200 flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100" 
                 onClick={() => setSelectedEvent(null)}
               >
                 &times;
@@ -385,32 +390,32 @@ const Conferences = () => {
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 text-slate-600">
-                  <FaCalendarAlt className="text-blue-500 flex-shrink-0" />
-                  <span>{formatDate(selectedEvent.date)}</span>
+                  <FaCalendarAlt className="text-teal-500 flex-shrink-0 w-5" />
+                  <span className="text-sm">{formatDate(selectedEvent.date)}</span>
                 </div>
                 <div className="flex items-center gap-3 text-slate-600">
-                  <FaClock className="text-green-500 flex-shrink-0" />
-                  <span>{selectedEvent.time}</span>
+                  <FaClock className="text-emerald-500 flex-shrink-0 w-5" />
+                  <span className="text-sm">{selectedEvent.time}</span>
                 </div>
                 <div className="flex items-center gap-3 text-slate-600">
-                  <FaMapMarkerAlt className="text-red-500 flex-shrink-0" />
-                  <span>{selectedEvent.location}</span>
+                  <FaMapMarkerAlt className="text-teal-500 flex-shrink-0 w-5" />
+                  <span className="text-sm">{selectedEvent.location}</span>
                 </div>
                 <div className="flex items-center gap-3 text-slate-600">
-                  <FaRegCalendarCheck className="text-purple-500 flex-shrink-0" />
-                  <span>{selectedEvent.credits} CME Credits</span>
+                  <FaRegCalendarCheck className="text-emerald-500 flex-shrink-0 w-5" />
+                  <span className="text-sm">{selectedEvent.credits} CME Credits</span>
                 </div>
               </div>
               
-              <div className="border-t border-slate-200 pt-6">
+              <div className="border-t border-teal-200 pt-6">
                 <h3 className="text-lg font-semibold text-slate-800 mb-3">Description</h3>
                 <p className="text-slate-600 leading-relaxed">{selectedEvent.description}</p>
               </div>
               
-              <div className="border-t border-slate-200 pt-6">
+              <div className="border-t border-teal-200 pt-6">
                 {!registeredEvents.some(e => e.id === selectedEvent.id) ? (
                   <button 
-                    className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300"
+                    className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300 shadow-lg"
                     onClick={() => {
                       handleRegister(selectedEvent);
                       setSelectedEvent(null);
@@ -419,7 +424,7 @@ const Conferences = () => {
                     Register for this Event <FaArrowRight />
                   </button>
                 ) : (
-                  <button className="w-full bg-green-100 text-green-700 px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 cursor-not-allowed" disabled>
+                  <button className="w-full bg-emerald-100 text-emerald-700 px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 cursor-not-allowed" disabled>
                     Already Registered <FaRegCalendarCheck />
                   </button>
                 )}
@@ -428,12 +433,7 @@ const Conferences = () => {
           </div>
         </div>
       )}
-      
-      {/* Add Event Button for admin functionality (can be extended later) */}
-      <button className="add-event-button">
-        <FaPlusCircle /> Create Conference
-      </button>
-    </div>
+    </DoctorLayout>
   );
 };
 

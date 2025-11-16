@@ -145,17 +145,8 @@ const Header = () => {
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   const handleNavigation = (path) => {
-    // Check if scanner is verified for protected routes
-    if (isAuthenticated && userRole === 'patient' && !isScannerVerified) {
-      // Check if it's a protected route (not home, not scanner, not aadhaar)
-      const protectedRoutes = ['/arogyamcard', '/fitness', '/chatbot', '/medicalReport', '/userdashboard', 
-                               '/bookappointment', '/patientreport', '/patientappointments', '/labreport'];
-      if (protectedRoutes.includes(path) || path.startsWith('/patient') || path.startsWith('/book')) {
-        // Redirect to scanner - ProtectedRoute will show the message
-        navigate("/scanner", { replace: true });
-        return;
-      }
-    }
+    // Allow navigation - ProtectedRoute will handle verification checks
+    // This ensures users can navigate to routes, and ProtectedRoute will show appropriate messages
     navigate(path);
   };
 

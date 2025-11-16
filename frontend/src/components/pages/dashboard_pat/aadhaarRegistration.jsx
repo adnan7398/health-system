@@ -122,14 +122,14 @@ const AadhaarRegistration = () => {
       
       try {
         response = await fetch("https://arogyam-15io.onrender.com/register-aadhaar", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(formData)
-        });
-        
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+
         // If 404, we'll use /register endpoint instead
         if (response.status === 404) {
           useRegisterEndpoint = true;

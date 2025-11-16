@@ -81,7 +81,7 @@ const PCODPredictor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50 p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-emerald-50 to-cyan-50 p-6 relative overflow-hidden">
       {/* AI/ML Background Pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute inset-0" style={{
@@ -89,8 +89,8 @@ const PCODPredictor = () => {
         }}></div>
       </div>
       <div className="max-w-2xl mx-auto relative z-10">
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8">
-          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-8">
+        <div className="bg-white rounded-xl shadow-lg border border-teal-100 p-8">
+          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-8">
             PCOD Risk Assessment
           </h2>
           
@@ -160,7 +160,7 @@ const PCODPredictor = () => {
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-3 px-6 rounded-lg font-medium text-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white py-3 px-6 rounded-lg font-medium text-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {loading ? (
                 <div className="flex items-center justify-center gap-2">
@@ -182,8 +182,8 @@ const PCODPredictor = () => {
           {result && (
             <div className="mt-8 space-y-4">
               <div className={`p-6 rounded-xl border-2 ${getRiskColor(result)}`}>
-                <h3 className="text-xl font-bold text-center mb-2">Assessment Result</h3>
-                <p className="text-center text-lg">{result}</p>
+              <h3 className="text-xl font-bold text-center mb-2">Assessment Result</h3>
+              <p className="text-center text-lg">{result}</p>
               </div>
               {confidence > 0 && (
                 <div className="bg-slate-50 rounded-xl p-6">

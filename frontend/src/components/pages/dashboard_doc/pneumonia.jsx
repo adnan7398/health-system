@@ -40,7 +40,7 @@ function App() {
       if (!response.ok) {
         throw new Error("Prediction failed");
       }
-
+      
       const result = await response.json();
       setPrediction(result.prediction || "Prediction: " + (result.isNormal ? "Normal" : "Person acquired Pneumonia"));
       setConfidence(result.confidence || 85);
@@ -61,7 +61,7 @@ function App() {
       : "";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-emerald-50 to-cyan-50 p-6 relative overflow-hidden">
       {/* AI/ML Background Pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute inset-0" style={{
@@ -69,8 +69,8 @@ function App() {
         }}></div>
       </div>
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8">
-          <h1 className="text-4xl font-bold text-center bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mb-8">
+        <div className="bg-white rounded-xl shadow-lg border border-teal-100 p-8">
+          <h1 className="text-4xl font-bold text-center bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-8">
             Pneumonia Detection Analysis
           </h1>
           
@@ -108,7 +108,7 @@ function App() {
               )}
               
               <button 
-                className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white py-3 px-6 rounded-xl font-medium text-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" 
+                className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white py-3 px-6 rounded-xl font-medium text-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" 
                 onClick={handleSubmit} 
                 disabled={!selectedFile || loading}
               >

@@ -54,10 +54,15 @@ const DoctorSchema = new mongoose.Schema({
 const appointmentSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   doctorId: { type: mongoose.Schema.Types.ObjectId, ref: "Doctor" },
-  status: { type: String, enum: ["pending", "accepted", "rejected"], default: "pending" },
+  status: { type: String, enum: ["pending", "accepted", "rejected", "completed", "cancelled"], default: "pending" },
   authKey: String,
   date: { type: Date, required: true },
-});
+  time: { type: String },
+  visitType: { type: String, enum: ["in-person", "video", "phone"], default: "in-person" },
+  medicalReason: { type: String },
+  notes: { type: String },
+  phone: { type: String },
+}, { timestamps: true });
 
 
 const AppointmentModel = mongoose.model("Appointment", appointmentSchema);

@@ -79,11 +79,14 @@ doctorRouter.post("/doctor/signin", async function (req, res) {
 doctorRouter.get("/doctor/appointments", doctorMiddleware, async (req, res) => {
     try {
         const appointments = await AppointmentModel.find({ doctorId: req.doctorId })
-            .populate("userId", "firstName lastName email age phoneNumber address")
-            .select("_id userId patientPhone status authKey date");
+            .populate("userId", "firstName lastName email age phoneNumber address bloodGroup")
+            .populate("doctorId", "firstName lastName specialization hospital")
+            .select("_id userId doctorId status authKey date time visitType medicalReason notes phone")
+            .sort({ date: -1, createdAt: -1 });
 
         res.json({ message: "Appointments fetched successfully", appointments });
     } catch (error) {
+        console.error("Error fetching appointments:", error);
         res.status(500).json({ message: "Error fetching appointments", error: error.message });
     }
 });
@@ -92,36 +95,64 @@ doctorRouter.get("/patients", doctorMiddleware, async (req, res) => {
     try {
         const doctorId = req.doctorId;
         const appointments = await AppointmentModel.find({ doctorId })
-            .populate("userId", "firstName lastName email age address phoneNumber bloodGroup");
+            .populate("userId", "firstName lastName email age address phoneNumber bloodGroup")
+            .sort({ date: -1, createdAt: -1 });
 
-        const patients = appointments.map(appointment => appointment.userId);
+        // Get unique patients (remove duplicates by userId)
+        const patientMap = new Map();
+        appointments.forEach(appointment => {
+            if (appointment.userId && !patientMap.has(appointment.userId._id.toString())) {
+                patientMap.set(appointment.userId._id.toString(), {
+                    ...appointment.userId.toObject(),
+                    lastAppointment: appointment.date,
+                    appointmentStatus: appointment.status,
+                    appointmentId: appointment._id
+                });
+            }
+        });
+
+        const patients = Array.from(patientMap.values());
         res.json(patients);
     } catch (error) {
         console.error("Error fetching patients:", error);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 });
 
 doctorRouter.post("/update", doctorMiddleware, async (req, res) => {
     try {
         const { appointmentId, status } = req.body;
-        const appointment = await AppointmentModel.findByIdAndUpdate(
-            appointmentId,
-            { status },
-            { new: true }
-        );
+        
+        // Validate status
+        const validStatuses = ["pending", "accepted", "rejected", "cancelled", "completed"];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ message: "Invalid status. Must be one of: " + validStatuses.join(", ") });
+        }
 
+        // Verify the appointment belongs to this doctor
+        const appointment = await AppointmentModel.findById(appointmentId);
         if (!appointment) {
             return res.status(404).json({ message: "Appointment not found" });
         }
 
-        if (status === "accepted") {
-            appointment.authKey = Math.random().toString(36).substring(2, 8);
-            await appointment.save();
+        // Check if appointment belongs to the logged-in doctor
+        if (appointment.doctorId.toString() !== req.doctorId.toString()) {
+            return res.status(403).json({ message: "You are not authorized to update this appointment" });
         }
 
-        res.json({ message: `Appointment ${status}`, authKey: appointment.authKey });
+        // Update appointment status
+        appointment.status = status;
+        if (status === "accepted" && !appointment.authKey) {
+            appointment.authKey = Math.random().toString(36).substring(2, 8).toUpperCase();
+        }
+        await appointment.save();
+
+        res.json({ 
+            message: `Appointment ${status} successfully`, 
+            authKey: appointment.authKey || null 
+        });
     } catch (error) {
+        console.error("Error updating appointment:", error);
         res.status(500).json({ message: "Error updating appointment", error: error.message });
     }
 });
@@ -142,9 +173,30 @@ doctorRouter.get("/doctor/doctors", doctorMiddleware, async (req, res) => {
 
 doctorRouter.get("/doctor", async (req, res) => {
     try {
-        const doctors = await DoctorModel.find().select("-password"); // Exclude password for security
-        res.json(doctors);
+        const doctors = await DoctorModel.find().select({
+            firstName: 1,
+            lastName: 1,
+            _id: 1,
+            bio: 1,
+            specialization: 1,
+            experience: 1,
+            hospital: 1,
+            profileImage: 1,
+            email: 1,
+            password: 0 // Explicitly exclude password
+        }).lean();
+        
+        console.log("Fetched doctors from /doctor endpoint:", doctors.length);
+        
+        // Ensure _id is a string for consistency
+        const formattedDoctors = doctors.map(doctor => ({
+            ...doctor,
+            _id: doctor._id.toString()
+        }));
+        
+        res.json(formattedDoctors);
     } catch (error) {
+        console.error("Error fetching doctors:", error);
         res.status(500).json({ message: "Error fetching doctors", error: error.message });
     }
 });
@@ -165,16 +217,23 @@ doctorRouter.get("/doctor-availability", async (req, res) => {
         
         // Prepare the date to check for existing appointments
         const selectedDate = new Date(date);
-        const dateStr = selectedDate.toISOString().split('T')[0];
+        const startOfDay = new Date(selectedDate);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(selectedDate);
+        endOfDay.setHours(23, 59, 59, 999);
         
         // Get existing appointments for this doctor on this date
+        // Compare dates properly by checking if appointment date falls within the selected day
         const existingAppointments = await AppointmentModel.find({
             doctorId,
-            date: dateStr
+            date: {
+                $gte: startOfDay,
+                $lte: endOfDay
+            }
         }).select('time');
         
         // Extract the times that are already booked
-        const bookedTimes = existingAppointments.map(appt => appt.time);
+        const bookedTimes = existingAppointments.map(appt => appt.time).filter(t => t);
         
         // Generate available time slots from 9 AM to 5 PM
         const availableTimeSlots = [];
@@ -184,15 +243,23 @@ doctorRouter.get("/doctor-availability", async (req, res) => {
         if (dayOfWeek !== 0 && dayOfWeek !== 6) {
             // Create slots every 30 minutes from 9 AM to 5 PM
             for (let hour = 9; hour < 17; hour++) {
-                const morningTime = `${hour}:00 ${hour < 12 ? 'AM' : 'PM'}`;
-                const afternoonTime = `${hour}:30 ${hour < 12 ? 'AM' : 'PM'}`;
+                // Format time properly
+                let hour12 = hour;
+                let ampm = 'AM';
+                if (hour >= 12) {
+                    ampm = 'PM';
+                    if (hour > 12) hour12 = hour - 12;
+                }
+                
+                const morningTime = `${hour12}:00 ${ampm}`;
+                const afternoonTime = `${hour12}:30 ${ampm}`;
                 
                 // Only add times that haven't been booked
-                if (!bookedTimes.includes(morningTime)) {
+                if (!bookedTimes.includes(morningTime) && !bookedTimes.some(bt => bt.includes(`${hour12}:00`))) {
                     availableTimeSlots.push(morningTime);
                 }
                 
-                if (!bookedTimes.includes(afternoonTime)) {
+                if (!bookedTimes.includes(afternoonTime) && !bookedTimes.some(bt => bt.includes(`${hour12}:30`))) {
                     availableTimeSlots.push(afternoonTime);
                 }
             }

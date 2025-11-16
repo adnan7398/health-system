@@ -245,9 +245,24 @@ const PatientAppointments = () => {
                         {selectedAppointment.time}
                       </p>
                     )}
+                    {selectedAppointment.visitType && (
+                      <p className="text-gray-700">
+                        <span className="font-medium">Visit Type:</span> <span className="capitalize">{selectedAppointment.visitType}</span>
+                      </p>
+                    )}
+                    {selectedAppointment.medicalReason && (
+                      <p className="text-gray-700">
+                        <span className="font-medium">Medical Reason:</span> {selectedAppointment.medicalReason}
+                      </p>
+                    )}
                     {selectedAppointment.notes && (
                       <p className="text-gray-700">
                         <span className="font-medium">Notes:</span> {selectedAppointment.notes}
+                      </p>
+                    )}
+                    {selectedAppointment.authKey && (
+                      <p className="text-gray-700 font-mono text-sm">
+                        <span className="font-medium">Auth Key:</span> {selectedAppointment.authKey}
                       </p>
                     )}
                   </div>
