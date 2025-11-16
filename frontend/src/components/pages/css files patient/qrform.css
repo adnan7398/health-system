@@ -90,7 +90,7 @@ select:focus {
 
 /* Button styling */
 button {
-    background: linear-gradient(145deg, #007bff, #0056b3);
+    background: linear-gradient(145deg, #10b981, #059669);
     color: white;
     padding: 12px;
     border: none;
@@ -103,7 +103,7 @@ button {
 }
 
 button:hover {
-    background: linear-gradient(145deg, #0056b3, #004499);
+    background: linear-gradient(145deg, #059669, #047857);
     box-shadow: 2px 2px 6px #bebebe, -2px -2px 6px #ffffff;
     transform: translateY(-2px);
 }

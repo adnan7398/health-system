@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const DoctorSidebar = () => {
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const API_BASE = "https://arogyam-15io.onrender.com";
 
   useEffect(() => {
     const fetchDoctorDetails = async () => {
       try {
         const token = localStorage.getItem("doctorToken");
-        const response = await fetch("http://localhost:3000/doctor/doctors", {
+        const response = await fetch(`${API_BASE}/doctor/doctors`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -76,15 +79,24 @@ const DoctorSidebar = () => {
           
           {/* Navigation Menu */}
           <div className="mt-auto space-y-2">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 text-center cursor-pointer hover:bg-white/20 transition-all duration-300">
+            <button 
+              onClick={() => navigate("/doctordashboard")}
+              className="w-full bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 text-center cursor-pointer hover:bg-white/20 transition-all duration-300"
+            >
               <span className="text-sm font-medium text-white/90">Dashboard</span>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 text-center cursor-pointer hover:bg-white/20 transition-all duration-300">
+            </button>
+            <button 
+              onClick={() => navigate("/patient")}
+              className="w-full bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 text-center cursor-pointer hover:bg-white/20 transition-all duration-300"
+            >
               <span className="text-sm font-medium text-white/90">Patients</span>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 text-center cursor-pointer hover:bg-white/20 transition-all duration-300">
+            </button>
+            <button 
+              onClick={() => navigate("/appointment")}
+              className="w-full bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 text-center cursor-pointer hover:bg-white/20 transition-all duration-300"
+            >
               <span className="text-sm font-medium text-white/90">Appointments</span>
-            </div>
+            </button>
           </div>
         </>
       ) : (

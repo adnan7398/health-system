@@ -420,9 +420,9 @@ const Auth = () => {
               </button>
               <button
                 onClick={() => handleSocialLogin("/auth/facebook")}
-                className="p-3 rounded-full bg-blue-50 hover:bg-blue-100 transition"
+                className="p-3 rounded-full bg-emerald-50 hover:bg-emerald-100 transition"
               >
-                <Facebook className="w-5 h-5 text-blue-500" />
+                <Facebook className="w-5 h-5 text-emerald-600" />
               </button>
               <button
                 onClick={() => handleSocialLogin("/auth/apple")}

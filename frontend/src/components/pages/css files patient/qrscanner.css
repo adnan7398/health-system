@@ -83,8 +83,8 @@
 
 /* Style for the Stop Scanning button */
 button#html5-qrcode-button-camera-stop {
-  background-color: #007bff !important;
-  /* Blue */
+  background-color: #10b981 !important;
+  /* Emerald */
   color: white !important;
   font-size: 16px;
   padding: 10px 16px;
@@ -95,8 +95,8 @@ button#html5-qrcode-button-camera-stop {
 }
 
 button#html5-qrcode-button-camera-start {
-  background-color: #007bff !important;
-  /* Blue */
+  background-color: #10b981 !important;
+  /* Emerald */
   color: white !important;
   font-size: 16px;
   padding: 10px 16px;
@@ -108,8 +108,8 @@ button#html5-qrcode-button-camera-start {
 
 /* Style for the Request Camera Permissions button */
 button#html5-qrcode-button-camera-permission {
-  background-color: #007bff !important;
-  /* Blue */
+  background-color: #10b981 !important;
+  /* Emerald */
   color: white !important;
   font-size: 16px;
   padding: 10px 16px;
@@ -121,8 +121,8 @@ button#html5-qrcode-button-camera-permission {
 
 /* Style for "Scan an Image" Button */
 button#html5-qrcode-button-file-selection {
-  background-color: #007bff !important;
-  /* Blue */
+  background-color: #10b981 !important;
+  /* Emerald */
   color: white !important;
   font-size: 16px;
   padding: 10px 16px;

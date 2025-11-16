@@ -287,7 +287,7 @@ const Home = () => {
                 {/* Secondary Button */}
                 <button
                   onClick={handleLearnMore}
-                  className="bg-blue-950 px-10 py-3 border-2 border-gray-300 text-gray-700 rounded-3xl font-bold text-xl flex items-center justify-center space-x-3 backdrop-blur-sm transition-all duration-300 hover:border-emerald-400 hover:text-emerald-600 hover:bg-emerald-50"
+                  className="bg-white/10 backdrop-blur-md px-10 py-3 border-2 border-white/30 text-white rounded-3xl font-bold text-xl flex items-center justify-center space-x-3 transition-all duration-300 hover:border-emerald-400 hover:text-emerald-300 hover:bg-white/20"
                 >
                   <Play className="w-4 h-4" />
                   <span>{t("home.cta.watchDemo", "Watch Demo")}</span>

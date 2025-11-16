@@ -273,7 +273,7 @@ const Header = () => {
 
                     <button
                       onClick={() => {
-                        navigate("/doctorlogin");
+                        navigate("/doctor/signin");
                         setIsDropdownOpen(false);
                       }}
                       className=" text-left px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-3"

@@ -8,6 +8,7 @@ const AppointmentsPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const token = localStorage.getItem("doctorToken");
+  const API_BASE = "https://arogyam-15io.onrender.com";
 
   useEffect(() => {
     fetchAppointments();
@@ -17,7 +18,7 @@ const AppointmentsPage = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:3000/doctor/appointments",
+        `${API_BASE}/doctor/appointments`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -36,7 +37,7 @@ const AppointmentsPage = () => {
 
   const handleAccept = async (appointmentId) => {
     try {
-      const response = await fetch("http://localhost:3000/update", {
+      const response = await fetch(`${API_BASE}/update`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

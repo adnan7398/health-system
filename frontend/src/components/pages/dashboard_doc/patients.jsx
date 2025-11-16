@@ -151,12 +151,13 @@ const PatientsPage = () => {
   const [sortBy, setSortBy] = useState("name");
   const [apiPatients, setApiPatients] = useState([]);
   const token = localStorage.getItem("doctorToken");
+  const API_BASE = "https://arogyam-15io.onrender.com";
   
   // Fetch real patients from API
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await fetch("http://localhost:3000/patients", {
+        const response = await fetch(`${API_BASE}/patients`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();

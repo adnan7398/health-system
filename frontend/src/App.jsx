@@ -49,6 +49,7 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       //auth route
       { path: "/doctor/signin", element: <LoginDr /> },
+      { path: "/doctorlogin", element: <LoginDr /> }, // Redirect for backward compatibility
       { path: "/signin", element: <Login /> },
 
       //patient routes (protected)

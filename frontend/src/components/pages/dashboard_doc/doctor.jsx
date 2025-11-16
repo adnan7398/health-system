@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaUserMd, FaCalendarAlt, FaUsers, FaBell, FaChartLine, FaStethoscope, FaHeartbeat, FaBrain, FaLungs, FaDna, FaQrcode, FaFileMedical, FaClock, FaMapMarkerAlt, FaPhone, FaEnvelope } from "react-icons/fa";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
 const DoctorDashboard = () => {
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [appointments, setAppointments] = useState([
     { id: 1, patientName: "Alice Johnson", time: "09:00 AM", type: "Consultation", status: "Confirmed" },
@@ -40,226 +42,230 @@ const DoctorDashboard = () => {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Main Content */}
-      <div className="flex-1 p-6">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-teal-600 via-teal-700 to-emerald-700 text-white rounded-2xl shadow-lg p-8 mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h1 className="text-4xl font-bold mb-2">
-                  Doctor Dashboard
-                </h1>
-                <p className="text-teal-100 text-lg">
-                  Welcome back, <span className="font-semibold text-white">Dr. Sarah Wilson</span>
-                </p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Dashboard
+              </h1>
+              <p className="text-gray-600 text-sm mt-1">
+                Welcome back, <span className="font-medium">Dr. Sarah Wilson</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <FaBell className="text-lg text-gray-600 cursor-pointer hover:text-gray-900" />
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                  {notifications.length}
+                </span>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <FaBell className="text-2xl text-white cursor-pointer hover:text-teal-100 transition-colors duration-200" />
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {notifications.length}
+              <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
+                <FaUserMd className="text-white text-sm" />
+              </div>
+            </div>
+          </div>
+          
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {stats.map((stat, index) => (
+              <div key={index} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-sm transition-shadow">
+                <div className="flex items-center justify-between mb-2">
+                  <div className={`w-8 h-8 bg-gradient-to-br ${stat.color} rounded-lg flex items-center justify-center`}>
+                    <stat.icon className="text-white text-sm" />
+                  </div>
+                  <span className={`text-xs font-medium ${
+                    stat.change.startsWith('+') ? 'text-emerald-600' : 'text-red-600'
+                  }`}>
+                    {stat.change}
                   </span>
                 </div>
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                  <FaUserMd className="text-white text-xl" />
-                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-1">{stat.value}</h3>
+                <p className="text-gray-600 text-xs">{stat.title}</p>
               </div>
-            </div>
-            
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, index) => (
-                <div key={index} className="bg-white/10 rounded-xl p-6 border border-white/20 hover:shadow-lg transition-all duration-300">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center shadow-lg`}>
-                      <stat.icon className="text-white text-xl" />
-                    </div>
-                    <span className={`text-sm font-medium ${
-                      stat.change.startsWith('+') ? 'text-emerald-200' : 'text-red-200'
-                    }`}>
-                      {stat.change}
-                    </span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-1">{stat.value}</h3>
-                  <p className="text-teal-100 text-sm">{stat.title}</p>
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Calendar & Appointments */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Calendar */}
-              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
-                <h2 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
-                  <FaCalendarAlt className="text-emerald-600" />
-                  Schedule Calendar
-                </h2>
-                <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-4">
-                  <Calendar
-                    onChange={setSelectedDate}
-                    value={selectedDate}
-                    className="w-full border-0 bg-transparent"
-                    tileClassName={({ date, view }) => {
-                      if (view === 'month') {
-                        const hasAppointment = appointments.some(apt => 
-                          new Date(apt.date).toDateString() === date.toDateString()
-                        );
-                        return hasAppointment ? 'bg-emerald-100 text-emerald-800 rounded-lg' : '';
-                      }
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Today's Appointments */}
-              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
-                <h2 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
-                  <FaClock className="text-emerald-600" />
-                  Today's Appointments
-                </h2>
-                <div className="space-y-4">
-                  {appointments.map((appointment) => (
-                    <div key={appointment.id} className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-4 border border-gray-200 hover:shadow-md transition-all duration-200">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
-                            <FaUserMd className="text-white" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-slate-800">{appointment.patientName}</h3>
-                            <p className="text-sm text-slate-600">{appointment.type}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-semibold text-slate-800">{appointment.time}</div>
-                          <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                            appointment.status === 'Confirmed' 
-                              ? 'bg-emerald-100 text-emerald-800' 
-                              : 'bg-amber-100 text-amber-800'
-                          }`}>
-                            {appointment.status}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Left Column - Calendar & Appointments */}
+          <div className="lg:col-span-2 space-y-4">
+            {/* Calendar */}
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <FaCalendarAlt className="text-emerald-600 text-sm" />
+                Schedule
+              </h2>
+              <Calendar
+                onChange={setSelectedDate}
+                value={selectedDate}
+                className="w-full border-0"
+                tileClassName={({ date, view }) => {
+                  if (view === 'month') {
+                    const hasAppointment = appointments.some(apt => 
+                      new Date(apt.date).toDateString() === date.toDateString()
+                    );
+                    return hasAppointment ? 'bg-emerald-100 text-emerald-800 rounded' : '';
+                  }
+                }}
+              />
             </div>
 
-            {/* Right Column - Tools & Notifications */}
-            <div className="space-y-8">
-              {/* ML Tools */}
-              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
-                <h2 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
-                  <FaStethoscope className="text-purple-600" />
-                  AI Medical Tools
-                </h2>
-                <div className="space-y-4">
-                  {mlTools.map((tool, index) => (
-                    <a
-                      key={index}
-                      href={tool.path}
-                      className="group block bg-gradient-to-r from-gray-50 to-white rounded-xl p-4 border border-gray-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 bg-gradient-to-br ${tool.color} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                          <tool.icon className="text-white text-xl" />
+            {/* Today's Appointments */}
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <FaClock className="text-emerald-600 text-sm" />
+                Today's Appointments
+              </h2>
+              <div className="space-y-2">
+                {appointments.map((appointment) => (
+                  <div key={appointment.id} className="bg-gray-50 rounded-lg p-3 border border-gray-200 hover:bg-gray-100 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+                          <FaUserMd className="text-white text-sm" />
                         </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-slate-800 group-hover:text-emerald-600 transition-colors duration-200">
-                            {tool.name}
-                          </h3>
-                          <p className="text-sm text-slate-600">{tool.description}</p>
-                        </div>
-                        <div className="text-slate-400 group-hover:text-emerald-600 transition-colors duration-200">
-                          →
+                        <div>
+                          <h3 className="font-medium text-gray-900 text-sm">{appointment.patientName}</h3>
+                          <p className="text-xs text-gray-600">{appointment.type}</p>
                         </div>
                       </div>
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              {/* Recent Patients */}
-              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
-                <h2 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
-                  <FaUsers className="text-green-600" />
-                  Recent Patients
-                </h2>
-                <div className="space-y-4">
-                  {recentPatients.map((patient, index) => (
-                    <div key={index} className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg hover:bg-emerald-50 transition-colors duration-200">
-                      <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-semibold text-sm">
-                          {patient.name.split(' ').map(n => n[0]).join('')}
+                      <div className="text-right">
+                        <div className="text-sm font-semibold text-gray-900">{appointment.time}</div>
+                        <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${
+                          appointment.status === 'Confirmed' 
+                            ? 'bg-emerald-100 text-emerald-800' 
+                            : 'bg-amber-100 text-amber-800'
+                        }`}>
+                          {appointment.status}
                         </span>
                       </div>
-                      <div className="flex-1">
-                        <h4 className="font-medium text-slate-800">{patient.name}</h4>
-                        <p className="text-sm text-slate-600">{patient.age} years • {patient.lastVisit}</p>
-                      </div>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        patient.status === 'Active' 
-                          ? 'bg-emerald-100 text-emerald-800' 
-                          : 'bg-amber-100 text-amber-800'
-                      }`}>
-                        {patient.status}
-                      </span>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Notifications */}
-              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
-                <h2 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
-                  <FaBell className="text-orange-600" />
-                  Notifications
-                </h2>
-                <div className="space-y-4">
-                  {notifications.map((notification) => (
-                    <div key={notification.id} className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg hover:bg-emerald-50 transition-colors duration-200">
-                      <div className={`w-2 h-2 rounded-full mt-2 ${
-                        notification.type === 'success' ? 'bg-emerald-500' :
-                        notification.type === 'warning' ? 'bg-amber-500' : 'bg-teal-500'
-                      }`}></div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-slate-800">{notification.message}</p>
-                        <p className="text-xs text-slate-500">{notification.time}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Quick Actions */}
-          <div className="mt-8 bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
-            <h2 className="text-2xl font-semibold text-slate-800 mb-6">Quick Actions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <button className="flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-xl hover:from-emerald-700 hover:to-teal-800 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                <FaQrcode className="text-xl" />
-                <span>Scan Patient QR</span>
-              </button>
-              <button className="flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                <FaFileMedical className="text-xl" />
-                <span>View Reports</span>
-              </button>
-              <button className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                <FaCalendarAlt className="text-xl" />
-                <span>Schedule</span>
-              </button>
-              <button className="flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                <FaUsers className="text-xl" />
-                <span>Patients</span>
-              </button>
+          {/* Right Column - Tools & Notifications */}
+          <div className="space-y-4">
+            {/* ML Tools */}
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <h2 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <FaStethoscope className="text-purple-600 text-sm" />
+                AI Tools
+              </h2>
+              <div className="space-y-2">
+                {mlTools.map((tool, index) => (
+                  <button
+                    key={index}
+                    onClick={() => navigate(tool.path)}
+                    className="group block w-full text-left bg-gray-50 rounded-lg p-3 border border-gray-200 hover:bg-gray-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 bg-gradient-to-br ${tool.color} rounded-lg flex items-center justify-center`}>
+                        <tool.icon className="text-white text-sm" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-medium text-gray-900 text-sm group-hover:text-emerald-600 transition-colors">
+                          {tool.name}
+                        </h3>
+                        <p className="text-xs text-gray-600">{tool.description}</p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Recent Patients */}
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <h2 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <FaUsers className="text-green-600 text-sm" />
+                Recent Patients
+              </h2>
+              <div className="space-y-2">
+                {recentPatients.map((patient, index) => (
+                  <div key={index} className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
+                      <span className="text-white font-semibold text-xs">
+                        {patient.name.split(' ').map(n => n[0]).join('')}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900 text-sm">{patient.name}</h4>
+                      <p className="text-xs text-gray-600">{patient.age} years • {patient.lastVisit}</p>
+                    </div>
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                      patient.status === 'Active' 
+                        ? 'bg-emerald-100 text-emerald-800' 
+                        : 'bg-amber-100 text-amber-800'
+                    }`}>
+                      {patient.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Notifications */}
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <h2 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <FaBell className="text-orange-600 text-sm" />
+                Notifications
+              </h2>
+              <div className="space-y-2">
+                {notifications.map((notification) => (
+                  <div key={notification.id} className="flex items-start gap-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div className={`w-1.5 h-1.5 rounded-full mt-1.5 ${
+                      notification.type === 'success' ? 'bg-emerald-500' :
+                      notification.type === 'warning' ? 'bg-amber-500' : 'bg-teal-500'
+                    }`}></div>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-gray-900">{notification.message}</p>
+                      <p className="text-xs text-gray-500">{notification.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mt-4 bg-white rounded-lg border border-gray-200 p-4">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Quick Actions</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <button 
+              onClick={() => navigate("/scanner")}
+              className="flex items-center gap-2 p-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
+            >
+              <FaQrcode className="text-sm" />
+              <span>Scan QR</span>
+            </button>
+            <button 
+              onClick={() => navigate("/patientreport")}
+              className="flex items-center gap-2 p-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
+            >
+              <FaFileMedical className="text-sm" />
+              <span>Reports</span>
+            </button>
+            <button 
+              onClick={() => navigate("/appointment")}
+              className="flex items-center gap-2 p-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
+            >
+              <FaCalendarAlt className="text-sm" />
+              <span>Schedule</span>
+            </button>
+            <button 
+              onClick={() => navigate("/patient")}
+              className="flex items-center gap-2 p-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
+            >
+              <FaUsers className="text-sm" />
+              <span>Patients</span>
+            </button>
           </div>
         </div>
       </div>

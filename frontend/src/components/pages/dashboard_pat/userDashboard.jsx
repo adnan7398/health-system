@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
   Calendar,
   FileText,
@@ -25,6 +26,7 @@ import {
 
 const UserDashboard = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [userName] = useState("John Doe");
   const [currentTime, setCurrentTime] = useState("");
 
@@ -192,8 +194,9 @@ const UserDashboard = () => {
   }, []);
 
   const handleNavigation = (path) => {
-    console.log(`Navigating to: ${path}`);
-    // Implement your navigation logic here
+    if (path) {
+      navigate(path);
+    }
   };
 
   const getStatusColor = (status) => {
@@ -355,7 +358,7 @@ const UserDashboard = () => {
               <div className="flex items-center justify-between mb-8">
                 <h2 className="text-2xl font-bold text-gray-900">{t('dashboard.appointments.title')}</h2>
                 <button
-                  onClick={() => handleNavigation('/appointments')}
+                  onClick={() => handleNavigation('/patientappointments')}
                   className="text-teal-600 hover:text-teal-700 font-medium flex items-center gap-2 transition-colors duration-200"
                 >
                   {t('common.viewAll')}
@@ -400,7 +403,7 @@ const UserDashboard = () => {
               <div className="flex items-center justify-between mb-8">
                 <h2 className="text-2xl font-bold text-gray-900">{t('dashboard.reports.title')}</h2>
                 <button
-                  onClick={() => handleNavigation('/reports')}
+                  onClick={() => handleNavigation('/patientreport')}
                   className="text-teal-600 hover:text-teal-700 font-medium flex items-center gap-2 transition-colors duration-200"
                 >
                   {t('common.viewAll')}

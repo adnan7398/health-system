@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHeartbeat, FaEye, FaEyeSlash, FaGoogle, FaFacebook, FaApple, FaArrowRight, FaCheckCircle, FaShieldAlt, FaUserMd, FaStethoscope, FaHospital, FaGraduationCap, FaClock, FaAward } from "react-icons/fa";
+import { FaHeartbeat, FaEye, FaEyeSlash, FaGoogle, FaFacebook, FaApple, FaArrowRight, FaCheckCircle, FaShieldAlt, FaUserMd, FaStethoscope, FaHospital, FaGraduationCap, FaClock, FaAward, FaSpinner } from "react-icons/fa";
 
 const Auth = () => {
   const [isSignup, setIsSignup] = useState(false);
@@ -16,6 +16,7 @@ const Auth = () => {
   });
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -26,8 +27,9 @@ const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    setLoading(true);
 
-    const API_BASE = "http://localhost:3000";
+    const API_BASE = "https://arogyam-15io.onrender.com";
     const endpoint = isSignup ? "/doctor/signup" : "/doctor/signin";
     const url = `${API_BASE}${endpoint}`;
 
@@ -46,31 +48,44 @@ const Auth = () => {
       try {
         data = await response.json();
       } catch (_) {
-        data = {};
+        data = { message: "Failed to parse response" };
       }
       console.log("Response:", data); 
-
-      setMessage(data.message);
 
       if (response.ok && isSignup) {
         setIsSignup(false);
         setMessage("Account created successfully! Please login.");
+        setLoading(false);
+        return;
       }
 
       if (response.ok && !isSignup) {
         if (data.token) {
           localStorage.setItem("doctorToken", data.token);
           localStorage.setItem("doctortoken", data.token);
+          sessionStorage.setItem("doctorToken", data.token);
+          sessionStorage.setItem("doctortoken", data.token);
         }
         if (data.doctorId) {
           localStorage.setItem("doctorId", data.doctorId);
+          sessionStorage.setItem("doctorId", data.doctorId);
         }
         localStorage.setItem("userRole", "doctor");
-        navigate("/doctordashboard");
+        sessionStorage.setItem("userRole", "doctor");
+        setMessage(data.message || "Login successful! Redirecting...");
+        setTimeout(() => {
+          navigate("/doctordashboard");
+        }, 500);
+        return;
       }
+
+      // Handle error responses
+      setMessage(data.message || data.error || "Something went wrong. Please try again.");
     } catch (error) {
       console.error("Signup error:", error);
-      setMessage("Something went wrong! Try again.");
+      setMessage("Network error! Please check your connection and try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -328,11 +343,23 @@ const Auth = () => {
                 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  disabled={loading}
+                  className={`w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 ${
+                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 >
                   <div className="flex items-center justify-center gap-2">
-                    {isSignup ? "Create Doctor Account" : "Sign In"}
-                    <FaArrowRight className="text-sm" />
+                    {loading ? (
+                      <>
+                        <FaSpinner className="animate-spin" />
+                        {isSignup ? "Creating Account..." : "Signing In..."}
+                      </>
+                    ) : (
+                      <>
+                        {isSignup ? "Create Doctor Account" : "Sign In"}
+                        <FaArrowRight className="text-sm" />
+                      </>
+                    )}
                   </div>
                 </button>
               </form>

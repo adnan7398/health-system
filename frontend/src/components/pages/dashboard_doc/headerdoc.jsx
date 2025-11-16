@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import LanguageSelector from "../../language/LanguageSelector";
-import { Home, Calendar, Users, LogOut, Stethoscope, ChevronDown, Mic, FileText, Guitar as Hospital, Menu, X } from "lucide-react";
+import { Home, Calendar, Users, LogOut, Stethoscope, Mic, FileText, Menu, X } from "lucide-react";
 
 const DoctorHeader = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -60,181 +60,138 @@ const DoctorHeader = () => {
   ];
 
   return (
-    <nav className="bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-800 shadow-xl sticky top-0 z-50 border-b border-emerald-600/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          {/* Logo Section */}
-          <div className="flex items-center space-x-4">
-            <div 
-              className="w-12 h-12 bg-gradient-to-br from-white to-emerald-50 rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border-2 border-white/20"
-              onClick={() => navigate("/")}
-            >
-              <Hospital className="text-emerald-700 w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-white tracking-tight">Arogyam</h1>
-              <p className="text-emerald-100 text-sm font-medium">Medical Professional Portal</p>
-            </div>
-          </div>
+    <nav className="bg-white shadow-sm top-0 z-50 border-b border-gray-200">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div className="flex justify-between items-center h-16 gap-4">
+      
+      {/* Logo Section */}
+      <div
+        className="flex items-center gap-2 cursor-pointer"
+        onClick={() => navigate("/doctordashboard")}
+      >
+        <div className="w-7 h-7 bg-emerald-600 rounded flex items-center justify-center">
+          <Stethoscope className="text-white w-4 h-4" />
+        </div>
+        <h1 className="text-sm font-semibold text-gray-900">Arogyam</h1>
+      </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-1">
-            {navItems.map(({ path, label, icon: Icon }) => (
-              <button
-                key={path}
-                onClick={() => handleNavigation(path)}
-                className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg transition-all duration-200 font-medium group ${
-                  isActivePath(path)
-                    ? "bg-white/15 text-white shadow-lg"
-                    : "text-emerald-100 hover:bg-white/10 hover:text-white"
-                }`}
-              >
-                <Icon className="w-4 h-4 transition-transform group-hover:scale-110" />
-                <span className="text-sm">{label}</span>
-              </button>
-            ))}
+      {/* Desktop Navigation */}
+      <div className="hidden lg:flex items-center gap-4 ml-6">
+        {navItems.map(({ path, label, icon: Icon }) => (
+          <button
+            key={path}
+            onClick={() => handleNavigation(path)}
+            className={`flex items-center justify-center gap-2 h-11 px-4 rounded text-sm font-medium transition-colors ${
+              isActivePath(path)
+                ? "bg-emerald-50 text-emerald-700"
+                : "text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            <Icon className="w-4 h-4" />
+            <span>{label}</span>
+          </button>
+        ))}
 
-            {/* Disease Prediction Dropdown */}
-            <div className="relative">
-              <button
-                onClick={toggleDropdown}
-                className="flex items-center space-x-2 px-4 py-2.5 rounded-lg text-emerald-100 hover:bg-white/10 hover:text-white transition-all duration-200 font-medium group"
-              >
-                <Stethoscope className="w-4 h-4 transition-transform group-hover:scale-110" />
-                <span className="text-sm">Diagnostics</span>
-                <ChevronDown className={`w-4 h-4 transition-all duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-              
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-emerald-100 py-2 z-50 backdrop-blur-sm">
-                  <div className="px-3 py-2 border-b border-gray-100">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Disease Prediction Tools</p>
-                  </div>
-                  {diseaseOptions.map(({ value, label }) => (
-                    <button
-                      key={value}
-                      onClick={() => handleDiseaseChange(value)}
-                      className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all duration-200 text-sm font-medium"
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+        <button
+          onClick={() => handleNavigation("/blogging")}
+          className="flex items-center justify-center gap-2 h-11 px-4 rounded text-gray-600 hover:bg-gray-100 transition-colors text-sm font-medium"
+        >
+          <FileText className="w-4 h-4" />
+          <span>Blog</span>
+        </button>
 
+        <div>
+          <LanguageSelector variant="icon" />
+        </div>
+      </div>
+
+      {/* Auth + Mobile Menu */}
+      <div className="flex items-center gap-4">
+
+        {/* Desktop Auth */}
+        <div className="hidden lg:flex">
+          {isAuthenticated ? (
             <button
-              onClick={() => handleNavigation("/blogging")}
-              className="flex items-center space-x-2 px-4 py-2.5 rounded-lg text-emerald-100 hover:bg-white/10 hover:text-white transition-all duration-200 font-medium group"
+              onClick={handleLogout}
+              className="bg-red-500 hover:bg-red-600 text-white h-11 px-4 rounded text-sm font-medium flex items-center justify-center gap-2"
             >
-              <FileText className="w-4 h-4 transition-transform group-hover:scale-110" />
-              <span className="text-sm">Health Blog</span>
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
             </button>
-
-            <div className="px-2">
-              <LanguageSelector variant="icon" />
-            </div>
-          </div>
-
-          {/* Authentication & Mobile Menu */}
-          <div className="flex items-center space-x-4">
-            {/* Desktop Auth Button */}
-            <div className="hidden lg:flex">
-              {isAuthenticated ? (
-                <button
-                  onClick={handleLogout}
-                  className="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-lg font-medium flex items-center space-x-2 transition-all duration-200 shadow-lg hover:shadow-xl"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span className="text-sm">Logout</span>
-                </button>
-              ) : (
-                <button
-                  onClick={() => handleNavigation("/doctor/signin")}
-                  className="bg-white text-emerald-700 px-5 py-2.5 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl hover:bg-emerald-50 border border-white/20"
-                >
-                  <span className="text-sm">Doctor Login</span>
-                </button>
-              )}
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="lg:hidden">
-              <button
-                onClick={toggleMenu}
-                className="text-white hover:text-emerald-100 p-2 rounded-lg hover:bg-white/10 transition-all duration-200"
-              >
-                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
-          </div>
+          ) : (
+            <button
+              onClick={() => handleNavigation("/doctor/signin")}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white h-11 px-4 rounded text-sm font-medium"
+            >
+              Login
+            </button>
+          )}
         </div>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="lg:hidden border-t border-emerald-600/30 bg-emerald-800/95 backdrop-blur-sm">
-            <div className="py-4 space-y-2">
-              {navItems.map(({ path, label, icon: Icon }) => (
-                <button
-                  key={path}
-                  onClick={() => handleNavigation(path)}
-                  className={`flex items-center space-x-3 w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${
-                    isActivePath(path)
-                      ? "bg-white/15 text-white"
-                      : "text-emerald-100 hover:bg-white/10 hover:text-white"
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="font-medium">{label}</span>
-                </button>
-              ))}
-              
-              <div className="px-4 py-2">
-                <p className="text-emerald-200 text-sm font-medium mb-2">Disease Prediction</p>
-                <div className="space-y-1 pl-4">
-                  {diseaseOptions.map(({ value, label }) => (
-                    <button
-                      key={value}
-                      onClick={() => handleDiseaseChange(value)}
-                      className="block w-full text-left py-2 text-emerald-100 hover:text-white transition-colors duration-200 text-sm"
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              
-              <button
-                onClick={() => handleNavigation("/blogging")}
-                className="flex items-center space-x-3 w-full text-left px-4 py-3 text-emerald-100 hover:bg-white/10 hover:text-white transition-all duration-200 rounded-lg"
-              >
-                <FileText className="w-5 h-5" />
-                <span className="font-medium">Health Blog</span>
-              </button>
-              
-              <div className="pt-4 border-t border-emerald-600/30 mt-4">
-                {isAuthenticated ? (
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center space-x-3 w-full text-left px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 font-medium"
-                  >
-                    <LogOut className="w-5 h-5" />
-                    <span>Logout</span>
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleNavigation("/doctor/signin")}
-                    className="flex items-center justify-center w-full px-4 py-3 bg-white text-emerald-700 rounded-lg hover:bg-emerald-50 transition-all duration-200 font-semibold"
-                  >
-                    Doctor Login
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Mobile Menu Button */}
+        <div className="lg:hidden">
+          <button
+            onClick={toggleMenu}
+            className="text-gray-700 hover:text-gray-900 h-11 w-11 rounded hover:bg-gray-100 transition flex items-center justify-center"
+          >
+            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
-    </nav>
+    </div>
+
+    {/* Mobile Navigation */}
+    {isMenuOpen && (
+      <div className="lg:hidden border-t border-gray-200 bg-white">
+        <div className="py-2 space-y-1">
+          {navItems.map(({ path, label, icon: Icon }) => (
+            <button
+              key={path}
+              onClick={() => handleNavigation(path)}
+              className={`flex items-center gap-3 w-full text-left px-4 py-2 rounded transition-colors ${
+                isActivePath(path)
+                  ? "bg-emerald-50 text-emerald-700"
+                  : "text-gray-800 hover:bg-gray-100"
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              <span className="text-sm font-medium">{label}</span>
+            </button>
+          ))}
+
+          <button
+            onClick={() => handleNavigation("/blogging")}
+            className="flex items-center gap-3 w-full px-4 py-2 text-gray-800 hover:bg-gray-100"
+          >
+            <FileText className="w-4 h-4" />
+            <span className="text-sm font-medium">Blog</span>
+          </button>
+
+          <div className="border-t border-gray-200 pt-2">
+            {isAuthenticated ? (
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 w-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="text-sm font-medium">Logout</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => handleNavigation("/doctor/signin")}
+                className="w-full px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-sm font-medium"
+              >
+                Login
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</nav>
+
   );
 };
 
