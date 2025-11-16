@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import HealthCardRequired from './HealthCardRequired';
 
-const ProtectedRoute = ({ children, requireHealthCard = false, isScannerRoute = false }) => {
+const ProtectedRoute = ({ children, requireHealthCard = false, isScannerRoute = false, allowWithoutScanner = false }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isHealthCardVerified, setIsHealthCardVerified] = useState(false);
   const [isScannerVerified, setIsScannerVerified] = useState(false);
@@ -10,11 +10,13 @@ const ProtectedRoute = ({ children, requireHealthCard = false, isScannerRoute = 
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkAuthAndStatus = async () => {
-      const token = localStorage.getItem("token");
-      const doctorToken = localStorage.getItem("doctortoken");
+      // Check both localStorage and sessionStorage for token
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      const doctorToken = localStorage.getItem("doctortoken") || sessionStorage.getItem("doctortoken");
       
       if (token || doctorToken) {
         setIsAuthenticated(true);
@@ -58,10 +60,10 @@ const ProtectedRoute = ({ children, requireHealthCard = false, isScannerRoute = 
             setIsNewUser(true);
           }
 
-          // Check scanner verification status from localStorage (persists until logout)
+          // Check scanner verification status from localStorage and sessionStorage
           let scannerVerified = false;
           try {
-            const verificationData = localStorage.getItem("scannerVerified");
+            const verificationData = localStorage.getItem("scannerVerified") || sessionStorage.getItem("scannerVerified");
             if (verificationData) {
               const parsed = JSON.parse(verificationData);
               scannerVerified = parsed.verified === true;
@@ -118,13 +120,18 @@ const ProtectedRoute = ({ children, requireHealthCard = false, isScannerRoute = 
     return children;
   }
 
-  // For new users, redirect to health card registration (one-time setup)
-  // But if the user has already passed scanner verification, allow access
-  if (userRole === 'patient' && isNewUser && !isScannerVerified) {
-    return <Navigate to="/aadhaar-registration" state={{ from: location }} replace />;
+  // If this is aadhaar registration, allow access (for new users)
+  if (location.pathname === '/aadhaar-registration') {
+    return children;
+  }
+
+  // If route allows access without scanner verification (e.g., viewing own QR code)
+  if (allowWithoutScanner) {
+    return children;
   }
 
   // Scanner verification is required for ALL facilities (common and protected)
+  // Check this FIRST before checking isNewUser, so that if scanner is verified, user can access dashboard
   if (userRole === 'patient' && !isScannerVerified) {
     console.log("Scanner verification check failed:");
     console.log("- User role:", userRole);
@@ -147,19 +154,53 @@ const ProtectedRoute = ({ children, requireHealthCard = false, isScannerRoute = 
       return children;
     }
     
-    // If scanner verification is corrupted, clear it and redirect to scanner
-    if (localStorage.getItem("scannerVerified")) {
+    // If scanner verification is corrupted, clear it
+    const verificationData = localStorage.getItem("scannerVerified") || sessionStorage.getItem("scannerVerified");
+    if (verificationData) {
       try {
-        JSON.parse(localStorage.getItem("scannerVerified"));
+        JSON.parse(verificationData);
       } catch (error) {
         console.log("Corrupted scanner verification data, clearing");
         localStorage.removeItem("scannerVerified");
+        sessionStorage.removeItem("scannerVerified");
       }
     }
     
-    // Redirect to scanner as entry gate
-    console.log("Redirecting to scanner - verification required for:", location.pathname);
-    return <Navigate to="/scanner" state={{ from: location }} replace />;
+    // Show "Please scan your card" message instead of redirecting
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-emerald-50">
+        <div className="max-w-md w-full mx-4">
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 text-center">
+            <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Please Scan Your Card to Login</h2>
+            <p className="text-gray-600 mb-6">
+              You need to scan your health card first to access this feature and all other facilities. This is a one-time security verification step.
+            </p>
+            <button
+              onClick={() => navigate("/scanner", { replace: true })}
+              className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
+            >
+              Go to Scanner
+            </button>
+            <p className="text-sm text-gray-500 mt-4">
+              This is a one-time verification step for security.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // User is authenticated and has completed scanner verification (or is a doctor)
+  // For new users, we can optionally redirect to health card registration, but only if not already on dashboard
+  // Since scanner is verified, allow access to dashboard
+  if (userRole === 'patient' && isNewUser && location.pathname === '/userdashboard') {
+    // Allow access to dashboard even if new user, since scanner is verified
+    return children;
   }
 
   // User is authenticated and has completed scanner verification (or is a doctor), render the content

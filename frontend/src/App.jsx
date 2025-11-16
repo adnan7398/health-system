@@ -23,6 +23,7 @@ import Chatbot from "./components/pages/dashboard_pat/chatbot";
 import Caloriecalculator from "./components/pages/dashboard_pat/calorieconvertor";
 import Fitness from "./components/pages/dashboard_pat/fitness";
 import Summarizer from "./components/pages/dashboard_pat/summarizer";
+import LabReportAnalyzer from "./components/pages/dashboard_pat/labReportAnalyzer";
 import ArogyamCard from "./components/pages/dashboard_pat/arogyamcard";
 import Qrform from "./components/pages/dashboard_pat/qrform";
 import QRScanner from "./components/pages/dashboard_pat/qrscanner";
@@ -75,11 +76,11 @@ const router = createBrowserRouter([
       },
       { 
         path: "/arogyamcard", 
-        element: <ProtectedRoute><ArogyamCard /></ProtectedRoute> 
+        element: <ProtectedRoute allowWithoutScanner={true}><ArogyamCard /></ProtectedRoute> 
       },
       { 
         path: "/aadhaar-registration", 
-        element: <ProtectedRoute><AadhaarRegistration /></ProtectedRoute> 
+        element: <ProtectedRoute allowWithoutScanner={true}><AadhaarRegistration /></ProtectedRoute> 
       },
       { 
         path: "/bookappointment", 
@@ -96,6 +97,10 @@ const router = createBrowserRouter([
       { 
         path: "/summarizer", 
         element: <ProtectedRoute><Summarizer /></ProtectedRoute> 
+      },
+      { 
+        path: "/labreport", 
+        element: <ProtectedRoute><LabReportAnalyzer /></ProtectedRoute> 
       },
       { 
         path: "/patientreport", 

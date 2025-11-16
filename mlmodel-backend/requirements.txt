@@ -5,3 +5,9 @@ pillow
 opencv-python
 tensorflow
 werkzeug
+scikit-learn
+pandas
+joblib
+sentence-transformers
+torch
+faiss-cpu

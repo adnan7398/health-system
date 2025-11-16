@@ -27,7 +27,22 @@ import {
 const UserDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [userName] = useState("John Doe");
+  const [userName, setUserName] = useState("User");
+  
+  useEffect(() => {
+    // Get user info from storage
+    let userInfoStr = localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo");
+    if (userInfoStr) {
+      try {
+        const userInfo = JSON.parse(userInfoStr);
+        if (userInfo.name) {
+          setUserName(userInfo.name);
+        }
+      } catch (e) {
+        console.error("Error parsing userInfo:", e);
+      }
+    }
+  }, []);
   const [currentTime, setCurrentTime] = useState("");
 
   const [upcomingAppointments] = useState([
@@ -156,6 +171,13 @@ const UserDashboard = () => {
       icon: QrCode,
       path: "/scanner",
       gradient: "from-cyan-500 to-teal-600"
+    },
+    {
+      nameKey: "Lab Report Analyzer",
+      descKey: "Analyze lab reports with desi remedies",
+      icon: FlaskConical,
+      path: "/labreport",
+      gradient: "from-orange-500 to-red-600"
     }
   ];
 

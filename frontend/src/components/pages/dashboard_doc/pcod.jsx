@@ -10,6 +10,8 @@ const PCODPredictor = () => {
 
   const [result, setResult] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [confidence, setConfidence] = useState(0);
 
   const handleChange = (e) => {
     setFeatures({ ...features, [e.target.name]: e.target.value });
@@ -30,19 +32,46 @@ const PCODPredictor = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setResult("");
+    setLoading(true);
 
     // Validation
     if (!features.age || !features.bmi || !features.cycleLength) {
       setError("Please fill in all fields.");
+      setLoading(false);
       return;
     }
 
-    const predictionResult = getPrediction();
-    setResult(predictionResult);
+    try {
+      const response = await fetch("http://127.0.0.1:5001/pcodpredict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          age: parseFloat(features.age),
+          periodFlow: features.periodFlow,
+          bmi: parseFloat(features.bmi),
+          cycleLength: parseFloat(features.cycleLength),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Prediction failed");
+      }
+
+      const data = await response.json();
+      setResult(data.prediction);
+      setConfidence(data.confidence || 75);
+    } catch (error) {
+      setError("Error occurred while predicting. Please try again.");
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getRiskColor = (risk) => {
@@ -52,10 +81,16 @@ const PCODPredictor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50 p-6 relative overflow-hidden">
+      {/* AI/ML Background Pattern */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }}></div>
+      </div>
+      <div className="max-w-2xl mx-auto relative z-10">
         <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8">
-          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mb-8">
+          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-8">
             PCOD Risk Assessment
           </h2>
           
@@ -124,9 +159,17 @@ const PCODPredictor = () => {
 
             <button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white py-3 px-6 rounded-lg font-medium text-lg transition-all duration-300 transform hover:scale-105"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-3 px-6 rounded-lg font-medium text-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              Assess Risk
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Analyzing...
+                </div>
+              ) : (
+                "Assess Risk"
+              )}
             </button>
           </form>
 
@@ -137,9 +180,25 @@ const PCODPredictor = () => {
           )}
           
           {result && (
-            <div className={`mt-8 p-6 rounded-xl border-2 ${getRiskColor(result)}`}>
-              <h3 className="text-xl font-bold text-center mb-2">Assessment Result</h3>
-              <p className="text-center text-lg">{result}</p>
+            <div className="mt-8 space-y-4">
+              <div className={`p-6 rounded-xl border-2 ${getRiskColor(result)}`}>
+                <h3 className="text-xl font-bold text-center mb-2">Assessment Result</h3>
+                <p className="text-center text-lg">{result}</p>
+              </div>
+              {confidence > 0 && (
+                <div className="bg-slate-50 rounded-xl p-6">
+                  <p className="text-slate-700 font-medium mb-3">Confidence Level: {confidence}%</p>
+                  <div className="w-full bg-slate-200 rounded-full h-3">
+                    <div 
+                      className={`h-3 rounded-full transition-all duration-1000 ${
+                        result.includes("High") ? "bg-red-500" : 
+                        result.includes("Medium") ? "bg-yellow-500" : "bg-green-500"
+                      }`}
+                      style={{ width: `${confidence}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

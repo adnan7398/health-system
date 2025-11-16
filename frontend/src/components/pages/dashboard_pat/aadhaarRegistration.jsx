@@ -18,8 +18,8 @@ const AadhaarRegistration = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem("token");
+    // Check if user is logged in (check both localStorage and sessionStorage)
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (!token) {
       navigate("/signin");
       return;
@@ -31,7 +31,9 @@ const AadhaarRegistration = () => {
 
   const checkHealthCardStatus = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      if (!token) return;
+      
       const response = await fetch("https://arogyam-15io.onrender.com/health-card-status", {
         method: "GET",
         headers: {
@@ -106,34 +108,116 @@ const AadhaarRegistration = () => {
     }
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("https://arogyam-15io.onrender.com/register-aadhaar", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      if (!token) {
+        setMessage("You are not logged in. Please login first.");
+        setMessageType("error");
+        setLoading(false);
+        return;
+      }
 
-      const data = await response.json();
+      // Try register-aadhaar first, fallback to register if it doesn't exist
+      let response;
+      let useRegisterEndpoint = false;
+      
+      try {
+        response = await fetch("https://arogyam-15io.onrender.com/register-aadhaar", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        // If 404, we'll use /register endpoint instead
+        if (response.status === 404) {
+          useRegisterEndpoint = true;
+        }
+      } catch (fetchError) {
+        // If fetch fails entirely, use /register as fallback
+        useRegisterEndpoint = true;
+        response = null;
+      }
+      
+      // If we got 404 or fetch failed, use /register endpoint
+      if (useRegisterEndpoint || !response) {
+        const registerData = {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          bloodGroup: formData.bloodGroup,
+          age: formData.age,
+          phoneNumber: formData.phoneNumber,
+          address: formData.address
+        };
+        
+        response = await fetch("https://arogyam-15io.onrender.com/register", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(registerData)
+        });
+      }
 
-      if (response.ok) {
+      // Check response status before reading body
+      const isOk = response.ok;
+      const status = response.status;
+      const statusText = response.statusText;
+
+      let data;
+      try {
+        // Try to parse as JSON
+        const responseText = await response.text();
+        if (responseText) {
+          try {
+            data = JSON.parse(responseText);
+          } catch (parseError) {
+            // If response is not JSON
+            console.error("Non-JSON response:", responseText);
+            setMessage(`Server error: ${status} ${statusText}. ${responseText.substring(0, 100)}`);
+            setMessageType("error");
+            setLoading(false);
+            return;
+          }
+        } else {
+          data = {};
+        }
+      } catch (error) {
+        console.error("Error reading response:", error);
+        setMessage(`Error reading server response: ${error.message}`);
+        setMessageType("error");
+        setLoading(false);
+        return;
+      }
+
+      if (isOk) {
         setMessage("Health card registered successfully! Redirecting to scanner...");
         setMessageType("success");
+        
+        // Store userId if provided in response
+        if (data.user && data.user.id) {
+          localStorage.setItem("userId", data.user.id);
+          sessionStorage.setItem("userId", data.user.id);
+        }
         
         // Redirect to scanner after 2 seconds (scanner is the entry gate)
         setTimeout(() => {
           navigate("/scanner");
         }, 2000);
       } else {
-        setMessage(data.message || "Registration failed. Please try again.");
+        setMessage(data.message || `Registration failed: ${status} ${statusText}`);
         setMessageType("error");
       }
     } catch (error) {
-      setMessage("Network error. Please check your connection and try again.");
-      setMessageType("error");
       console.error("Registration error:", error);
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        setMessage("Network error. Please check your internet connection and try again.");
+      } else {
+        setMessage(`Error: ${error.message}. Please try again.`);
+      }
+      setMessageType("error");
     } finally {
       setLoading(false);
     }

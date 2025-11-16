@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaMicrophone, FaVolumeUp, FaPaperPlane, FaRobot, FaUser, FaSpinner, FaGlobe, FaBrain, FaShieldAlt, FaClock, FaLightbulb, FaHeartbeat, FaStethoscope, FaPills, FaHospital, FaAmbulance, FaNotesMedical, FaDownload, FaShare, FaCog, FaMicrophoneSlash, FaVolumeMute, FaArrowRight } from "react-icons/fa";
+import { FaMicrophone, FaVolumeUp, FaPaperPlane, FaRobot, FaUser, FaSpinner, FaGlobe, FaBrain, FaShieldAlt, FaClock, FaLightbulb, FaHeartbeat, FaStethoscope, FaPills, FaHospital, FaAmbulance, FaNotesMedical, FaDownload, FaShare, FaCog, FaMicrophoneSlash, FaVolumeMute, FaArrowRight, FaLungs } from "react-icons/fa";
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: "Hello! I'm your AI Health Assistant. I can help you with health-related questions, symptom analysis, medication information, and general wellness advice. How can I assist you today?",
+      text: "Namaste! 🙏 I'm your Desi Remedies Assistant. I can help you with traditional Indian/Pakistani household remedies for common health issues like cold, cough, stomach problems, skin issues, and more. Remember, these are traditional cultural practices, not medical treatments. For emergencies or serious symptoms, always seek medical help immediately. How can I help you today?",
       sender: "bot",
       timestamp: new Date(),
-      type: "welcome"
+      type: "welcome",
+      intensity: "mild"
     }
   ]);
   const [inputText, setInputText] = useState("");
@@ -33,37 +34,37 @@ const Chatbot = () => {
   const features = [
     {
       icon: FaBrain,
-      title: "AI-Powered Analysis",
-      description: "Advanced machine learning for accurate health insights",
-      color: "from-teal-500 to-teal-600"
+      title: "Traditional Remedies",
+      description: "Authentic Indian/Pakistani household remedies passed down through generations",
+      color: "from-orange-500 to-amber-600"
     },
     {
       icon: FaShieldAlt,
-      title: "Privacy First",
-      description: "Your health data is encrypted and secure",
-      color: "from-teal-500 to-teal-600"
+      title: "Safety First",
+      description: "Automatic safety warnings for emergencies and serious conditions",
+      color: "from-red-500 to-pink-600"
     },
     {
       icon: FaClock,
       title: "24/7 Availability",
-      description: "Get health advice anytime, anywhere",
-      color: "from-teal-500 to-teal-600"
+      description: "Get traditional remedy advice anytime, anywhere",
+      color: "from-teal-500 to-emerald-600"
     },
     {
       icon: FaLightbulb,
-      title: "Smart Recommendations",
-      description: "Personalized health tips and suggestions",
-      color: "from-teal-500 to-teal-600"
+      title: "Cultural Wisdom",
+      description: "Time-tested remedies for common health issues",
+      color: "from-purple-500 to-indigo-600"
     }
   ];
 
   const healthCategories = [
-    { name: "General Health", icon: FaHeartbeat, color: "from-teal-500 to-teal-600" },
-    { name: "Symptoms", icon: FaStethoscope, color: "from-teal-500 to-teal-600" },
-    { name: "Medications", icon: FaPills, color: "from-teal-500 to-teal-600" },
-    { name: "Nutrition", icon: FaHospital, color: "from-teal-500 to-teal-600" },
-    { name: "Fitness", icon: FaAmbulance, color: "from-teal-500 to-teal-600" },
-    { name: "Mental Health", icon: FaNotesMedical, color: "from-teal-500 to-teal-600" }
+    { name: "Cold & Cough", icon: FaLungs, color: "from-blue-500 to-cyan-600", query: "cold and cough" },
+    { name: "Stomach Issues", icon: FaStethoscope, color: "from-green-500 to-emerald-600", query: "acidity" },
+    { name: "Skin Problems", icon: FaHospital, color: "from-pink-500 to-rose-600", query: "acne" },
+    { name: "Headache", icon: FaBrain, color: "from-purple-500 to-indigo-600", query: "headache" },
+    { name: "Pain Relief", icon: FaHeartbeat, color: "from-red-500 to-orange-600", query: "joint pain" },
+    { name: "Digestion", icon: FaPills, color: "from-amber-500 to-yellow-600", query: "indigestion" }
   ];
 
   useEffect(() => {
@@ -106,12 +107,13 @@ const Chatbot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const addMessage = (text, sender) => {
+  const addMessage = (text, sender, intensity = "mild") => {
     const newMessage = {
       id: Date.now(),
       text,
       sender,
-      timestamp: new Date()
+      timestamp: new Date(),
+      intensity
     };
     setMessages(prev => [...prev, newMessage]);
   };
@@ -123,28 +125,42 @@ const Chatbot = () => {
     addMessage(userMessage, "user");
     setInputText("");
     setIsLoading(true);
+    setShowFeatures(false);
 
     try {
-      const response = await fetch("http://localhost:3000/chatbot", {
+      const response = await fetch("http://127.0.0.1:5001/desiremedy", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: userMessage }),
+        body: JSON.stringify({ query: userMessage }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        addMessage(data.response || "Thank you for your message. I'm here to help!", "bot");
+        addMessage(data.response || "Thank you for your message. I'm here to help!", "bot", data.intensity || "mild");
       } else {
-        addMessage("I'm sorry, I'm experiencing some technical difficulties. Please try again later.", "bot");
+        const errorData = await response.json().catch(() => ({}));
+        addMessage(errorData.error || "I'm sorry, I'm experiencing some technical difficulties. Please try again later.", "bot", "mild");
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      addMessage("I'm sorry, I'm experiencing some technical difficulties. Please try again later.", "bot");
+      let errorMessage = "I'm sorry, I'm experiencing some technical difficulties. ";
+      if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
+        errorMessage += "Please make sure the backend server is running on http://127.0.0.1:5001";
+      } else {
+        errorMessage += "Please try again later.";
+      }
+      addMessage(errorMessage, "bot", "mild");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleCategoryClick = (query) => {
+    setInputText(query);
+    // Optionally auto-send
+    // handleSendMessage();
   };
 
   const handleKeyPress = (e) => {
@@ -192,10 +208,16 @@ const Chatbot = () => {
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">AI Health Assistant Features</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Desi Remedies Assistant Features</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Discover what our AI-powered health assistant can do for you
+              Traditional Indian/Pakistani household remedies for common health issues
             </p>
+            <div className="mt-4 p-4 bg-amber-50 border-l-4 border-amber-500 rounded-lg max-w-2xl mx-auto">
+              <p className="text-sm text-amber-800">
+                ⚠️ <strong>Important:</strong> These are traditional cultural practices, not medical treatments. 
+                For emergencies or serious symptoms, always seek immediate medical help.
+              </p>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -224,12 +246,17 @@ const Chatbot = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {healthCategories.map((category, index) => (
-              <div key={index} className="bg-gray-50 p-6 rounded-xl text-center hover:bg-teal-50 transition-colors duration-300 border border-gray-200">
-                <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <button
+                key={index}
+                onClick={() => handleCategoryClick(category.query)}
+                className="bg-gray-50 p-6 rounded-xl text-center hover:bg-orange-50 transition-all duration-300 border border-gray-200 hover:border-orange-300 hover:shadow-md transform hover:-translate-y-1"
+              >
+                <div className={`w-12 h-12 bg-gradient-to-br ${category.color} rounded-lg flex items-center justify-center mx-auto mb-4`}>
                   <category.icon className="text-2xl text-white" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{category.name}</h3>
-              </div>
+                <p className="text-sm text-gray-600">Click to ask about remedies</p>
+              </button>
             ))}
           </div>
         </div>
@@ -239,9 +266,9 @@ const Chatbot = () => {
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Start Your Health Conversation</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Ask About Traditional Remedies</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Ask questions, describe symptoms, or get wellness advice
+              Ask about common health issues like cold, cough, stomach problems, skin issues, etc.
             </p>
           </div>
 
@@ -278,8 +305,8 @@ const Chatbot = () => {
                   <FaRobot className="text-xl text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">AI Health Assistant</h3>
-                  <p className="text-teal-100 text-sm">Online • Ready to help</p>
+                  <h3 className="font-semibold">Desi Remedies Assistant</h3>
+                  <p className="text-teal-100 text-sm">Online • Traditional remedies</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -315,10 +342,19 @@ const Chatbot = () => {
                     className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
                       message.sender === "user"
                         ? "bg-teal-600 text-white rounded-br-md"
+                        : message.intensity === "emergency"
+                        ? "bg-red-50 text-red-900 rounded-bl-md shadow-md border-2 border-red-300"
+                        : message.intensity === "moderate"
+                        ? "bg-amber-50 text-amber-900 rounded-bl-md shadow-md border border-amber-200"
                         : "bg-white text-gray-800 rounded-bl-md shadow-md border border-gray-200"
                     }`}
                   >
-                    <p className="text-sm leading-relaxed">{message.text}</p>
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.text}</p>
+                    {message.intensity === "emergency" && (
+                      <div className="mt-2 p-2 bg-red-100 rounded text-xs text-red-800 font-semibold">
+                        🚨 Emergency - Seek immediate medical help
+                      </div>
+                    )}
                     <p className={`text-xs mt-2 ${
                       message.sender === "user" ? "text-teal-100" : "text-gray-500"
                     }`}>
@@ -350,7 +386,7 @@ const Chatbot = () => {
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Type your health question here..."
+                  placeholder="Ask about traditional remedies (e.g., 'cold and cough', 'acidity', 'headache')..."
                   className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
                   disabled={isLoading}
                 />
@@ -372,7 +408,7 @@ const Chatbot = () => {
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold mb-6">Need More Help?</h2>
           <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
-            Our AI assistant is available 24/7, but you can also connect with human healthcare professionals
+            Our Desi Remedies assistant provides traditional household remedies. For medical diagnosis or treatment, please consult healthcare professionals.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="/bookappointment" className="bg-white text-teal-700 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg">

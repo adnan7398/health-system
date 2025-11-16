@@ -35,7 +35,7 @@ const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get the intended destination from the ProtectedRoute, default to scanner
+  // Get the intended destination from the ProtectedRoute, default to scanner (required first step)
   const from = (location.state)?.from?.pathname || "/scanner";
 
   const handleChange = (e) => {
@@ -119,9 +119,51 @@ const Auth = () => {
 
         setAuthSuccess(true);
 
+        // Store user info for display
+        if (data.user) {
+          const userInfo = {
+            name: data.user.firstName ? `${data.user.firstName} ${data.user.lastName || ''}`.trim() : data.user.email?.split('@')[0] || 'User',
+            email: data.user.email || formData.email
+          };
+          sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
+          if (rememberMe) {
+            localStorage.setItem("userInfo", JSON.stringify(userInfo));
+          }
+        } else {
+          // Fallback: use form data
+          const userInfo = {
+            name: formData.firstName ? `${formData.firstName} ${formData.lastName || ''}`.trim() : formData.email?.split('@')[0] || 'User',
+            email: formData.email
+          };
+          sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
+          if (rememberMe) {
+            localStorage.setItem("userInfo", JSON.stringify(userInfo));
+          }
+        }
+
+        // Check if scanner is already verified
+        let scannerVerified = false;
+        try {
+          const verificationData = localStorage.getItem("scannerVerified");
+          if (verificationData) {
+            const parsed = JSON.parse(verificationData);
+            scannerVerified = parsed.verified === true;
+          }
+        } catch (e) {
+          console.error("Error checking scanner verification:", e);
+        }
+
+        // Always redirect to scanner first (required step after login)
+        // Scanner will then redirect to dashboard after verification
+        const redirectPath = "/scanner";
+
         // Delay navigation one tick so ProtectedRoute/readers see the sessionStorage token
         setTimeout(() => {
-          navigate(from || "/scanner", { replace: true });
+          navigate(redirectPath, { replace: true });
+          // Trigger storage event to update header
+          window.dispatchEvent(new Event('storage'));
+          // Force header to re-check auth
+          window.dispatchEvent(new Event('localStorageChange'));
         }, 20);
       } else {
         setAuthSuccess(false);

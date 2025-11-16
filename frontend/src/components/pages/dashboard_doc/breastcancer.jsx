@@ -2,7 +2,7 @@ import { useState } from "react";
 import React from "react";
 
 export default function BreastCancerPredictor() {
-  const [features, setFeatures] = useState([]);
+  const [features, setFeatures] = useState(new Array(10).fill(0));
   const [prediction, setPrediction] = useState(null);
   const [error, setError] = useState(null);
 
@@ -12,20 +12,40 @@ export default function BreastCancerPredictor() {
     setFeatures(newFeatures);
   };
 
+  const [loading, setLoading] = useState(false);
+  const [confidence, setConfidence] = useState(0);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setLoading(true);
+    
+    // Validate that all features are filled
+    if (features.length !== 10 || features.some(f => f === undefined || f === null || f === 0 || isNaN(f))) {
+      setError("Please fill in all 10 features with valid numbers");
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch("http://localhost:8080/breastpredict", {
+      const response = await fetch("http://127.0.0.1:5001/breastpredict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ features }),
       });
+      
+      if (!response.ok) {
+        throw new Error("Prediction failed");
+      }
+      
       const data = await response.json();
       if (data.error) throw new Error(data.error);
       setPrediction(data.prediction);
+      setConfidence(data.confidence || 75);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Error occurred while predicting");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,10 +63,16 @@ export default function BreastCancerPredictor() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-pink-50 to-purple-50 p-6 relative overflow-hidden">
+      {/* AI/ML Background Pattern */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }}></div>
+      </div>
+      <div className="max-w-4xl mx-auto relative z-10">
         <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8">
-          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mb-8">
+          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-8">
             Breast Cancer Prediction
           </h2>
           
@@ -79,31 +105,54 @@ export default function BreastCancerPredictor() {
             <div className="flex justify-center pt-4">
               <button 
                 type="submit" 
-                className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white py-3 px-8 rounded-lg font-medium text-lg transition-all duration-300 transform hover:scale-105"
+                disabled={loading}
+                className="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white py-3 px-8 rounded-lg font-medium text-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                Analyze & Predict
+                {loading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Analyzing...
+                  </div>
+                ) : (
+                  "Analyze & Predict"
+                )}
               </button>
             </div>
           </form>
 
           {prediction !== null && (
-            <div className={`mt-8 p-6 rounded-xl border-2 ${
-              prediction === 0 
-                ? "bg-green-50 border-green-200 text-green-800" 
-                : "bg-red-50 border-red-200 text-red-800"
-            }`}>
-              <h3 className="text-xl font-bold text-center mb-2">
-                Prediction Result
-              </h3>
-              <p className="text-center text-lg">
-                {prediction === 0 ? "Benign (Non-cancerous)" : "Malignant (Cancerous)"}
-              </p>
-              <p className="text-center text-sm mt-2 opacity-80">
-                {prediction === 0 
-                  ? "The mass appears to be non-cancerous based on the analysis." 
-                  : "The mass shows characteristics associated with cancer. Please consult a healthcare professional immediately."
-                }
-              </p>
+            <div className="mt-8 space-y-4">
+              <div className={`p-6 rounded-xl border-2 ${
+                prediction === 0 
+                  ? "bg-green-50 border-green-200 text-green-800" 
+                  : "bg-red-50 border-red-200 text-red-800"
+              }`}>
+                <h3 className="text-xl font-bold text-center mb-2">
+                  Prediction Result
+                </h3>
+                <p className="text-center text-lg">
+                  {prediction === 0 ? "Benign (Non-cancerous)" : "Malignant (Cancerous)"}
+                </p>
+                <p className="text-center text-sm mt-2 opacity-80">
+                  {prediction === 0 
+                    ? "The mass appears to be non-cancerous based on the analysis." 
+                    : "The mass shows characteristics associated with cancer. Please consult a healthcare professional immediately."
+                  }
+                </p>
+              </div>
+              {confidence > 0 && (
+                <div className="bg-slate-50 rounded-xl p-6">
+                  <p className="text-slate-700 font-medium mb-3">Confidence Level: {confidence}%</p>
+                  <div className="w-full bg-slate-200 rounded-full h-3">
+                    <div 
+                      className={`h-3 rounded-full transition-all duration-1000 ${
+                        prediction === 0 ? "bg-green-500" : "bg-red-500"
+                      }`}
+                      style={{ width: `${confidence}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
           

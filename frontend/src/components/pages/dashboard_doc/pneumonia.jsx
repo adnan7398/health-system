@@ -37,13 +37,16 @@ function App() {
         body: formData,
       });
 
-      const result = await response.text();
-      setPrediction(result);
-      
-      // Set a random confidence level between 70% and 98% for demonstration
-      setConfidence(Math.floor(Math.random() * (98 - 70 + 1)) + 70);
+      if (!response.ok) {
+        throw new Error("Prediction failed");
+      }
+
+      const result = await response.json();
+      setPrediction(result.prediction || "Prediction: " + (result.isNormal ? "Normal" : "Person acquired Pneumonia"));
+      setConfidence(result.confidence || 85);
     } catch (error) {
       setPrediction("Error occurred while predicting.");
+      setConfidence(0);
       console.error("Error:", error);
     } finally {
       setLoading(false);
@@ -58,8 +61,14 @@ function App() {
       : "";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 p-6 relative overflow-hidden">
+      {/* AI/ML Background Pattern */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }}></div>
+      </div>
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8">
           <h1 className="text-4xl font-bold text-center bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mb-8">
             Pneumonia Detection Analysis

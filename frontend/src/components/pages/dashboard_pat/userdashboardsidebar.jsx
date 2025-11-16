@@ -1,5 +1,5 @@
 import React from "react";
-import { FaHome, FaCalendarCheck, FaFileMedical, FaUserMd, FaQrcode, FaRobot, FaCalculator, FaRunning, FaHeartbeat, FaBrain, FaLungs, FaDna, FaShieldAlt, FaCog, FaSignOutAlt, FaChartLine, FaStethoscope, FaPills, FaHospital, FaAmbulance, FaNotesMedical, FaCalendarAlt, FaWeight } from "react-icons/fa";
+import { FaHome, FaCalendarCheck, FaFileMedical, FaUserMd, FaQrcode, FaRobot, FaCalculator, FaRunning, FaHeartbeat, FaBrain, FaLungs, FaDna, FaShieldAlt, FaCog, FaSignOutAlt, FaChartLine, FaStethoscope, FaPills, FaHospital, FaAmbulance, FaNotesMedical, FaCalendarAlt, FaWeight, FaFlask } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 
 const Userdashboardsidebar = () => {
@@ -45,6 +45,13 @@ const Userdashboardsidebar = () => {
       path: "/chatbot",
       color: "from-purple-500 to-pink-500",
       description: "Get instant health advice"
+    },
+    {
+      name: "Lab Report Analyzer",
+      icon: FaFlask,
+      path: "/labreport",
+      color: "from-orange-500 to-red-500",
+      description: "Analyze lab reports with desi remedies"
     },
     {
       name: "Calorie Calculator",

@@ -43,10 +43,20 @@ const QRScanner = () => {
     try {
       const verificationData = { verified: true, timestamp: Date.now() };
       localStorage.setItem("scannerVerified", JSON.stringify(verificationData));
+      // Also set in sessionStorage for consistency
+      sessionStorage.setItem("scannerVerified", JSON.stringify(verificationData));
+      
+      // Trigger storage event to update header and other components
+      window.dispatchEvent(new Event('storage'));
+      window.dispatchEvent(new Event('localStorageChange'));
+      
+      // Small delay to ensure storage is updated and ProtectedRoute re-checks
+      setTimeout(() => {
+        navigate("/userdashboard", { replace: true });
+      }, 200);
     } catch (e) {
       console.log("Failed to persist scanner verification:", e);
     }
-    navigate("/userdashboard");
   };
   return (
     <div className="scanner-wrapper">
@@ -55,9 +65,13 @@ const QRScanner = () => {
         {/* <button onClick={onClickHandler()}> Generate QR</button> */}
       </div>
       <div className="scanner-content">
-        <a href="/arogyamcard" className="qr-code-link">
+        <button 
+          onClick={() => navigate("/arogyamcard")} 
+          className="qr-code-link"
+          style={{ background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+        >
           Your QRCode
-        </a>
+        </button>
 
         <h2>QR Code Scanner</h2>
         <div id="scanner" ref={scannerContainerRef} className="scanner"></div>

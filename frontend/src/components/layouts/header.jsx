@@ -22,6 +22,8 @@ const Header = () => {
   const { t } = useTranslation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+  const [isScannerVerified, setIsScannerVerified] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -71,24 +73,68 @@ const Header = () => {
 
   useEffect(() => {
     const checkAuth = () => {
-      const token = localStorage.getItem("token");
-      const role = localStorage.getItem("userRole");
+      // Check both localStorage and sessionStorage for token
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      const role = localStorage.getItem("userRole") || sessionStorage.getItem("userRole");
+      
+      // Get user info
+      let userInfoStr = localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo");
+      let userInfoObj = null;
+      if (userInfoStr) {
+        try {
+          userInfoObj = JSON.parse(userInfoStr);
+        } catch (e) {
+          console.error("Error parsing userInfo:", e);
+        }
+      }
+      
       setIsAuthenticated(!!token);
       setUserRole(role);
+      setUserInfo(userInfoObj);
+      
+      // Check scanner verification status
+      let scannerVerified = false;
+      try {
+        const verificationData = localStorage.getItem("scannerVerified");
+        if (verificationData) {
+          const parsed = JSON.parse(verificationData);
+          scannerVerified = parsed.verified === true;
+        }
+      } catch (e) {
+        console.error("Error parsing scanner verification:", e);
+      }
+      setIsScannerVerified(scannerVerified);
     };
 
     checkAuth();
+    // Check auth on route changes
+    const interval = setInterval(checkAuth, 500);
     window.addEventListener("storage", checkAuth);
+    window.addEventListener("localStorageChange", checkAuth);
     return () => {
+      clearInterval(interval);
       window.removeEventListener("storage", checkAuth);
+      window.removeEventListener("localStorageChange", checkAuth);
     };
-  }, []);
+  }, [location]);
 
   const handleLogout = () => {
+    // Clear all auth data from both storages
     localStorage.removeItem("token");
     localStorage.removeItem("doctortoken");
     localStorage.removeItem("userRole");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userInfo");
+    localStorage.removeItem("scannerVerified");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("userRole");
+    sessionStorage.removeItem("userId");
+    sessionStorage.removeItem("userInfo");
+    sessionStorage.removeItem("scannerVerified");
     setIsAuthenticated(false);
+    setUserInfo(null);
+    setUserRole(null);
+    setIsScannerVerified(false);
     navigate("/");
     setTimeout(() => {
       window.location.reload();
@@ -99,6 +145,17 @@ const Header = () => {
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   const handleNavigation = (path) => {
+    // Check if scanner is verified for protected routes
+    if (isAuthenticated && userRole === 'patient' && !isScannerVerified) {
+      // Check if it's a protected route (not home, not scanner, not aadhaar)
+      const protectedRoutes = ['/arogyamcard', '/fitness', '/chatbot', '/medicalReport', '/userdashboard', 
+                               '/bookappointment', '/patientreport', '/patientappointments', '/labreport'];
+      if (protectedRoutes.includes(path) || path.startsWith('/patient') || path.startsWith('/book')) {
+        // Redirect to scanner - ProtectedRoute will show the message
+        navigate("/scanner", { replace: true });
+        return;
+      }
+    }
     navigate(path);
   };
 
@@ -195,7 +252,7 @@ const Header = () => {
                     <FaUser className="text-teal-700 text-sm" />
                   </div>
                   <span className="font-medium text-sm">
-                    {t("header.myAccount")}
+                    {userInfo?.name || t("header.myAccount")}
                   </span>
                   <FaChevronDown className="text-white text-xs" />
                 </button>
@@ -204,34 +261,46 @@ const Header = () => {
                   <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
                     <div className="px-3 py-2 border-b border-gray-100">
                       <p className="text-sm text-gray-600 font-medium">
-                        {t("header.welcomeBack")}
+                        {userInfo?.name ? `Welcome, ${userInfo.name}` : t("header.welcomeBack")}
                       </p>
+                      {userInfo?.email && (
+                        <p className="text-xs text-gray-500 mt-1">{userInfo.email}</p>
+                      )}
                     </div>
-                    <a
-                      href="/userdashboard"
-                      className="block px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        handleNavigation("/userdashboard");
+                      }}
+                      className="w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
                     >
                       <FaHome className="text-teal-600 text-sm" />
                       <span className="text-sm">{t("header.dashboard")}</span>
-                    </a>
-                    <a
-                      href="/patientappointments"
-                      className="block px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsDropdownOpen(false);
+                        handleNavigation("/patientappointments");
+                      }}
+                      className="w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
                     >
                       <FaCalendarCheck className="text-teal-600 text-sm" />
                       <span className="text-sm">
                         {t("header.myAppointments")}
                       </span>
-                    </a>
-                    <a
-                      href="/medicalReport"
-                      className="block px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsDropdownOpen(false);
+                        handleNavigation("/medicalReport");
+                      }}
+                      className="w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
                     >
                       <FaFlask className="text-teal-600 text-sm" />
                       <span className="text-sm">
                         {t("header.medicalRecords")}
                       </span>
-                    </a>
+                    </button>
                     <div className="border-t border-gray-100 my-1"></div>
                     <button
                       onClick={handleLogout}
@@ -328,14 +397,16 @@ const Header = () => {
             <div className="border-t border-teal-600 pt-3 mt-3">
               {isAuthenticated ? (
                 <div className="space-y-2">
-                  <a
-                    href="/userdashboard"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 text-white hover:text-teal-100 transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-white/10"
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      handleNavigation("/userdashboard");
+                    }}
+                    className="w-full text-left flex items-center gap-3 text-white hover:text-teal-100 transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-white/10"
                   >
                     <FaHome className="text-white text-sm" />
                     <span>{t("header.dashboard")}</span>
-                  </a>
+                  </button>
                   <button
                     onClick={() => {
                       handleLogout();
