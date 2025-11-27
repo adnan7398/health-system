@@ -24,18 +24,18 @@ from difflib import SequenceMatcher
 
 model_03 = None
 try:
-base_model = VGG19(include_top=False, input_shape=(224, 224, 3))
-x = base_model.output
-flat = Flatten()(x)
-dense1 = Dense(4608, activation='relu')(flat)
-drop_out = Dropout(0.2)(dense1)
-dense2 = Dense(1152, activation='relu')(drop_out)
-output = Dense(2, activation='softmax')(dense2)
+    base_model = VGG19(include_top=False, input_shape=(224, 224, 3))
+    x = base_model.output
+    flat = Flatten()(x)
+    dense1 = Dense(4608, activation='relu')(flat)
+    drop_out = Dropout(0.2)(dense1)
+    dense2 = Dense(1152, activation='relu')(drop_out)
+    output = Dense(2, activation='softmax')(dense2)
 
-model_03 = Model(inputs=base_model.input, outputs=output)
+    model_03 = Model(inputs=base_model.input, outputs=output)
     
     if os.path.exists('vgg_unfrozen.h5'):
-model_03.load_weights('vgg_unfrozen.h5')
+        model_03.load_weights('vgg_unfrozen.h5')
         print("Pneumonia model loaded successfully")
     else:
         print("Warning: vgg_unfrozen.h5 not found. Pneumonia detection may not work.")
@@ -250,18 +250,18 @@ def get_result(img_path):
 @app.route('/pneumoniapredict', methods=['POST'])
 def pneumonia_predict():
     try:
-    if 'file' not in request.files:
+        if 'file' not in request.files:
             return jsonify({"error": "No file uploaded"}), 400
 
-    f = request.files['file']
-    if f.filename == '':
+        f = request.files['file']
+        if f.filename == '':
             return jsonify({"error": "No file selected"}), 400
 
-    uploads_dir = os.path.join(os.path.dirname(__file__), 'uploads')
-    os.makedirs(uploads_dir, exist_ok=True)
+        uploads_dir = os.path.join(os.path.dirname(__file__), 'uploads')
+        os.makedirs(uploads_dir, exist_ok=True)
 
-    file_path = os.path.join(uploads_dir, secure_filename(f.filename))
-    f.save(file_path)
+        file_path = os.path.join(uploads_dir, secure_filename(f.filename))
+        f.save(file_path)
 
         result, confidence = get_result(file_path)
         if result is None:

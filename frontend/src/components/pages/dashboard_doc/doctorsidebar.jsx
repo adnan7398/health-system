@@ -14,17 +14,39 @@ const DoctorSidebar = () => {
     const fetchDoctorDetails = async () => {
       try {
         const token = localStorage.getItem("doctorToken");
+        
+        if (!token) {
+          console.error("No doctor token found in localStorage");
+          setLoading(false);
+          return;
+        }
+
+        console.log("Fetching doctor details from:", `${API_BASE}/doctor/doctors`);
         const response = await fetch(`${API_BASE}/doctor/doctors`, {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         });
 
         const data = await response.json();
+        console.log("Response status:", response.status);
+        console.log("Response data:", data);
+
         if (response.ok) {
-          setDoctor(data.doctor);
+          if (data.doctor) {
+            setDoctor(data.doctor);
+            console.log("Doctor details loaded successfully");
+          } else {
+            console.error("Doctor data is missing in response:", data);
+          }
         } else {
-          console.error("Error fetching doctor:", data.message);
+          console.error("Error fetching doctor:", data.message || "Unknown error");
+          // If token is invalid, redirect to login
+          if (response.status === 403 || response.status === 401) {
+            localStorage.removeItem("doctorToken");
+            navigate("/doctorlogin");
+          }
         }
       } catch (error) {
         console.error("Error fetching doctor details:", error);
@@ -34,7 +56,7 @@ const DoctorSidebar = () => {
     };
 
     fetchDoctorDetails();
-  }, []);
+  }, [navigate]);
 
   if (loading) {
     return (

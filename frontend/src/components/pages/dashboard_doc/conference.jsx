@@ -361,7 +361,7 @@ const Conferences = () => {
               </div>
             </div>
           )}
-        </div>
+      </div>
       
       {/* Event Details Modal */}
       {selectedEvent && (
@@ -376,7 +376,7 @@ const Conferences = () => {
                   </span>
                   <span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 text-sm font-medium rounded-full">
                     {selectedEvent.specialty}
-                  </span>
+                </span>
                 </div>
               </div>
               <button 

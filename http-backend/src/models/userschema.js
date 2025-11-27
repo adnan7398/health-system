@@ -41,7 +41,8 @@ const DoctorSchema = new mongoose.Schema({
     password:{type:String,required:true}, 
     bio: {type:String},
     experience: {type:String,},
-    hospital: {type: String}, 
+    hospital: {type: String},
+    profileImage: { type: String },
     appointments: [
       {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -49,7 +50,7 @@ const DoctorSchema = new mongoose.Schema({
         authKey: String,
       },
     ],
-  });
+  }, { timestamps: true });
   
 const appointmentSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

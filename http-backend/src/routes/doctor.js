@@ -4,11 +4,24 @@ const bcrypt = require("bcryptjs");
 const { z } = require("zod");
 const jwt = require("jsonwebtoken");
 const { doctorMiddleware } = require("../middleware/doctor");
+const upload = require("../middleware/upload");
 require("dotenv").config();
 
 const doctorRouter = express.Router();
 
-doctorRouter.post("/doctor/signup", async function (req, res) {
+doctorRouter.post("/doctor/signup", upload.single("profileImage"), async function (req, res) {
+    console.log("=== Doctor Signup Request ===");
+    console.log("Request body:", {
+        email: req.body.email,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        specialization: req.body.specialization,
+        hospital: req.body.hospital,
+        experience: req.body.experience,
+        hasBio: !!req.body.bio,
+        hasPassword: !!req.body.password
+    });
+
     const requirebody = z.object({
         email: z.string().min(3).max(50).email(),
         firstName: z.string().min(3).max(100),
@@ -29,12 +42,30 @@ doctorRouter.post("/doctor/signup", async function (req, res) {
 
     const parsedata = requirebody.safeParse(req.body);
     if (!parsedata.success) {
-        return res.status(400).json({ message: "Incorrect details", error: parsedata.error });
+        console.log("❌ Validation failed:", parsedata.error.errors);
+        return res.status(400).json({ 
+            message: "Incorrect details", 
+            error: parsedata.error.errors,
+            details: "Please check all required fields are filled correctly"
+        });
     }
 
     try {
+        // Check if doctor with this email already exists
+        const existingDoctor = await DoctorModel.findOne({ email: req.body.email });
+        if (existingDoctor) {
+            console.log("❌ Doctor with email already exists:", req.body.email);
+            return res.status(409).json({ 
+                message: "Doctor with this email already exists. Please use a different email or sign in instead.",
+                error: "Email already registered"
+            });
+        }
+
+        console.log("Hashing password...");
         const hashpassword = await bcrypt.hash(req.body.password, 5);
-        await DoctorModel.create({
+        
+        console.log("Creating doctor in database...");
+        const newDoctor = await DoctorModel.create({
             email: req.body.email,
             password: hashpassword,
             firstName: req.body.firstName,
@@ -46,32 +77,82 @@ doctorRouter.post("/doctor/signup", async function (req, res) {
             profileImage: req.file ? `/uploads/${req.file.filename}` : null,
         });
 
-        res.json({ message: "You are successfully signed up" });
+        console.log("✅ Doctor created successfully!");
+        console.log("Doctor ID:", newDoctor._id.toString());
+        console.log("Doctor Name:", `${newDoctor.firstName} ${newDoctor.lastName}`);
+        console.log("Doctor Email:", newDoctor.email);
+
+        res.json({ 
+            message: "You are successfully signed up",
+            doctorId: newDoctor._id.toString()
+        });
     } catch (e) {
-        res.status(403).json({ error: e.message });
+        console.error("❌ Error creating doctor:", e);
+        console.error("Error name:", e.name);
+        console.error("Error message:", e.message);
+        
+        // Handle duplicate key error (MongoDB)
+        if (e.code === 11000 || e.name === 'MongoServerError') {
+            return res.status(409).json({ 
+                message: "Doctor with this email already exists. Please use a different email or sign in instead.",
+                error: "Email already registered"
+            });
+        }
+        
+        // Handle validation errors
+        if (e.name === 'ValidationError') {
+            return res.status(400).json({ 
+                message: "Validation error. Please check all required fields.",
+                error: e.message
+            });
+        }
+
+        res.status(500).json({ 
+            message: "Error creating doctor account. Please try again.",
+            error: e.message 
+        });
     }
 });
 
 doctorRouter.post("/doctor/signin", async function (req, res) {
-    const { email, password } = req.body;
-    const doctor = await DoctorModel.findOne({ email });
-
-    if (!doctor) {
-        return res.status(403).json({ message: "User does not exist" });
-    }
-
+    console.log("=== Doctor Signin Request ===");
+    console.log("Email:", req.body.email);
+    
     try {
+        const { email, password } = req.body;
+        
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email and password are required" });
+        }
+
+        const doctor = await DoctorModel.findOne({ email });
+        console.log("Doctor found:", !!doctor);
+        
+        if (!doctor) {
+            console.log("❌ Doctor not found with email:", email);
+            return res.status(403).json({ message: "Doctor does not exist. Please sign up first." });
+        }
+
+        console.log("Comparing password...");
         const comparepassword = await bcrypt.compare(password, doctor.password);
+        
         if (comparepassword) {
             const token = jwt.sign({ id: doctor._id.toString() }, process.env.DOCTOR_JWT_SECRET);
+            console.log("✅ Doctor logged in successfully!");
+            console.log("Doctor ID:", doctor._id.toString());
+            console.log("Doctor Name:", `${doctor.firstName} ${doctor.lastName}`);
+            
             return res.json({
                 message: "You successfully logged in",
                 token,
                 doctorId: doctor._id.toString(),
             });
         }
-        res.status(403).json({ message: "Wrong username or password" });
+        
+        console.log("❌ Wrong password for email:", email);
+        res.status(403).json({ message: "Wrong email or password" });
     } catch (error) {
+        console.error("❌ Error during signin:", error);
         res.status(500).json({ message: "Error logging in", error: error.message });
     }
 });
@@ -159,15 +240,178 @@ doctorRouter.post("/update", doctorMiddleware, async (req, res) => {
 
 doctorRouter.get("/doctor/doctors", doctorMiddleware, async (req, res) => {
     try {
-        const doctor = await DoctorModel.findById(req.doctorId).select("-password");
+        console.log("=== Fetching Doctor Details ===");
+        console.log("Doctor ID from request:", req.doctorId);
+        console.log("Doctor ID type:", typeof req.doctorId);
+
+        if (!req.doctorId) {
+            console.error("❌ Doctor ID is missing from request");
+            return res.status(400).json({ message: "Doctor ID is missing" });
+        }
+
+        // Try to find doctor with the ID
+        let doctor = await DoctorModel.findById(req.doctorId).select("-password");
+
+        // If not found, try to find by string comparison (in case of type mismatch)
+        if (!doctor) {
+            console.log("⚠️ Doctor not found with findById, trying alternative search...");
+            // Try finding all doctors to see what IDs exist
+            const allDoctors = await DoctorModel.find({}).select("_id email firstName lastName");
+            console.log("All doctors in database:", allDoctors.map(d => ({
+                id: d._id.toString(),
+                email: d.email,
+                name: `${d.firstName} ${d.lastName}`
+            })));
+            
+            // Try finding by string comparison
+            doctor = await DoctorModel.findOne({ 
+                $expr: { $eq: [{ $toString: "$_id" }, req.doctorId] }
+            }).select("-password");
+        }
 
         if (!doctor) {
-            return res.status(404).json({ message: "Doctor not found" });
+            console.error("❌ Doctor not found in database with ID:", req.doctorId);
+            console.error("Searched ID value:", req.doctorId);
+            console.error("Searched ID type:", typeof req.doctorId);
+            return res.status(404).json({ 
+                message: "Doctor not found",
+                doctorId: req.doctorId 
+            });
         }
+
+        console.log("✅ Doctor found:", {
+            id: doctor._id.toString(),
+            name: `${doctor.firstName} ${doctor.lastName}`,
+            email: doctor.email
+        });
 
         res.json({ message: "Doctor details fetched successfully", doctor });
     } catch (error) {
+        console.error("❌ Error fetching doctor details:", error);
+        console.error("Error name:", error.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
         res.status(500).json({ message: "Error fetching doctor details", error: error.message });
+    }
+});
+
+// Update doctor profile
+doctorRouter.put("/doctor/profile", doctorMiddleware, upload.single("profileImage"), async (req, res) => {
+    console.log("=== Doctor Profile Update Request ===");
+    console.log("Doctor ID:", req.doctorId);
+    console.log("Request body:", req.body);
+
+    try {
+        const { firstName, lastName, bio, specialization, experience, hospital, email } = req.body;
+
+        // Find the doctor
+        const doctor = await DoctorModel.findById(req.doctorId);
+        if (!doctor) {
+            console.log("❌ Doctor not found");
+            return res.status(404).json({ message: "Doctor not found" });
+        }
+
+        // Validate and update fields
+        const updateData = {};
+        
+        if (firstName !== undefined) {
+            if (firstName.length < 2 || firstName.length > 100) {
+                return res.status(400).json({ message: "First name must be between 2 and 100 characters" });
+            }
+            updateData.firstName = firstName;
+        }
+
+        if (lastName !== undefined) {
+            if (lastName.length < 2 || lastName.length > 20) {
+                return res.status(400).json({ message: "Last name must be between 2 and 20 characters" });
+            }
+            updateData.lastName = lastName;
+        }
+
+        if (bio !== undefined) {
+            updateData.bio = bio;
+        }
+
+        if (specialization !== undefined) {
+            if (specialization.length < 2 || specialization.length > 100) {
+                return res.status(400).json({ message: "Specialization must be between 2 and 100 characters" });
+            }
+            updateData.specialization = specialization;
+        }
+
+        if (experience !== undefined) {
+            updateData.experience = experience;
+        }
+
+        if (hospital !== undefined) {
+            if (hospital.length < 2 || hospital.length > 100) {
+                return res.status(400).json({ message: "Hospital name must be between 2 and 100 characters" });
+            }
+            updateData.hospital = hospital;
+        }
+
+        // Handle email update separately (check for duplicates)
+        if (email !== undefined && email !== doctor.email) {
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                return res.status(400).json({ message: "Invalid email format" });
+            }
+            
+            // Check if email is already taken by another doctor
+            const existingDoctor = await DoctorModel.findOne({ email });
+            if (existingDoctor && existingDoctor._id.toString() !== req.doctorId.toString()) {
+                return res.status(409).json({ message: "Email already registered with another account" });
+            }
+            updateData.email = email;
+        }
+
+        // Handle profile image if uploaded
+        if (req.file) {
+            updateData.profileImage = `/uploads/${req.file.filename}`;
+        }
+
+        // Update the doctor
+        const updatedDoctor = await DoctorModel.findByIdAndUpdate(
+            req.doctorId,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        ).select("-password");
+
+        console.log("✅ Doctor profile updated successfully!");
+        console.log("Updated Doctor:", {
+            id: updatedDoctor._id.toString(),
+            name: `${updatedDoctor.firstName} ${updatedDoctor.lastName}`,
+            email: updatedDoctor.email
+        });
+
+        res.json({
+            message: "Doctor profile updated successfully",
+            doctor: updatedDoctor
+        });
+    } catch (error) {
+        console.error("❌ Error updating doctor profile:", error);
+        console.error("Error name:", error.name);
+        console.error("Error message:", error.message);
+
+        // Handle duplicate key error (MongoDB)
+        if (error.code === 11000 || error.name === 'MongoServerError') {
+            return res.status(409).json({
+                message: "Email already registered with another account",
+                error: "Duplicate email"
+            });
+        }
+
+        // Handle validation errors
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({
+                message: "Validation error. Please check all fields.",
+                error: error.message
+            });
+        }
+
+        res.status(500).json({
+            message: "Error updating doctor profile. Please try again.",
+            error: error.message
+        });
     }
 });
 

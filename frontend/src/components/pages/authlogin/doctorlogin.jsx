@@ -29,12 +29,23 @@ const Auth = () => {
     setMessage("");
     setLoading(true);
 
-    const API_BASE = "https://arogyam-15io.onrender.com";
+    const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
     const endpoint = isSignup ? "/doctor/signup" : "/doctor/signin";
     const url = `${API_BASE}${endpoint}`;
 
-    console.log("Sending request to:", url);
-    console.log("Form Data:", formData);
+    console.log("=== Doctor Auth Request ===");
+    console.log("URL:", url);
+    console.log("Mode:", isSignup ? "SIGNUP" : "SIGNIN");
+    console.log("Form Data:", {
+      email: formData.email,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      specialization: formData.specialization,
+      hospital: formData.hospital,
+      experience: formData.experience,
+      hasBio: !!formData.bio,
+      hasPassword: !!formData.password
+    });
 
     try {
       const response = await fetch(url, {
@@ -44,22 +55,42 @@ const Auth = () => {
         body: JSON.stringify(formData),
       });
 
+      console.log("Response status:", response.status);
+      console.log("Response ok:", response.ok);
+
       let data;
       try {
-        data = await response.json();
-      } catch (_) {
+        const responseText = await response.text();
+        console.log("Response text:", responseText);
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch (parseError) {
+        console.error("Failed to parse response:", parseError);
         data = { message: "Failed to parse response" };
       }
-      console.log("Response:", data); 
+      
+      console.log("Response data:", data); 
 
       if (response.ok && isSignup) {
+        console.log("✅ Signup successful!");
         setIsSignup(false);
-        setMessage("Account created successfully! Please login.");
+        setMessage(data.message || "Account created successfully! Please login.");
         setLoading(false);
+        // Clear form after successful signup
+        setFormData({
+          email: "",
+          firstName: "",
+          lastName: "",
+          password: "",
+          bio: "",
+          specialization: "",
+          experience: "",
+          hospital: "",
+        });
         return;
       }
 
       if (response.ok && !isSignup) {
+        console.log("✅ Login successful!");
         if (data.token) {
           localStorage.setItem("doctorToken", data.token);
           localStorage.setItem("doctortoken", data.token);
@@ -80,9 +111,11 @@ const Auth = () => {
       }
 
       // Handle error responses
-      setMessage(data.message || data.error || "Something went wrong. Please try again.");
+      console.error("❌ Error response:", data);
+      const errorMessage = data.message || data.error || (Array.isArray(data.error) ? data.error.map(e => e.message || e).join(", ") : "Something went wrong. Please try again.");
+      setMessage(errorMessage);
     } catch (error) {
-      console.error("Signup error:", error);
+      console.error("❌ Network error:", error);
       setMessage("Network error! Please check your connection and try again.");
     } finally {
       setLoading(false);
