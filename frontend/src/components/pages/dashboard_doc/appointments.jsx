@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import DoctorLayout from "./DoctorLayout";
 import { FaCalendarCheck, FaCheck, FaEye, FaPlusCircle, FaSearch, FaTimes } from "react-icons/fa";
+import { API_BASE } from "../../../utils/api";
 
 const AppointmentsPage = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const token = localStorage.getItem("doctorToken");
-  const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
 
   useEffect(() => {
     fetchAppointments();

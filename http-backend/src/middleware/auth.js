@@ -1,36 +1,29 @@
-const jwt = require('jsonwebtoken');
-const authMiddleware = (req, res, next) => {
+const { verify } = require('../utils/jwt');
+
+module.exports = async function authMiddleware(req, res, next) {
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Missing token' });
+  }
+  
+  const token = authHeader.split(' ')[1];
+
   try {
-    const authHeader = req.headers.authorization;
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'No token provided' });
-    }
-    
-    const token = authHeader.split(' ')[1];
-    
-    if (!token) {
-      return res.status(401).json({ error: 'Authentication required' });
-    }
-  
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  
+    // if you need doctor vs user, pass 'doctor' as second arg accordingly
+    const decoded = verify(token /*, 'user' or 'doctor' if needed */);
     req.user = decoded;
-    
-    next();
-  } catch (error) {
-    console.error('Auth middleware error:', error);
-    
-    if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({ error: 'Token expired' });
+    return next();
+  } catch (err) {
+    // differentiate invalid signature vs expired etc.
+    if (err.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Token expired' });
     }
-    
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({ error: 'Invalid token' });
+    if (err.name === 'JsonWebTokenError') {
+      // covers invalid signature, malformed token, etc.
+      return res.status(401).json({ message: 'Invalid token signature' });
     }
-    
-    res.status(500).json({ error: 'Authentication failed' });
+    // fallback
+    return res.status(401).json({ message: 'Unauthorized' });
   }
 };
-
-module.exports = authMiddleware; 

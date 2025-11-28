@@ -41,7 +41,8 @@ const CommonFacilities = () => {
       const userId = localStorage.getItem("userId");
       if (!userId) return;
 
-      const response = await fetch(`https://arogyam-15io.onrender.com/register/${userId}`, {
+      const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
+      const response = await fetch(`${API_BASE}/register/${userId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

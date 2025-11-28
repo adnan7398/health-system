@@ -33,16 +33,16 @@ try:
     output = Dense(2, activation='softmax')(dense2)
 
     model_03 = Model(inputs=base_model.input, outputs=output)
-    
+
     if os.path.exists('vgg_unfrozen.h5'):
         model_03.load_weights('vgg_unfrozen.h5')
         print("Pneumonia model loaded successfully")
     else:
         print("Warning: vgg_unfrozen.h5 not found. Pneumonia detection may not work.")
+
 except Exception as e:
     print(f"Warning: Could not load pneumonia model: {e}")
     model_03 = None
-
 
 # -------------------------------
 # Flask App
@@ -246,7 +246,6 @@ def get_result(img_path):
 # -------------------------------
 # Pneumonia API
 # -------------------------------
-
 @app.route('/pneumoniapredict', methods=['POST'])
 def pneumonia_predict():
     try:
@@ -264,6 +263,7 @@ def pneumonia_predict():
         f.save(file_path)
 
         result, confidence = get_result(file_path)
+
         if result is None:
             return jsonify({"error": "Invalid image or model not loaded"}), 400
 
@@ -276,7 +276,6 @@ def pneumonia_predict():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 # -------------------------------
 # Heart Disease Prediction

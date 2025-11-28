@@ -1,0 +1,17 @@
+{
+  "name": "arogyam-ml-backend",
+  "version": "0.1.0",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "multer": "^1.4.5-lts.1"
+    // optional: add "@tensorflow/tfjs-node": "^4.9.0" if you plan to run TF models locally
+  }
+}

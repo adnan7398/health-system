@@ -15,7 +15,8 @@ const EnterPassword = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const res = await axios.get(`https://arogyam-15io.onrender.com/details/${userId}`);
+        const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
+        const res = await axios.get(`${API_BASE}/details/${userId}`);
         setUser(res.data);
         console.log("User details fetched successfully:", res.data);
       } catch (err) {
@@ -28,7 +29,8 @@ const EnterPassword = () => {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("https://arogyam-15io.onrender.com/auth", {
+      const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
+      const res = await axios.post(`${API_BASE}/auth`, {
         userId,
         password,
       });

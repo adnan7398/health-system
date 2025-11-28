@@ -53,7 +53,7 @@ const BookAppointment = () => {
       try {
         setLoading(true);
         setMessage("");
-        const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
+        const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
         const doctorsUrl = `${API_BASE}/doctors`;
         console.log("=== Fetching Doctors ===");
         console.log("URL:", doctorsUrl);
@@ -74,8 +74,9 @@ const BookAppointment = () => {
           } : "No doctors in response");
           
           if (!Array.isArray(data) || data.length === 0) {
-            setMessage("No doctors available at the moment. Please check back later.");
+        setMessage("No doctors available at the moment. Please check back later or contact support.");
             setMessageType("error");
+        console.warn("No doctors found in response");
             setDoctors([]);
             setFilteredDoctors([]);
             return;
@@ -121,11 +122,37 @@ const BookAppointment = () => {
             }
           }
         } else {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.message || "Failed to fetch doctors");
+          let errorData = {};
+          try {
+            errorData = await response.json();
+          } catch (parseError) {
+            console.error("Failed to parse error response:", parseError);
+            errorData = { message: `Server returned status ${response.status}` };
+          }
+          console.error("Error response:", errorData);
+          console.error("Response status:", response.status);
+          console.error("Response statusText:", response.statusText);
+          
+          const errorMessage = errorData.message || errorData.error || `Server Error (${response.status})`;
+          setMessage(errorMessage);
+          setMessageType("error");
+          setDoctors([]);
+          setFilteredDoctors([]);
+          return;
         }
       } catch (error) {
         console.error("Error fetching doctors:", error);
+        console.error("Error name:", error.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
+        
+        // Check if it's a network error
+        if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
+          setMessage("Network error. Please check your connection and make sure the backend server is running.");
+        } else {
+          setMessage(error.message || "Failed to fetch doctors. Please try again later.");
+        }
+        setMessageType("error");
         setDoctors([]);
         setFilteredDoctors([]);
         setMessage(error.message || "Failed to load doctors. Please check your connection and try again.");
@@ -179,7 +206,7 @@ const BookAppointment = () => {
     try {
       setLoadingAvailability(true);
       setAvailabilityMessage("");
-      const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
+      const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
       const params = new URLSearchParams({ doctorId: selectedDoctor.id, date });
       const res = await fetch(`${API_BASE}/doctor-availability?${params.toString()}`);
       
@@ -233,7 +260,7 @@ const BookAppointment = () => {
     try {
       setLoading(true);
       setMessage("");
-      const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
+      const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
       
       // Validate doctor ID before sending
       if (!selectedDoctor || !selectedDoctor.id) {

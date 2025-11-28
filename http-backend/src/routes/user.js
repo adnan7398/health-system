@@ -60,38 +60,80 @@ userRouter.post("/signup", async function (req, res) {
     }
 });
 userRouter.post("/signin", async function (req, res) {
+    console.log("=== User Signin Request ===");
+    console.log("Email:", req.body.email);
+    console.log("JWT_SECRET exists:", !!process.env.JWT_SECRET);
+    
+    try {
     const email = req.body.email;
     const password = req.body.password;
+        
+        if (!email || !password) {
+            return res.status(400).json({
+                message: "Email and password are required"
+            });
+        }
+
     const response = await UserModel.findOne({
         email: email
-    })
+        });
+        
     if (!response) {
-        res.status(403).json({
-            message: "User does not exist"
-        })
-        return
-    }
-    try {
+            console.log("❌ User not found with email:", email);
+            return res.status(403).json({
+                message: "User does not exist. Please sign up first."
+            });
+        }
+
+        console.log("User found:", response.email);
+        console.log("Comparing password...");
+        
         const comparepassword = await bcrypt.compare(password, response.password);
+        
         if (comparepassword) {
+            // Check if JWT_SECRET is set
+            if (!process.env.JWT_SECRET) {
+                console.error("❌ JWT_SECRET environment variable is not set!");
+                return res.status(500).json({ 
+                    message: "Server configuration error. Please contact administrator.",
+                    error: "JWT_SECRET_NOT_SET"
+                });
+            }
+
+            try {
             const token = jwt.sign({
                 id: response._id.toString()
             }, process.env.JWT_SECRET);
-            res.json({
+                
+                console.log("✅ User logged in successfully!");
+                console.log("User ID:", response._id.toString());
+                
+                return res.json({
                 message: "You successfully logged in",
                 token: token,
                 userId: response._id.toString()
             });
+            } catch (tokenError) {
+                console.error("❌ Error creating token:", tokenError);
+                return res.status(500).json({ 
+                    message: "Error creating authentication token. Please try again.",
+                    error: tokenError.message
+                });
+            }
         } else {
-            res.status(403).json({
-                message: "Wrong username or password"
+            console.log("❌ Wrong password for email:", email);
+            return res.status(403).json({
+                message: "Wrong email or password"
             });
         }
     } catch (error) {
-        res.status(403).json({
-            message: "Wrong username or password:",
+        console.error("❌ Error during signin:", error);
+        console.error("Error name:", error.name);
+        console.error("Error message:", error.message);
+        return res.status(500).json({
+            message: "Error logging in. Please try again.",
             error: error.message
-        })
+        });
     }
 })
 userRouter.post("/register", userMiddleware, async function (req, res) {
@@ -141,7 +183,7 @@ userRouter.post("/register", userMiddleware, async function (req, res) {
             phoneNumber,
             address,
         });
-        const qrCodeUrl = `http://localhost:3000/details/${user._id}`;
+        const qrCodeUrl = `${process.env.FRONTEND_URL || process.env.API_URL || 'http://localhost:3000'}/details/${user._id}`;
         const qrCodeDataUrl = await QRCode.toDataURL(qrCodeUrl);
         user.qrCode = qrCodeDataUrl;
         await user.save();
@@ -371,6 +413,29 @@ userRouter.get("/appointments", userMiddleware, async (req, res) => {
 userRouter.get("/doctors", async (req, res) => {
     try {
         console.log("=== /doctors endpoint called ===");
+        console.log("Request URL:", req.url);
+        console.log("Request method:", req.method);
+        console.log("Request origin:", req.headers.origin);
+        
+        // Check database connection
+        const mongoose = require("mongoose");
+        const connectionState = mongoose.connection.readyState;
+        console.log("Database connection state:", connectionState, {
+            0: "disconnected",
+            1: "connected",
+            2: "connecting",
+            3: "disconnecting"
+        }[connectionState]);
+        
+        if (connectionState !== 1) {
+            console.error("❌ Database not connected! Connection state:", connectionState);
+            return res.status(500).json({ 
+                message: "Database connection error. Please try again later.",
+                error: "DATABASE_NOT_CONNECTED",
+                connectionState: connectionState
+            });
+        }
+        
         const doctors = await DoctorModel.find({}).select({
             firstName: 1, 
             lastName: 1, 
@@ -380,8 +445,8 @@ userRouter.get("/doctors", async (req, res) => {
             experience: 1,
             hospital: 1,
             profileImage: 1,
-            email: 1,
-            password: 0 // Explicitly exclude password
+            email: 1
+            // Note: password is automatically excluded when using inclusion projection
         }).lean(); // Use lean() for better performance
         
         console.log("Fetched doctors count:", doctors.length);
@@ -395,6 +460,8 @@ userRouter.get("/doctors", async (req, res) => {
             });
         } else {
             console.log("⚠️ No doctors found in database!");
+            // Return empty array with a helpful message
+            return res.json([]);
         }
         
         // Ensure _id is included and properly formatted
@@ -403,11 +470,18 @@ userRouter.get("/doctors", async (req, res) => {
             _id: doctor._id.toString() // Ensure _id is a string
         }));
         
-        console.log("Returning", formattedDoctors.length, "doctors to client");
+        console.log("✅ Returning", formattedDoctors.length, "doctors to client");
         res.json(formattedDoctors);
     } catch (err) {
         console.error("❌ Error fetching doctors:", err);
-        res.status(500).json({ message: "Server Error", error: err.message });
+        console.error("Error name:", err.name);
+        console.error("Error message:", err.message);
+        console.error("Error stack:", err.stack);
+        res.status(500).json({ 
+            message: "Server Error", 
+            error: err.message,
+            details: "Failed to fetch doctors from database"
+        });
     }
 });
 
@@ -510,7 +584,7 @@ userRouter.post("/register-aadhaar", userMiddleware, async (req, res) => {
             isHealthCardRegistered: user.isHealthCardRegistered
         });
 
-        const qrCodeUrl = `http://localhost:3000/details/${user._id}`;
+        const qrCodeUrl = `${process.env.FRONTEND_URL || process.env.API_URL || 'http://localhost:3000'}/details/${user._id}`;
         const qrCodeDataUrl = await QRCode.toDataURL(qrCodeUrl);
         user.qrCode = qrCodeDataUrl;
         await user.save();
@@ -600,7 +674,7 @@ userRouter.put("/update-health-card", userMiddleware, async (req, res) => {
             isHealthCardRegistered: user.isHealthCardRegistered
         });
 
-        const qrCodeUrl = `http://localhost:3000/details/${user._id}`;
+        const qrCodeUrl = `${process.env.FRONTEND_URL || process.env.API_URL || 'http://localhost:3000'}/details/${user._id}`;
         const qrCodeDataUrl = await QRCode.toDataURL(qrCodeUrl);
         user.qrCode = qrCodeDataUrl;
         await user.save();

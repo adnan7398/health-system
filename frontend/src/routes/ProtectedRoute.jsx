@@ -20,7 +20,8 @@ const ProtectedRoute = ({ children }) => {
     const verify = async () => {
       setChecking(true);
       try {
-        const res = await fetch("https://arogyam-15io.onrender.com/auth/verify", {
+        const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
+        const res = await fetch(`${API_BASE}/auth/verify`, {
           method: "GET",
           credentials: "include",
         });

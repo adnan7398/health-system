@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import DoctorLayout from "./DoctorLayout";
+import { API_BASE } from "../../../utils/api";
 import { 
   FaUser, 
   FaUserPlus, 
@@ -151,7 +152,6 @@ const PatientsPage = () => {
   const [sortBy, setSortBy] = useState("name");
   const [apiPatients, setApiPatients] = useState([]);
   const token = localStorage.getItem("doctorToken");
-  const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
   
   // Fetch real patients from API
   useEffect(() => {

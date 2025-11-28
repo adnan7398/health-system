@@ -71,9 +71,10 @@ const Auth = () => {
     }
 
     const endpoint = isSignup ? "/signup" : "/signin";
+    const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
     try {
       const response = await fetch(
-        `https://arogyam-15io.onrender.com${endpoint}`,
+        `${API_BASE}${endpoint}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -82,7 +83,17 @@ const Auth = () => {
         }
       );
       const data = await response.json();
+      console.log("Login response:", data);
+      console.log("Response status:", response.status);
+      
+      // Set message with better error handling
+      if (data.message) {
       setMessage(data.message);
+      } else if (data.error) {
+        setMessage(data.error);
+      } else {
+        setMessage("An error occurred. Please try again.");
+      }
 
       if (response.ok && isSignup) {
         setIsSignup(false);
@@ -177,8 +188,10 @@ const Auth = () => {
     }
   };
 
-  const handleSocialLogin = (provider) =>
-    (window.location.href = `https://arogyam-15io.onrender.com${provider}`);
+  const handleSocialLogin = (provider) => {
+    const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
+    window.location.href = `${API_BASE}${provider}`;
+  };
 
   const features = [
     {

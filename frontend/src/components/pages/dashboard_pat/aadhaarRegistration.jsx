@@ -34,7 +34,8 @@ const AadhaarRegistration = () => {
       const token = localStorage.getItem("token") || sessionStorage.getItem("token");
       if (!token) return;
       
-      const response = await fetch("https://arogyam-15io.onrender.com/health-card-status", {
+      const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
+      const response = await fetch(`${API_BASE}/health-card-status`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -121,7 +122,8 @@ const AadhaarRegistration = () => {
       let useRegisterEndpoint = false;
       
       try {
-        response = await fetch("https://arogyam-15io.onrender.com/register-aadhaar", {
+        const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
+        response = await fetch(`${API_BASE}/register-aadhaar`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -151,7 +153,8 @@ const AadhaarRegistration = () => {
           address: formData.address
         };
         
-        response = await fetch("https://arogyam-15io.onrender.com/register", {
+        const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
+        response = await fetch(`${API_BASE}/register`, {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`,

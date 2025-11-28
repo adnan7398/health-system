@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { useSidebar } from "./SidebarContext";
+import { API_BASE } from "../../../utils/api";
 
 const DoctorSidebar = () => {
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { isOpen, toggleSidebar } = useSidebar();
-  const API_BASE = import.meta.env.VITE_API_BASE || "https://arogyam-15io.onrender.com";
 
   useEffect(() => {
     const fetchDoctorDetails = async () => {
@@ -35,16 +35,25 @@ const DoctorSidebar = () => {
 
         if (response.ok) {
           if (data.doctor) {
-            setDoctor(data.doctor);
+          setDoctor(data.doctor);
             console.log("Doctor details loaded successfully");
           } else {
             console.error("Doctor data is missing in response:", data);
           }
         } else {
           console.error("Error fetching doctor:", data.message || "Unknown error");
-          // If token is invalid, redirect to login
-          if (response.status === 403 || response.status === 401) {
+          // If token is invalid or doctor not found, redirect to login
+          if (response.status === 403 || response.status === 401 || data.requiresLogin) {
+            console.log("Clearing invalid token and redirecting to login...");
             localStorage.removeItem("doctorToken");
+            localStorage.removeItem("doctortoken");
+            sessionStorage.removeItem("doctorToken");
+            sessionStorage.removeItem("doctortoken");
+            localStorage.removeItem("doctorId");
+            sessionStorage.removeItem("doctorId");
+            localStorage.removeItem("userRole");
+            // Show a message before redirecting
+            alert(data.message || "Your session has expired. Please log in again.");
             navigate("/doctorlogin");
           }
         }

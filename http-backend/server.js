@@ -13,9 +13,13 @@ const cors = require('cors');
 
 const allowedOrigins = [
   'http://localhost:5173',
+  'http://127.0.0.1:5173',
   'https://health-system-flame.vercel.app',
-  'https://arogyam.vercel.app', // add this if needed too
-];
+  'https://arogyam.vercel.app',
+  'https://arogyam-15io.onrender.com',
+  process.env.FRONTEND_URL,
+  process.env.CLIENT_URL
+].filter(Boolean); // Remove undefined values
 
 app.use(cors({
   origin: function (origin, callback) {

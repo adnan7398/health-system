@@ -117,6 +117,8 @@ doctorRouter.post("/doctor/signup", upload.single("profileImage"), async functio
 doctorRouter.post("/doctor/signin", async function (req, res) {
     console.log("=== Doctor Signin Request ===");
     console.log("Email:", req.body.email);
+    console.log("DOCTOR_JWT_SECRET exists:", !!process.env.DOCTOR_JWT_SECRET);
+    console.log("DOCTOR_JWT_SECRET length:", process.env.DOCTOR_JWT_SECRET ? process.env.DOCTOR_JWT_SECRET.length : 0);
     
     try {
         const { email, password } = req.body;
@@ -133,11 +135,30 @@ doctorRouter.post("/doctor/signin", async function (req, res) {
             return res.status(403).json({ message: "Doctor does not exist. Please sign up first." });
         }
 
+        console.log("Doctor ID from database:", doctor._id.toString());
         console.log("Comparing password...");
         const comparepassword = await bcrypt.compare(password, doctor.password);
         
         if (comparepassword) {
+            // Double-check that doctor still exists in database before creating token
+            const verifiedDoctor = await DoctorModel.findById(doctor._id);
+            if (!verifiedDoctor) {
+                console.error("❌ Doctor was deleted after password check");
+                return res.status(404).json({ message: "Doctor account no longer exists. Please contact support." });
+            }
+
+            // Check if JWT secret is set
+            if (!process.env.DOCTOR_JWT_SECRET) {
+                console.error("❌ DOCTOR_JWT_SECRET environment variable is not set!");
+                return res.status(500).json({ 
+                    message: "Server configuration error. Please contact administrator.",
+                    error: "JWT_SECRET_NOT_SET"
+                });
+            }
+
+            try {
             const token = jwt.sign({ id: doctor._id.toString() }, process.env.DOCTOR_JWT_SECRET);
+                console.log("✅ Token created successfully");
             console.log("✅ Doctor logged in successfully!");
             console.log("Doctor ID:", doctor._id.toString());
             console.log("Doctor Name:", `${doctor.firstName} ${doctor.lastName}`);
@@ -147,6 +168,13 @@ doctorRouter.post("/doctor/signin", async function (req, res) {
                 token,
                 doctorId: doctor._id.toString(),
             });
+            } catch (tokenError) {
+                console.error("❌ Error creating token:", tokenError);
+                return res.status(500).json({ 
+                    message: "Error creating authentication token. Please try again.",
+                    error: tokenError.message
+                });
+            }
         }
         
         console.log("❌ Wrong password for email:", email);
@@ -249,33 +277,42 @@ doctorRouter.get("/doctor/doctors", doctorMiddleware, async (req, res) => {
             return res.status(400).json({ message: "Doctor ID is missing" });
         }
 
-        // Try to find doctor with the ID
-        let doctor = await DoctorModel.findById(req.doctorId).select("-password");
-
-        // If not found, try to find by string comparison (in case of type mismatch)
-        if (!doctor) {
-            console.log("⚠️ Doctor not found with findById, trying alternative search...");
-            // Try finding all doctors to see what IDs exist
-            const allDoctors = await DoctorModel.find({}).select("_id email firstName lastName");
-            console.log("All doctors in database:", allDoctors.map(d => ({
-                id: d._id.toString(),
-                email: d.email,
-                name: `${d.firstName} ${d.lastName}`
-            })));
-            
-            // Try finding by string comparison
-            doctor = await DoctorModel.findOne({ 
-                $expr: { $eq: [{ $toString: "$_id" }, req.doctorId] }
-            }).select("-password");
+        // Convert to ObjectId if it's a string
+        const mongoose = require("mongoose");
+        let doctorId = req.doctorId;
+        
+        // If it's a string, try to convert to ObjectId
+        if (typeof doctorId === 'string' && mongoose.Types.ObjectId.isValid(doctorId)) {
+            doctorId = new mongoose.Types.ObjectId(doctorId);
         }
 
+        console.log("Searching for doctor with ID:", doctorId);
+        
+        // Try to find doctor with the ID
+        const doctor = await DoctorModel.findById(doctorId).select("-password");
+
         if (!doctor) {
-            console.error("❌ Doctor not found in database with ID:", req.doctorId);
+            console.error("❌ Doctor not found in database");
             console.error("Searched ID value:", req.doctorId);
             console.error("Searched ID type:", typeof req.doctorId);
-            return res.status(404).json({ 
-                message: "Doctor not found",
-                doctorId: req.doctorId 
+            
+            // List all doctors for debugging (remove in production)
+            try {
+                const allDoctors = await DoctorModel.find({}).select("_id email firstName lastName").limit(5);
+                console.log("Sample doctors in database:", allDoctors.map(d => ({
+                    id: d._id.toString(),
+                    email: d.email,
+                    name: `${d.firstName} ${d.lastName}`
+                })));
+            } catch (err) {
+                console.error("Error listing doctors:", err);
+            }
+            
+            // Return 401 (Unauthorized) instead of 404 to trigger re-login
+            return res.status(401).json({ 
+                message: "Your session has expired or your account no longer exists. Please log in again.",
+                code: "DOCTOR_NOT_FOUND",
+                requiresLogin: true
             });
         }
 
@@ -426,8 +463,8 @@ doctorRouter.get("/doctor", async (req, res) => {
             experience: 1,
             hospital: 1,
             profileImage: 1,
-            email: 1,
-            password: 0 // Explicitly exclude password
+            email: 1
+            // Note: password is automatically excluded when using inclusion projection
         }).lean();
         
         console.log("Fetched doctors from /doctor endpoint:", doctors.length);

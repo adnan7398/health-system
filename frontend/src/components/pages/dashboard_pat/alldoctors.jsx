@@ -10,7 +10,7 @@ const AllDoctors = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
+        const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
         // Use /doctors endpoint which returns all doctor fields
         const response = await axios.get(`${API_BASE}/doctors`);
         console.log("Fetched Doctors:", response.data); // Debugging

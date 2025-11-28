@@ -31,7 +31,8 @@ const PatientAppointments = () => {
   const fetchAppointments = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/appointments", {
+      const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
+      const response = await fetch(`${API_BASE}/appointments`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

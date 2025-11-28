@@ -41,7 +41,7 @@ const DoctorSchema = new mongoose.Schema({
     password:{type:String,required:true}, 
     bio: {type:String},
     experience: {type:String,},
-    hospital: {type: String},
+    hospital: {type: String}, 
     profileImage: { type: String },
     appointments: [
       {

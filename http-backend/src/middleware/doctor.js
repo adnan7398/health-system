@@ -16,6 +16,9 @@ function doctorMiddleware(req, res, next) {
         return res.status(500).json({ message: "Server configuration error" });
     }
 
+    console.log("DOCTOR_JWT_SECRET exists:", !!process.env.DOCTOR_JWT_SECRET);
+    console.log("Token received (first 20 chars):", token.substring(0, 20) + "...");
+
     try {
         const decoded = jwt.verify(token, process.env.DOCTOR_JWT_SECRET);
         console.log("Token decoded successfully:", decoded);

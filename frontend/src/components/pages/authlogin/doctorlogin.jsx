@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaHeartbeat, FaEye, FaEyeSlash, FaGoogle, FaFacebook, FaApple, FaArrowRight, FaCheckCircle, FaShieldAlt, FaUserMd, FaStethoscope, FaHospital, FaGraduationCap, FaClock, FaAward, FaSpinner } from "react-icons/fa";
+import { API_BASE } from "../../../utils/api";
 
 const Auth = () => {
   const [isSignup, setIsSignup] = useState(false);
@@ -29,7 +30,6 @@ const Auth = () => {
     setMessage("");
     setLoading(true);
 
-    const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
     const endpoint = isSignup ? "/doctor/signup" : "/doctor/signin";
     const url = `${API_BASE}${endpoint}`;
 
@@ -91,19 +91,34 @@ const Auth = () => {
 
       if (response.ok && !isSignup) {
         console.log("✅ Login successful!");
-        if (data.token) {
+        console.log("Token received:", data.token ? "Yes" : "No");
+        console.log("Token length:", data.token ? data.token.length : 0);
+        console.log("Doctor ID:", data.doctorId);
+        
+        if (!data.token) {
+          console.error("❌ No token received in response!");
+          setMessage("Login failed: No authentication token received. Please try again.");
+          return;
+        }
+
+        // Store token in multiple places for compatibility
           localStorage.setItem("doctorToken", data.token);
           localStorage.setItem("doctortoken", data.token);
           sessionStorage.setItem("doctorToken", data.token);
           sessionStorage.setItem("doctortoken", data.token);
-        }
+        
         if (data.doctorId) {
           localStorage.setItem("doctorId", data.doctorId);
           sessionStorage.setItem("doctorId", data.doctorId);
         }
+        
         localStorage.setItem("userRole", "doctor");
         sessionStorage.setItem("userRole", "doctor");
+        
+        console.log("✅ Token stored successfully");
         setMessage(data.message || "Login successful! Redirecting...");
+        
+        // Small delay to ensure storage is complete
         setTimeout(() => {
           navigate("/doctordashboard");
         }, 500);
@@ -123,7 +138,7 @@ const Auth = () => {
   };
 
   const handleSocialLogin = (provider) => {
-    window.location.href = `https://arogyam-15io.onrender.com/doctor/${provider}`;
+    window.location.href = `${API_BASE}/doctor/${provider}`;
   };
 
   const specializations = [
