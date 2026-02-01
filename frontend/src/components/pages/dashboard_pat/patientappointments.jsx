@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Calendar, 
-  Clock, 
-  User, 
-  MapPin, 
-  Phone, 
-  Mail, 
+import {
+  Calendar,
+  Clock,
+  User,
+  MapPin,
+  Phone,
+  Mail,
   X,
   ChevronRight,
   AlertCircle,
@@ -20,11 +20,14 @@ const PatientAppointments = () => {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const userId = localStorage.getItem("userId");
+  const userId = sessionStorage.getItem("userId") || localStorage.getItem("userId");
 
   useEffect(() => {
     if (userId) {
       fetchAppointments();
+    } else {
+      setLoading(false);
+      setError("Please log in to view your appointments.");
     }
   }, [userId]);
 
@@ -32,9 +35,10 @@ const PatientAppointments = () => {
     try {
       setLoading(true);
       const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
+      const token = sessionStorage.getItem("token") || localStorage.getItem("token");
       const response = await fetch(`${API_BASE}/appointments`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const data = await response.json();
@@ -98,84 +102,84 @@ const PatientAppointments = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-6 py-10">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">My Appointments</h1>
-            <p className="text-gray-600">Manage and view your upcoming and past appointments</p>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">My Appointments</h1>
+          <p className="text-gray-600">Manage and view your upcoming and past appointments</p>
+        </div>
+
+        {loading && (
+          <div className="flex items-center justify-center py-12">
+            <Loader className="w-8 h-8 animate-spin text-emerald-600" />
+            <span className="ml-2 text-gray-600">Loading appointments...</span>
           </div>
+        )}
 
-          {loading && (
-            <div className="flex items-center justify-center py-12">
-              <Loader className="w-8 h-8 animate-spin text-emerald-600" />
-              <span className="ml-2 text-gray-600">Loading appointments...</span>
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center">
+              <AlertCircle className="w-5 h-5 text-red-500 mr-2" />
+              <span className="text-red-700">{error}</span>
             </div>
-          )}
+          </div>
+        )}
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-              <div className="flex items-center">
-                <AlertCircle className="w-5 h-5 text-red-500 mr-2" />
-                <span className="text-red-700">{error}</span>
-              </div>
-            </div>
-          )}
-
-          {!loading && !error && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {appointments.slice(0, 6).map((appointment) => (
-                <div
-                  key={appointment._id}
-                  className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 cursor-pointer"
-                  onClick={() => handleOpenModal(appointment)}
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(appointment.status)}`}>
-                      {getStatusIcon(appointment.status)}
-                      <span className="ml-1 capitalize">{appointment.status || 'Pending'}</span>
-                    </span>
-                    <ChevronRight className="w-5 h-5 text-gray-400" />
-                  </div>
-
-                  <div className="mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                      Dr. {appointment.doctorId?.firstName} {appointment.doctorId?.lastName}
-                    </h3>
-                    <p className="text-emerald-700 text-sm font-medium">
-                      {appointment.doctorId?.specialization}
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center text-gray-600">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      <span className="text-sm">
-                        {appointment.date ? formatDate(appointment.date) : 'Date TBD'}
-                      </span>
-                    </div>
-                    {appointment.time && (
-                      <div className="flex items-center text-gray-600">
-                        <Clock className="w-4 h-4 mr-2" />
-                        <span className="text-sm">{appointment.time}</span>
-                      </div>
-                    )}
-                  </div>
+        {!loading && !error && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {appointments.slice(0, 6).map((appointment) => (
+              <div
+                key={appointment._id}
+                className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 cursor-pointer"
+                onClick={() => handleOpenModal(appointment)}
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(appointment.status)}`}>
+                    {getStatusIcon(appointment.status)}
+                    <span className="ml-1 capitalize">{appointment.status || 'Pending'}</span>
+                  </span>
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
                 </div>
-              ))}
-            </div>
-          )}
 
-          {!loading && !error && appointments.length === 0 && (
-            <div className="text-center py-12">
-              <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No appointments found</h3>
-              <p className="text-gray-600">You don't have any appointments scheduled yet.</p>
-            </div>
-          )}
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    Dr. {appointment.doctorId?.firstName} {appointment.doctorId?.lastName}
+                  </h3>
+                  <p className="text-emerald-700 text-sm font-medium">
+                    {appointment.doctorId?.specialization}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center text-gray-600">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    <span className="text-sm">
+                      {appointment.date ? formatDate(appointment.date) : 'Date TBD'}
+                    </span>
+                  </div>
+                  {appointment.time && (
+                    <div className="flex items-center text-gray-600">
+                      <Clock className="w-4 h-4 mr-2" />
+                      <span className="text-sm">{appointment.time}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!loading && !error && appointments.length === 0 && (
+          <div className="text-center py-12">
+            <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No appointments found</h3>
+            <p className="text-gray-600">You don't have any appointments scheduled yet.</p>
+          </div>
+        )}
       </div>
 
       {isModalOpen && selectedAppointment && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-            <div 
+            <div
               className="fixed inset-0 bg-gray-500 bg-opacity-75 backdrop-blur-sm transition-opacity"
               onClick={() => setIsModalOpen(false)}
             ></div>

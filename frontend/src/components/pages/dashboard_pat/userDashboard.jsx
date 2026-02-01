@@ -28,7 +28,7 @@ const UserDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [userName, setUserName] = useState("User");
-  
+
   useEffect(() => {
     // Get user info from storage
     let userInfoStr = localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo");
@@ -119,65 +119,41 @@ const UserDashboard = () => {
     }
   ]);
 
-  const [recentActivity] = useState([
-    {
-      id: 1,
-      type: "appointment",
-      message: "Appointment booked with Dr. Sarah Wilson",
-      time: "2 days ago",
-      icon: Calendar
-    },
-    {
-      id: 2,
-      type: "report",
-      message: "Blood Test Results uploaded",
-      time: "5 days ago",
-      icon: FileText
-    },
-    {
-      id: 3,
-      type: "consultation",
-      message: "Consultation with Dr. Michael Chen completed",
-      time: "1 week ago",
-      icon: UserCheck
-    }
-  ]);
-
   const quickActions = [
     {
       nameKey: "dashboard.quickActions.items.bookAppointment.name",
       descKey: "dashboard.quickActions.items.bookAppointment.description",
       icon: Calendar,
       path: "/bookappointment",
-      gradient: "from-teal-500 to-emerald-600"
+      color: "bg-blue-50 text-blue-600"
     },
     {
       nameKey: "dashboard.quickActions.items.viewReports.name",
       descKey: "dashboard.quickActions.items.viewReports.description",
       icon: FileText,
       path: "/patientreport",
-      gradient: "from-emerald-500 to-teal-600"
+      color: "bg-primary-50 text-primary-600"
     },
     {
       nameKey: "dashboard.quickActions.items.aiAssistant.name",
       descKey: "dashboard.quickActions.items.aiAssistant.description",
       icon: Bot,
       path: "/chatbot",
-      gradient: "from-teal-600 to-cyan-600"
+      color: "bg-purple-50 text-purple-600"
     },
     {
       nameKey: "dashboard.quickActions.items.healthCard.name",
       descKey: "dashboard.quickActions.items.healthCard.description",
       icon: QrCode,
       path: "/scanner",
-      gradient: "from-cyan-500 to-teal-600"
+      color: "bg-emerald-50 text-emerald-600"
     },
     {
       nameKey: "Lab Report Analyzer",
       descKey: "Analyze lab reports with desi remedies",
       icon: FlaskConical,
       path: "/labreport",
-      gradient: "from-orange-500 to-red-600"
+      color: "bg-orange-50 text-orange-600"
     }
   ];
 
@@ -225,7 +201,7 @@ const UserDashboard = () => {
     switch (status) {
       case 'Confirmed':
       case 'Completed':
-        return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+        return 'bg-green-100 text-green-700 border-green-200';
       case 'Pending':
       case 'In Progress':
         return 'bg-amber-100 text-amber-700 border-amber-200';
@@ -237,7 +213,7 @@ const UserDashboard = () => {
   const getMetricStatusColor = (status) => {
     switch (status) {
       case 'normal':
-        return 'text-emerald-600 bg-emerald-50 border-emerald-100';
+        return 'text-primary-600 bg-primary-50 border-primary-100';
       case 'warning':
         return 'text-amber-600 bg-amber-50 border-amber-100';
       case 'critical':
@@ -248,290 +224,205 @@ const UserDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
       {/* Welcome Header */}
-      <section className="bg-gradient-to-r from-teal-600 via-teal-700 to-emerald-700 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <section className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div>
-              <h1 className="text-4xl font-bold mb-2">{t('dashboard.welcome', { userName })}</h1>
-              <p className="text-xl text-teal-100 mb-4">
-                {t('dashboard.overview')}
-              </p>
-              <div className="flex items-center gap-4 text-teal-100">
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  <span className="text-sm">{currentTime}</span>
+              <h1 className="text-3xl font-heading font-bold mb-2 text-slate-900">{t('dashboard.welcome', { userName })}</h1>
+              <div className="flex items-center gap-4 text-slate-500">
+                <span>{t('dashboard.overview')}</span>
+                <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-xs font-medium">
+                  <Clock className="w-3 h-3" />
+                  <span>{currentTime}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  <span className="text-sm">{new Date().toLocaleDateString()}</span>
+                <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-xs font-medium">
+                  <Calendar className="w-3 h-3" />
+                  <span>{new Date().toLocaleDateString()}</span>
                 </div>
               </div>
             </div>
-            <div className="mt-6 md:mt-0">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                    <Heart className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-teal-100">{t('dashboard.healthScore')}</p>
-                    <p className="text-2xl font-bold">92/100</p>
-                  </div>
+
+            <div className="mt-6 md:mt-0 flex items-center gap-4">
+              <div className="bg-primary-50 p-4 rounded-xl border border-primary-100 flex items-center gap-3">
+                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary-600 shadow-sm">
+                  <Heart className="w-5 h-5 fill-current" />
                 </div>
-                <p className="text-xs text-teal-200">{t('dashboard.healthStatusExcellent')}</p>
+                <div>
+                  <p className="text-xs text-primary-600 font-semibold uppercase">{t('dashboard.healthScore')}</p>
+                  <p className="text-xl font-bold text-primary-800">92/100</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Quick Actions */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('dashboard.quickActions.title')}</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {t('dashboard.quickActions.subtitle')}
-            </p>
-          </div>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Quick Actions */}
+        <section>
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-xl font-bold text-slate-900">{t('dashboard.quickActions.title')}</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {quickActions.map((action, index) => (
               <div
                 key={index}
                 onClick={() => handleNavigation(action.path)}
-                className={`bg-gradient-to-br ${action.gradient} p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 group relative overflow-hidden`}
+                className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-primary-200 transition-all cursor-pointer group"
               >
-                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative z-10">
-                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
-                    <action.icon className="text-white w-8 h-8" />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2 text-center group-hover:text-white/90 transition-colors duration-200">
-                    {t(action.nameKey)}
-                  </h3>
-                  <p className="text-white/80 text-sm text-center leading-relaxed">
-                    {t(action.descKey)}
-                  </p>
-                  <div className="flex justify-center mt-4">
-                    <ArrowRight className="w-5 h-5 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
-                  </div>
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${action.color} group-hover:scale-110 transition-transform`}>
+                  <action.icon className="w-6 h-6" />
                 </div>
+                <h3 className="font-semibold text-slate-900 mb-1 group-hover:text-primary-700 transition-colors">
+                  {t(action.nameKey) || action.nameKey}
+                </h3>
+                <p className="text-xs text-slate-500 line-clamp-2">
+                  {t(action.descKey)}
+                </p>
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Health Metrics */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('dashboard.metrics.title')}</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              {t('dashboard.metrics.subtitle')}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Health Metrics */}
+        <section>
+          <h2 className="text-xl font-bold text-slate-900 mb-6">{t('dashboard.metrics.title')}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {healthMetrics.map((metric, index) => (
-              <div key={index} className={`${getMetricStatusColor(metric.status)} p-6 rounded-2xl border-2 hover:shadow-lg transition-all duration-300 group`}>
+              <div key={index} className={`p-6 rounded-xl border hover:shadow-md transition-all ${getMetricStatusColor(metric.status)} bg-white`}>
                 <div className="flex items-center justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                    metric.status === 'normal' ? 'bg-emerald-100' :
-                    metric.status === 'warning' ? 'bg-amber-100' : 'bg-red-100'
-                  }`}>
-                    <metric.icon className={`w-6 h-6 ${
-                      metric.status === 'normal' ? 'text-emerald-600' :
-                      metric.status === 'warning' ? 'text-amber-600' : 'text-red-600'
-                    }`} />
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center bg-slate-50`}>
+                    <metric.icon className="w-5 h-5 opacity-80" />
                   </div>
                   {metric.trend && (
-                    <div className={`flex items-center gap-1 ${
-                      metric.trend === 'up' ? 'text-emerald-600' :
-                      metric.trend === 'down' ? 'text-red-600' : 'text-gray-600'
-                    }`}>
-                      <TrendingUp className={`w-4 h-4 ${metric.trend === 'down' ? 'rotate-180' : ''}`} />
+                    <div className={`flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-white/50`}>
+                      <TrendingUp className={`w-3 h-3 ${metric.trend === 'down' ? 'rotate-180' : ''}`} />
+                      <span>{metric.trend === 'up' ? '+2%' : 'Active'}</span>
                     </div>
                   )}
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-2 group-hover:scale-105 transition-transform duration-200">
+                <h3 className="text-3xl font-bold text-slate-900 mb-1">
                   {metric.value}
                 </h3>
-                <p className="text-gray-600 font-medium">{t(metric.label)}</p>
-                <div className="mt-3 flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-emerald-500" />
-                  <span className="text-xs text-gray-500">{t('dashboard.metrics.normalRange')}</span>
-                </div>
+                <p className="text-sm font-medium opacity-80">{t(metric.label)}</p>
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Appointments and Reports Grid */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Upcoming Appointments */}
-            <div>
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold text-gray-900">{t('dashboard.appointments.title')}</h2>
-                <button
-                  onClick={() => handleNavigation('/patientappointments')}
-                  className="text-teal-600 hover:text-teal-700 font-medium flex items-center gap-2 transition-colors duration-200"
-                >
-                  {t('common.viewAll')}
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
+        {/* Dashboard Grid: Appointments & Reports */}
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Upcoming Appointments */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-slate-900">{t('dashboard.appointments.title')}</h2>
+              <button
+                onClick={() => handleNavigation('/patientappointments')}
+                className="text-primary-600 hover:text-primary-700 text-sm font-medium flex items-center gap-1"
+              >
+                {t('common.viewAll')} <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
 
-              <div className="space-y-4">
-                {upcomingAppointments.map((appointment) => (
-                  <div key={appointment.id} className="bg-gradient-to-r from-gray-50 to-white p-6 rounded-2xl border border-gray-100 hover:shadow-lg transition-all duration-300 group">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
-                          <Stethoscope className="w-7 h-7 text-teal-600" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-bold text-gray-900 mb-1">{appointment.doctor}</h3>
-                          <p className="text-gray-600 font-medium">{appointment.specialty}</p>
-                        </div>
-                      </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(appointment.status)}`}>
-                        {appointment.status}
-                      </span>
+            <div className="space-y-3">
+              {upcomingAppointments.map((appointment) => (
+                <div key={appointment.id} className="bg-white p-5 rounded-xl border border-slate-200 hover:border-primary-200 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center text-primary-600">
+                      <Stethoscope className="w-6 h-6" />
                     </div>
-                    <div className="flex items-center gap-6 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-teal-500" />
-                        <span className="font-medium">{new Date(appointment.date).toLocaleDateString()}</span>
+                    <div>
+                      <h3 className="font-bold text-slate-900">{appointment.doctor}</h3>
+                      <p className="text-slate-500 text-sm">{appointment.specialty}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
+                    <div className="text-sm text-slate-600">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Calendar className="w-4 h-4 text-slate-400" />
+                        <span>{new Date(appointment.date).toLocaleDateString()}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-teal-500" />
-                        <span className="font-medium">{appointment.time}</span>
+                        <Clock className="w-4 h-4 text-slate-400" />
+                        <span>{appointment.time}</span>
                       </div>
                     </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(appointment.status)}`}>
+                      {appointment.status}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Health Tips */}
+            <div className="mt-8">
+              <h2 className="text-xl font-bold text-slate-900 mb-6">{t('dashboard.tips.title')}</h2>
+              <div className="grid md:grid-cols-3 gap-4">
+                {healthTips.map((tip, index) => (
+                  <div key={index} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center hover:-translate-y-1 transition-transform">
+                    <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <tip.icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-bold text-slate-900 mb-2 text-sm">{t(tip.titleKey)}</h3>
+                    <p className="text-xs text-slate-500 line-clamp-3">{t(tip.descriptionKey)}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Recent Reports */}
-            <div>
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold text-gray-900">{t('dashboard.reports.title')}</h2>
-                <button
-                  onClick={() => handleNavigation('/patientreport')}
-                  className="text-teal-600 hover:text-teal-700 font-medium flex items-center gap-2 transition-colors duration-200"
-                >
-                  {t('common.viewAll')}
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
+          </div>
 
-              <div className="space-y-4">
-                {recentReports.map((report) => (
-                  <div key={report.id} className="bg-gradient-to-r from-gray-50 to-white p-6 rounded-2xl border border-gray-100 hover:shadow-lg transition-all duration-300 group cursor-pointer">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
-                          <FlaskConical className="w-6 h-6 text-teal-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-gray-900 mb-1">{report.title}</h3>
-                          <p className="text-sm text-gray-600 font-medium">{report.type}</p>
-                        </div>
-                      </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(report.status)}`}>
-                        {report.status}
-                      </span>
+          {/* Right Column: Reports & CTA */}
+          <div className="space-y-8">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-slate-900">{t('dashboard.reports.title')}</h2>
+              <button
+                onClick={() => handleNavigation('/patientreport')}
+                className="text-primary-600 hover:text-primary-700 text-sm font-medium flex items-center gap-1"
+              >
+                {t('common.viewAll')} <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+              {recentReports.map((report, idx) => (
+                <div key={report.id} className={`p-4 hover:bg-slate-50 cursor-pointer transition-colors flex items-center justify-between ${idx !== recentReports.length - 1 ? 'border-b border-slate-100' : ''}`}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
+                      <FileText className="w-5 h-5" />
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-500 font-medium">{new Date(report.date).toLocaleDateString()}</span>
-                      <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-teal-600 group-hover:translate-x-1 transition-all duration-200" />
+                    <div>
+                      <p className="font-semibold text-slate-900 text-sm">{report.title}</p>
+                      <p className="text-xs text-slate-500">{new Date(report.date).toLocaleDateString()}</p>
                     </div>
                   </div>
-                ))}
-              </div>
+                  <ArrowRight className="w-4 h-4 text-slate-300" />
+                </div>
+              ))}
+            </div>
+
+            {/* Promo / CTA Card */}
+            <div className="bg-gradient-to-br from-primary-600 to-primary-800 rounded-2xl p-6 text-white relative overflow-hidden">
+              <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+              <h3 className="text-xl font-bold mb-2 z-10 relative">Need AI Asistance?</h3>
+              <p className="text-primary-100 text-sm mb-6 z-10 relative">Chat with our advanced AI to understand your symptoms better.</p>
+              <button
+                onClick={() => handleNavigation('/chatbot')}
+                className="w-full py-3 bg-white text-primary-700 font-bold rounded-xl hover:bg-primary-50 transition-colors flex items-center justify-center gap-2"
+              >
+                <Bot className="w-5 h-5" /> Start Chat
+              </button>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Health Tips */}
-      <section className="py-16 bg-gradient-to-br from-teal-50 to-emerald-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('dashboard.tips.title')}</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              {t('dashboard.tips.subtitle')}
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {healthTips.map((tip, index) => (
-              <div key={index} className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 text-center hover:shadow-2xl transition-all duration-300 group">
-                <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <tip.icon className="w-10 h-10 text-teal-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{t(tip.titleKey)}</h3>
-                <p className="text-gray-600 leading-relaxed">{t(tip.descriptionKey)}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="py-20 bg-gradient-to-r from-teal-600 via-teal-700 to-emerald-700 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">{t('dashboard.cta.title')}</h2>
-          <p className="text-xl md:text-2xl mb-10 opacity-90 max-w-4xl mx-auto leading-relaxed">
-            {t('dashboard.cta.subtitle')}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <button
-              onClick={() => handleNavigation('/chatbot')}
-              className="bg-white text-teal-700 hover:bg-gray-100 px-10 py-4 rounded-2xl font-bold text-lg transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 flex items-center justify-center gap-3"
-            >
-              <Bot className="w-6 h-6" />
-              {t('dashboard.cta.buttons.askAI')}
-            </button>
-            <button
-              onClick={() => handleNavigation('/bookappointment')}
-              className="border-2 border-white text-white hover:bg-white hover:text-teal-700 px-10 py-4 rounded-2xl font-bold text-lg transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-1 flex items-center justify-center gap-3"
-            >
-              <Calendar className="w-6 h-6" />
-              {t('dashboard.cta.buttons.bookAppointment')}
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gradient-to-r from-teal-700 to-emerald-800 py-8">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-          <div className="text-white text-center md:text-left mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} Arogyam. All rights reserved.
-          </div>
-          <div className="flex gap-6">
-            <a href="/privacy" className="text-white hover:underline transition-colors duration-200">
-              Privacy Policy
-            </a>
-            <a href="/terms" className="text-white hover:underline transition-colors duration-200">
-              Terms of Service
-            </a>
-            <a href="/contact" className="text-white hover:underline transition-colors duration-200">
-              Contact
-            </a>
-          </div>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 };

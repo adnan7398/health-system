@@ -36,10 +36,14 @@ const AppLayout = () => {
     return () => window.removeEventListener("storage", updateUserType);
   }, [location]);
 
+  // Routes where header should be hidden
+  const noHeaderRoutes = ["/signin", "/doctor/signin", "/doctorlogin"];
+  const shouldHideHeader = noHeaderRoutes.includes(location.pathname);
+
   return (
     <div>
       <main>
-        {userType === "doctor" ? <DoctorHeader /> : <Header />}
+        {!shouldHideHeader && (userType === "doctor" ? <DoctorHeader /> : <Header />)}
 
         <Outlet />
       </main>

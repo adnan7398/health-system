@@ -14,6 +14,7 @@ import {
   FaBars,
   FaTimes,
   FaHeartbeat,
+  FaBlog,
 } from "react-icons/fa";
 
 import LanguageSelector from "../language/LanguageSelector";
@@ -21,63 +22,25 @@ import LanguageSelector from "../language/LanguageSelector";
 const Header = () => {
   const { t } = useTranslation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-  const [isScannerVerified, setIsScannerVerified] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const getCurrentPageTitle = () => {
-    const path = location.pathname;
-    switch (path) {
-      case "/":
-        return "Home";
-      case "/userdashboard":
-        return "Dashboard";
-      case "/bookappointment":
-        return "Book Appointment";
-      case "/patientreport":
-      case "/medicalReport":
-        return "Medical Reports";
-      case "/chatbot":
-        return "AI Health Assistant";
-      case "/arogyamcard":
-        return "Health Card";
-      case "/fitness":
-        return "Fitness & Wellness";
-      case "/scanner":
-        return "QR Scanner";
-      case "/patientappointments":
-        return "My Appointments";
-      case "/alldoctors":
-        return "Find Doctors";
-      case "/blogging":
-        return "Health Blog";
-      case "/calorieconvertor":
-        return "Calorie Converter";
-      case "/qrform":
-        return "QR Form";
-      case "/qrscanner":
-        return "QR Scanner";
-      case "/summarizer":
-        return "Report Summarizer";
-      case "/verifyauth":
-        return "Verify Authentication";
-      default:
-        return "Arogyam";
-    }
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const checkAuth = () => {
-      // Check both localStorage and sessionStorage for token
       const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-      const role = localStorage.getItem("userRole") || sessionStorage.getItem("userRole");
-      
-      // Get user info
+
       let userInfoStr = localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo");
       let userInfoObj = null;
       if (userInfoStr) {
@@ -87,27 +50,12 @@ const Header = () => {
           console.error("Error parsing userInfo:", e);
         }
       }
-      
+
       setIsAuthenticated(!!token);
-      setUserRole(role);
       setUserInfo(userInfoObj);
-      
-      // Check scanner verification status
-      let scannerVerified = false;
-      try {
-        const verificationData = localStorage.getItem("scannerVerified");
-        if (verificationData) {
-          const parsed = JSON.parse(verificationData);
-          scannerVerified = parsed.verified === true;
-        }
-      } catch (e) {
-        console.error("Error parsing scanner verification:", e);
-      }
-      setIsScannerVerified(scannerVerified);
     };
 
     checkAuth();
-    // Check auth on route changes
     const interval = setInterval(checkAuth, 500);
     window.addEventListener("storage", checkAuth);
     window.addEventListener("localStorageChange", checkAuth);
@@ -119,22 +67,10 @@ const Header = () => {
   }, [location]);
 
   const handleLogout = () => {
-    // Clear all auth data from both storages
-    localStorage.removeItem("token");
-    localStorage.removeItem("doctortoken");
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("userInfo");
-    localStorage.removeItem("scannerVerified");
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("userRole");
-    sessionStorage.removeItem("userId");
-    sessionStorage.removeItem("userInfo");
-    sessionStorage.removeItem("scannerVerified");
+    localStorage.clear();
+    sessionStorage.clear();
     setIsAuthenticated(false);
     setUserInfo(null);
-    setUserRole(null);
-    setIsScannerVerified(false);
     navigate("/");
     setTimeout(() => {
       window.location.reload();
@@ -145,296 +81,204 @@ const Header = () => {
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   const handleNavigation = (path) => {
-    // Allow navigation - ProtectedRoute will handle verification checks
-    // This ensures users can navigate to routes, and ProtectedRoute will show appropriate messages
     navigate(path);
+    setIsMenuOpen(false);
   };
 
-  const navigationItems = [
-    { name: t("nav.home"), path: "/", icon: FaHome, requiresAuth: false },
-    {
-      name: t("nav.healthCard"),
-      path: "/arogyamcard",
-      icon: FaQrcode,
-      requiresAuth: true,
-    },
-    {
-      name: t("nav.healthMetrics"),
-      path: "/fitness",
-      icon: FaStethoscope,
-      requiresAuth: true,
-    },
-    {
-      name: t("nav.fitnessPlans"),
-      path: "/fitness",
-      icon: FaRunning,
-      requiresAuth: true,
-    },
-    {
-      name: t("nav.healthAssistant"),
-      path: "/chatbot",
-      icon: FaRobot,
-      requiresAuth: true,
-    },
-    {
-      name: t("nav.medicalRecords"),
-      path: "/medicalReport",
-      icon: FaFlask,
-      requiresAuth: true,
-    },
-  ];
+  /* Define navigation items based on current path */
+  const getNavigationItems = () => {
+    // If on landing page, show only Chatbot and Blogs
+    if (location.pathname === "/") {
+      return [
+        { name: t("nav.healthAssistant"), path: "/chatbot", icon: FaRobot, requiresAuth: true },
+        { name: "Blogs", path: "/blogging", icon: FaBlog, requiresAuth: false },
+      ];
+    }
+
+    // Default navigation for other pages
+    return [
+      { name: t("nav.home"), path: "/", icon: FaHome, requiresAuth: false },
+      { name: t("nav.healthCard"), path: "/arogyamcard", icon: FaQrcode, requiresAuth: true },
+      { name: t("nav.healthMetrics"), path: "/fitness", icon: FaStethoscope, requiresAuth: true },
+      { name: t("nav.healthAssistant"), path: "/chatbot", icon: FaRobot, requiresAuth: true },
+      { name: t("nav.medicalRecords"), path: "/medicalReport", icon: FaFlask, requiresAuth: true },
+    ];
+  };
+
+  const navigationItems = getNavigationItems();
 
   return (
-    <nav className="bg-gradient-to-br from-[#008080] via-[#006666] to-[#004466] shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4">
+    <nav
+      className={`sticky top-0 z-50 transition-all duration-500 will-change-transform ${scrolled
+        ? "bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-b border-gray-100/50 py-3"
+        : "bg-white/0 border-b border-transparent py-5"
+        }`}
+    >
+      <div className="max-w-7xl mx-auto px-6">
         <div className="flex justify-between items-center">
           {/* Logo Section */}
-          <div className="flex items-center space-x-3 mr-10 -ml-25">
-            <div
-              className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md cursor-pointer"
-              onClick={() => navigate("/")}
-            >
-              <img
-                src="/logo1.png"
-                alt="Arogyam Logo"
-                className="w-10 h-10 object-contain"
-              />
+          <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => navigate("/")}>
+            <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-primary-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary-500/20 group-hover:scale-105 transition-transform duration-300">
+              <FaHeartbeat className="text-xl" />
             </div>
-            <div className="cursor-pointer" onClick={() => navigate("/")}>
-              <h1 className="text-2xl font-bold text-white tracking-tight">
-                Arogyam
-              </h1>
-            </div>
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight font-heading group-hover:text-primary-700 transition-colors">
+              Arogyam
+            </h1>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
-            {navigationItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.path}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigation(item.path);
-                }}
-                className="flex flex-col items-center gap-1.5 text-white hover:text-teal-100 transition-colors duration-200 font-medium relative group cursor-pointer"
-              >
-                <div className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors duration-200">
-                  <item.icon className="text-white text-lg" />
-                </div>
-                <span className="text-sm">{item.name}</span>
-                {item.path === location.pathname && (
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full h-0.5 bg-white rounded-full"></div>
-                )}
-              </a>
-            ))}
+          <div className="hidden lg:flex items-center bg-gray-50/50 rounded-full px-2 py-1 border border-gray-100/50 backdrop-blur-sm">
+            {navigationItems.map((item) => {
+              const isActive = item.path === location.pathname;
+              return (
+                <a
+                  key={item.name}
+                  href={item.path}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavigation(item.path);
+                  }}
+                  className={`
+                            relative px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-300 flex items-center gap-2
+                            ${isActive
+                      ? "text-primary-700 bg-white shadow-sm ring-1 ring-gray-100"
+                      : "text-gray-500 hover:text-gray-900 hover:bg-white/50"
+                    }
+                        `}
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    <item.icon className={`text-md ${isActive ? "text-primary-600" : "text-gray-400 group-hover:text-gray-600"}`} />
+                    {item.name}
+                  </span>
+                </a>
+              )
+            })}
           </div>
 
           {/* User Actions */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-3">
             <LanguageSelector variant="icon" />
+
             {isAuthenticated ? (
-              <div className="relative">
+              <div className="relative pl-2">
                 <button
                   onClick={toggleDropdown}
-                  className="flex items-center space-x-2 text-white hover:text-teal-100 transition-colors duration-200 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg border border-white/10 shadow-none focus:outline-none focus:ring-0"
+                  className="flex items-center space-x-3 pl-3 pr-2 py-1.5 rounded-full border border-gray-200 bg-white hover:border-primary-200 hover:shadow-md hover:shadow-primary-500/5 transition-all duration-300"
                 >
-                  <div className="w-7 h-7 bg-white rounded-full flex items-center justify-center">
-                    <FaUser className="text-teal-700 text-sm" />
+                  <div className="w-8 h-8 bg-gradient-to-br from-primary-600 to-primary-500 text-white rounded-full flex items-center justify-center shadow-sm">
+                    <FaUser className="text-xs" />
                   </div>
-                  <span className="font-medium text-sm">
-                    {userInfo?.name || t("header.myAccount")}
-                  </span>
-                  <FaChevronDown className="text-white text-xs" />
+                  <div className="flex flex-col items-start pr-2">
+                    <span className="text-sm font-semibold text-gray-700 leading-none">{userInfo?.name?.split(' ')[0] || "User"}</span>
+                    <span className="text-[10px] text-gray-400 font-medium tracking-wide">PATIENT</span>
+                  </div>
+                  <FaChevronDown className={`text-xs text-gray-400 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
-                    <div className="px-3 py-2 border-b border-gray-100">
-                      <p className="text-sm text-gray-600 font-medium">
-                        {userInfo?.name ? `Welcome, ${userInfo.name}` : t("header.welcomeBack")}
-                      </p>
-                      {userInfo?.email && (
-                        <p className="text-xs text-gray-500 mt-1">{userInfo.email}</p>
-                      )}
+                  <div className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 py-2 z-50 ring-1 ring-black ring-opacity-5 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+                    <div className="px-5 py-4 border-b border-gray-50 bg-gray-50/50">
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Signed in as</p>
+                      <p className="text-sm font-bold text-gray-900 truncate">{userInfo?.email || userInfo?.name}</p>
                     </div>
-                    <button
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        handleNavigation("/userdashboard");
-                      }}
-                      className="w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
-                    >
-                      <FaHome className="text-teal-600 text-sm" />
-                      <span className="text-sm">{t("header.dashboard")}</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setIsDropdownOpen(false);
-                        handleNavigation("/patientappointments");
-                      }}
-                      className="w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
-                    >
-                      <FaCalendarCheck className="text-teal-600 text-sm" />
-                      <span className="text-sm">
-                        {t("header.myAppointments")}
-                      </span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setIsDropdownOpen(false);
-                        handleNavigation("/medicalReport");
-                      }}
-                      className="w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2"
-                    >
-                      <FaFlask className="text-teal-600 text-sm" />
-                      <span className="text-sm">
-                        {t("header.medicalRecords")}
-                      </span>
-                    </button>
-                    <div className="border-t border-gray-100 my-1"></div>
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 transition-colors duration-200 flex items-center gap-2"
-                    >
-                      <FaTimes className="text-red-600 text-sm" />
-                      <span className="text-sm">{t("common.logout")}</span>
-                    </button>
+
+                    <div className="p-2 space-y-1">
+                      <button onClick={() => { setIsDropdownOpen(false); handleNavigation("/userdashboard"); }} className="w-full text-left px-4 py-2.5 rounded-xl text-gray-600 hover:bg-primary-50 hover:text-primary-700 flex items-center gap-3 transition-colors">
+                        <FaHome className="text-gray-400" /> {t("header.dashboard")}
+                      </button>
+                      <button onClick={() => { setIsDropdownOpen(false); handleNavigation("/patientappointments"); }} className="w-full text-left px-4 py-2.5 rounded-xl text-gray-600 hover:bg-primary-50 hover:text-primary-700 flex items-center gap-3 transition-colors">
+                        <FaCalendarCheck className="text-gray-400" /> {t("header.myAppointments")}
+                      </button>
+                      <button onClick={() => { setIsDropdownOpen(false); handleNavigation("/medicalReport"); }} className="w-full text-left px-4 py-2.5 rounded-xl text-gray-600 hover:bg-primary-50 hover:text-primary-700 flex items-center gap-3 transition-colors">
+                        <FaFlask className="text-gray-400" /> {t("header.medicalRecords")}
+                      </button>
+                    </div>
+
+                    <div className="border-t border-gray-100 my-1 mx-2"></div>
+                    <div className="p-2">
+                      <button onClick={handleLogout} className="w-full text-left px-4 py-2.5 rounded-xl text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors font-medium">
+                        <FaTimes className="text-red-400" /> {t("common.logout")}
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="relative">
-                {/* Single Login Button with Dropdown */}
+              <div className="flex items-center gap-3">
                 <button
-                  onClick={toggleDropdown}
-                  className="px-6 py-2 rounded-lg font-medium transition-colors duration-200 text-white border border-white/10 shadow-none focus:outline-none focus:ring-0 bg-green-600 hover:bg-green-700 flex items-center space-x-2"
+                  onClick={() => navigate("/signin")}
+                  className="text-gray-600 hover:text-primary-700 font-semibold text-sm px-5 py-2.5 rounded-full hover:bg-gray-50 transition-all duration-300"
                 >
-                  <FaUser className="text-white text-sm mr-2" />
-                  <span>Login</span>
-                  <FaChevronDown className="text-white text-xs ml-1" />
+                  {t("auth.patientLogin")}
                 </button>
-
-                {isDropdownOpen && (
-                  <div className="absolute  mt-2 w-48 left-0 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 flex flex-col items-center">
-                    <button
-                      onClick={() => {
-                        navigate("/signin");
-                        setIsDropdownOpen(false);
-                      }}
-                      className=" text-left px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-3"
-                    >
-                      <FaUser className="text-white text-sm" />
-                      <span className="text-sm font-medium">
-                        {t("auth.patientLogin")}
-                      </span>
-                    </button>
-                    <div className="border-t border-gray-100 my-1 w-3/4"></div>
-
-                    <button
-                      onClick={() => {
-                        navigate("/doctor/signin");
-                        setIsDropdownOpen(false);
-                      }}
-                      className=" text-left px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-3"
-                    >
-                      <FaStethoscope className="text-white text-sm" />
-                      <span className="text-sm font-medium">
-                        {t("auth.doctorLogin")}
-                      </span>
-                    </button>
-                  </div>
-                )}
+                <button
+                  onClick={() => navigate("/doctor/signin")}
+                  className="bg-gray-900 text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:bg-gray-800 transition-all duration-300 shadow-lg shadow-gray-900/10 hover:shadow-gray-900/20 hover:-translate-y-0.5"
+                >
+                  {t("auth.doctorLogin")}
+                </button>
               </div>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={toggleMenu}
-            className="lg:hidden text-white hover:text-teal-100 transition-colors duration-200"
-          >
-            {isMenuOpen ? (
-              <FaTimes className="text-2xl" />
-            ) : (
-              <FaBars className="text-2xl" />
-            )}
+          {/* Mobile Menu Button - Kept same but refined padding */}
+          <button onClick={toggleMenu} className="lg:hidden text-gray-700 hover:text-primary-600 transition-colors p-2 rounded-lg hover:bg-gray-50">
+            {isMenuOpen ? <FaTimes className="text-2xl" /> : <FaBars className="text-2xl" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Navigation Menu */}
+      {/* Mobile Navigation Menu - Refined */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-teal-800 border-t border-teal-600">
-          <div className="px-6 py-4 space-y-3">
-            {navigationItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.path}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigation(item.path);
-                  setIsMenuOpen(false);
-                }}
-                className="flex items-center gap-3 text-white hover:text-teal-100 transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-white/10"
-              >
-                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                  <item.icon className="text-white text-sm" />
-                </div>
-                <span className="font-medium">{item.name}</span>
-              </a>
-            ))}
-
-            <div className="border-t border-teal-600 pt-3 mt-3">
-              {isAuthenticated ? (
-                <div className="space-y-2">
-                  <button
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      handleNavigation("/userdashboard");
-                    }}
-                    className="w-full text-left flex items-center gap-3 text-white hover:text-teal-100 transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-white/10"
-                  >
-                    <FaHome className="text-white text-sm" />
-                    <span>{t("header.dashboard")}</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setIsMenuOpen(false);
-                    }}
-                    className="w-full text-left flex items-center gap-3 text-red-300 hover:text-red-100 transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-red-500/20"
-                  >
-                    <FaTimes className="text-red-300 text-sm" />
-                    <span>{t("common.logout")}</span>
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <button
-                    onClick={() => {
-                      navigate("/signin");
-                      setIsMenuOpen(false);
-                    }}
-                    className={`w-full text-left text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-none focus:outline-none focus:ring-0 ${
-                      location.pathname === "/signin"
-                        ? "bg-green-700"
-                        : "bg-green-600 hover:bg-green-700"
+        <div className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 absolute w-full shadow-2xl h-screen z-50">
+          {/* ... existing mobile menu content, keeping logic roughly same but ensures updated classes flow down ... */}
+          <div className="px-4 py-6 space-y-4">
+            <div className="space-y-2">
+              {navigationItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.path}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavigation(item.path);
+                  }}
+                  className={`flex items-center gap-4 py-4 px-5 rounded-2xl transition-all ${item.path === location.pathname
+                    ? "bg-primary-50 text-primary-700 font-bold shadow-sm ring-1 ring-primary-100"
+                    : "text-gray-600 hover:bg-gray-50 font-medium"
                     }`}
-                  >
+                >
+                  <item.icon className={`text-xl ${item.path === location.pathname ? "text-primary-600" : "text-gray-400"}`} />
+                  <span className="text-base">{item.name}</span>
+                </a>
+              ))}
+            </div>
+            {/* ... user auth mobile part ... */}
+            <div className="border-t border-gray-100 pt-6 mt-4">
+              {isAuthenticated ? (
+                /* ... existing authenticated mobile view ... */
+                <>
+                  <div className="px-4 mb-4 flex items-center gap-3">
+                    <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 font-bold">
+                      {userInfo?.name?.charAt(0) || "U"}
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase font-bold tracking-wider">Signed in as</p>
+                      <p className="text-sm font-bold text-gray-900">{userInfo?.name}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => { setIsMenuOpen(false); handleNavigation("/userdashboard"); }} className="w-full text-left flex items-center gap-4 py-3 px-5 text-gray-600 hover:bg-gray-50 rounded-2xl font-medium">
+                    <FaHome className="text-gray-400 text-lg" /> {t("header.dashboard")}
+                  </button>
+                  <button onClick={handleLogout} className="w-full text-left flex items-center gap-4 py-3 px-5 text-red-600 hover:bg-red-50 rounded-2xl font-medium mt-2">
+                    <FaTimes className="text-red-400 text-lg" /> {t("common.logout")}
+                  </button>
+                </>
+              ) : (
+                <div className="space-y-3 px-1">
+                  <button onClick={() => navigate("/signin")} className="w-full py-3.5 border border-gray-200 rounded-xl text-gray-700 font-bold hover:bg-gray-50 transition-colors">
                     {t("auth.patientLogin")}
                   </button>
-                  <button
-                    onClick={() => {
-                      navigate("/doctor/signin");
-                      setIsMenuOpen(false);
-                    }}
-                    className={`w-full text-left text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-none focus:outline-none focus:ring-0 ${
-                      location.pathname === "/doctor/signin"
-                        ? "bg-green-700"
-                        : "bg-green-600 hover:bg-green-700"
-                    }`}
-                  >
+                  <button onClick={() => navigate("/doctor/signin")} className="w-full py-3.5 bg-gray-900 text-white rounded-xl font-bold hover:bg-gray-800 transition-colors shadow-lg">
                     {t("auth.doctorLogin")}
                   </button>
                 </div>

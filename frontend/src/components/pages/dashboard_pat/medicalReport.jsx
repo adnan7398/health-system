@@ -16,81 +16,38 @@ const MedicalReport = () => {
   const [viewMode, setViewMode] = useState("grid"); // grid or list
 
   // Mock data for demonstration - replace with actual API calls
-  useEffect(() => {
-    // Simulate fetching files from backend
-    const mockFiles = [
-      {
-        id: 1,
-        name: "Blood_Test_Report.pdf",
-        encryptedName: "Blood_Test_Report.pdf.enc",
-        uploadDate: "2024-01-15",
-        fileSize: "2.4 MB",
-        type: "Laboratory Report",
-        category: "laboratory",
-        status: "encrypted",
-        doctor: "Dr. Sarah Wilson",
-        hospital: "City General Hospital",
-        reportDate: "2024-01-10",
-        description: "Complete blood count, cholesterol, and glucose levels"
-      },
-      {
-        id: 2,
-        name: "X-Ray_Chest.pdf",
-        encryptedName: "X-Ray_Chest.pdf.enc",
-        uploadDate: "2024-01-10",
-        fileSize: "5.1 MB",
-        type: "Imaging Report",
-        category: "imaging",
-        status: "encrypted",
-        doctor: "Dr. Michael Chen",
-        hospital: "Radiology Center",
-        reportDate: "2024-01-08",
-        description: "Chest X-ray showing normal lung fields and cardiac silhouette"
-      },
-      {
-        id: 3,
-        name: "ECG_Report.pdf",
-        encryptedName: "ECG_Report.pdf.enc",
-        uploadDate: "2024-01-08",
-        fileSize: "1.8 MB",
-        type: "Cardiology Report",
-        category: "cardiology",
-        status: "encrypted",
-        doctor: "Dr. Emily Rodriguez",
-        hospital: "Heart Institute",
-        reportDate: "2024-01-05",
-        description: "12-lead ECG showing normal sinus rhythm"
-      },
-      {
-        id: 4,
-        name: "MRI_Brain.pdf",
-        encryptedName: "MRI_Brain.pdf.enc",
-        uploadDate: "2024-01-05",
-        fileSize: "8.2 MB",
-        type: "Neurology Report",
-        category: "neurology",
-        status: "encrypted",
-        doctor: "Dr. James Thompson",
-        hospital: "Neurological Center",
-        reportDate: "2024-01-02",
-        description: "Brain MRI showing normal brain parenchyma and ventricles"
-      },
-      {
-        id: 5,
-        name: "Diabetes_Screening.pdf",
-        encryptedName: "Diabetes_Screening.pdf.enc",
-        uploadDate: "2024-01-03",
-        fileSize: "3.1 MB",
-        type: "Endocrinology Report",
-        category: "endocrinology",
-        status: "encrypted",
-        doctor: "Dr. Lisa Park",
-        hospital: "Endocrine Clinic",
-        reportDate: "2024-01-01",
-        description: "HbA1c, fasting glucose, and insulin resistance tests"
+  // API Base URL
+  const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
+
+  const fetchFiles = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/files`);
+      const data = await response.json();
+      if (data.files) {
+        // Map backend file format to frontend expected format
+        const mappedFiles = data.files.map((f, index) => ({
+          id: f._id || index,
+          name: f.originalName || f.storedName,
+          encryptedName: f.storedName,
+          uploadDate: f.createdAt || new Date().toISOString(),
+          fileSize: f.size ? formatFileSize(f.size) : "N/A",
+          type: f.mimeType === "application/pdf" ? "Medical Report" : "Document",
+          category: "general", // Backend doesn't seem to store category yet, default to general
+          status: "encrypted",
+          doctor: "Unknown", // Backend doesn't store this yet
+          hospital: "Arogyam Secure Storage",
+          reportDate: f.createdAt || new Date().toISOString(),
+          description: "Encrypted Medical Record"
+        }));
+        setFiles(mappedFiles);
       }
-    ];
-    setFiles(mockFiles);
+    } catch (error) {
+      console.error("Error fetching files:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFiles();
   }, []);
 
   const categories = [
@@ -108,10 +65,8 @@ const MedicalReport = () => {
   };
 
   const filteredFiles = files.filter(file => {
-    const matchesSearch = file.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         file.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         file.doctor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         file.hospital.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = (file.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (file.description || "").toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "all" || file.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -119,14 +74,8 @@ const MedicalReport = () => {
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      // Validate file type
       if (selectedFile.type !== 'application/pdf' && !selectedFile.name.endsWith('.pdf')) {
         alert('Please select a PDF file');
-        return;
-      }
-      // Validate file size (max 10MB)
-      if (selectedFile.size > 10 * 1024 * 1024) {
-        alert('File size should be less than 10MB');
         return;
       }
       setFile(selectedFile);
@@ -143,50 +92,43 @@ const MedicalReport = () => {
     setIsUploading(true);
     setUploadProgress(0);
 
-    // Simulate upload progress
+    // Fake progress for UX
     const progressInterval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 90) {
-          clearInterval(progressInterval);
-          return 90;
-        }
-        return prev + 10;
-      });
+      setUploadProgress(prev => (prev < 90 ? prev + 10 : prev));
     }, 200);
 
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("password", password);
+
+    const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Simulate successful upload
-      const newFile = {
-        id: Date.now(),
-        name: file.name,
-        encryptedName: file.name + '.enc',
-        uploadDate: new Date().toISOString().split('T')[0],
-        fileSize: (file.size / (1024 * 1024)).toFixed(1) + ' MB',
-        type: 'Medical Report',
-        category: 'general',
-        status: 'encrypted',
-        doctor: 'Dr. General Practitioner',
-        hospital: 'Medical Center',
-        reportDate: new Date().toISOString().split('T')[0],
-        description: 'Uploaded medical report'
-      };
+      const response = await fetch(`${API_BASE}/files/upload`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        body: formData
+      });
 
-      setFiles(prev => [newFile, ...prev]);
-      setFile(null);
-      setPassword("");
+      clearInterval(progressInterval);
       setUploadProgress(100);
-      
-      setTimeout(() => {
-        setUploadProgress(0);
-        setIsUploading(false);
-      }, 1000);
 
-      alert('File encrypted and uploaded successfully!');
+      if (response.ok) {
+        setFile(null);
+        setPassword("");
+        alert('File encrypted and uploaded successfully!');
+        fetchFiles(); // Refresh list
+      } else {
+        const errorData = await response.json();
+        alert(`Upload failed: ${errorData.message || "Unknown error"}`);
+      }
     } catch (error) {
-      alert('Upload failed. Please try again.');
+      clearInterval(progressInterval);
+      alert('Upload failed. Network error.');
+      console.error(error);
+    } finally {
       setIsUploading(false);
       setUploadProgress(0);
     }
@@ -208,20 +150,33 @@ const MedicalReport = () => {
     setIsDecrypting(true);
 
     try {
-      // Simulate decryption delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Simulate successful decryption and download
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(new Blob(['Decrypted file content'], { type: 'application/pdf' }));
-      link.download = selectedFile.name.replace('.enc', '');
-      link.click();
+      const response = await fetch(`${API_BASE}/files/download`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          fileName: selectedFile.encryptedName,
+          password: decryptPassword
+        })
+      });
 
+      if (!response.ok) {
+        throw new Error("Decryption failed");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', selectedFile.name.replace(".enc", ""));
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
       setShowDecryptForm(false);
-      setIsDecrypting(false);
-      alert('File decrypted and downloaded successfully!');
     } catch (error) {
       alert('Decryption failed. Please check your password.');
+    } finally {
       setIsDecrypting(false);
     }
   };
@@ -265,7 +220,7 @@ const MedicalReport = () => {
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="flex-1 relative">
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
+                <input
                   type="text"
                   placeholder="Search reports by name, doctor, hospital, or description..."
                   value={searchTerm}
@@ -273,7 +228,7 @@ const MedicalReport = () => {
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 />
               </div>
-              
+
               <div className="flex gap-2 overflow-x-auto">
                 {categories.map((category) => {
                   const IconComponent = category.icon;
@@ -281,11 +236,10 @@ const MedicalReport = () => {
                     <button
                       key={category.value}
                       onClick={() => setSelectedCategory(category.value)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 flex items-center gap-2 ${
-                        selectedCategory === category.value
-                          ? "bg-teal-600 text-white shadow-lg"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      }`}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 flex items-center gap-2 ${selectedCategory === category.value
+                        ? "bg-teal-600 text-white shadow-lg"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        }`}
                     >
                       <IconComponent className="text-sm" />
                       {category.label}
@@ -297,17 +251,15 @@ const MedicalReport = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => setViewMode("grid")}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    viewMode === "grid" ? "bg-teal-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${viewMode === "grid" ? "bg-teal-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
                 >
                   Grid
                 </button>
                 <button
                   onClick={() => setViewMode("list")}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    viewMode === "list" ? "bg-teal-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${viewMode === "list" ? "bg-teal-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
                 >
                   List
                 </button>
@@ -423,7 +375,7 @@ const MedicalReport = () => {
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex gap-2">
                               <button
-                  onClick={() => handleFileSelect(file)}
+                                onClick={() => handleFileSelect(file)}
                                 className="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded text-xs transition-colors duration-200"
                               >
                                 Decrypt
@@ -493,8 +445,8 @@ const MedicalReport = () => {
                   Encryption Password
                 </label>
                 <div className="relative">
-              <input
-                type="password"
+                  <input
+                    type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter a strong password for encryption"
@@ -517,7 +469,7 @@ const MedicalReport = () => {
                     <span>{uploadProgress}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
+                    <div
                       className="bg-teal-600 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${uploadProgress}%` }}
                     ></div>
@@ -663,14 +615,14 @@ const MedicalReport = () => {
             <a href="/userdashboard" className="bg-white text-teal-700 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg">
               Back to Dashboard
             </a>
-            <button 
+            <button
               onClick={() => document.getElementById('file-upload').click()}
               className="border-2 border-white text-white hover:bg-white hover:text-teal-700 px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-300"
             >
               Upload Report Now
             </button>
+          </div>
         </div>
-      </div>
       </section>
     </div>
   );

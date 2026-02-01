@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Heart,
@@ -6,15 +6,15 @@ import {
   EyeOff,
   ArrowRight,
   CheckCircle,
-  Shield,
-  UserCheck,
-  QrCode,
-  Bot,
-  FlaskConical,
-  Ambulance,
+  AlertCircle,
   Chrome,
   Facebook,
   Apple,
+  Mail,
+  Lock,
+  User,
+  ShieldCheck,
+  Activity
 } from "lucide-react";
 
 const Auth = () => {
@@ -31,12 +31,14 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [rememberMe, setRememberMe] = useState(false);
+  const [animate, setAnimate] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get the intended destination from the ProtectedRoute, default to scanner (required first step)
-  const from = (location.state)?.from?.pathname || "/scanner";
+  useEffect(() => {
+    setAnimate(true);
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -72,6 +74,7 @@ const Auth = () => {
 
     const endpoint = isSignup ? "/signup" : "/signin";
     const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://arogyam-15io.onrender.com');
+
     try {
       const response = await fetch(
         `${API_BASE}${endpoint}`,
@@ -83,17 +86,10 @@ const Auth = () => {
         }
       );
       const data = await response.json();
-      console.log("Login response:", data);
-      console.log("Response status:", response.status);
-      
-      // Set message with better error handling
-      if (data.message) {
-      setMessage(data.message);
-      } else if (data.error) {
-        setMessage(data.error);
-      } else {
-        setMessage("An error occurred. Please try again.");
-      }
+
+      if (data.message) setMessage(data.message);
+      else if (data.error) setMessage(data.error);
+      else setMessage("An error occurred. Please try again.");
 
       if (response.ok && isSignup) {
         setIsSignup(false);
@@ -102,9 +98,6 @@ const Auth = () => {
       }
 
       if (response.ok && !isSignup) {
-        // Persist token consistently:
-        // - always sessionStorage for SPA checks
-        // - mirror to localStorage only when rememberMe is true
         sessionStorage.setItem("token", data.token);
         sessionStorage.setItem("userRole", "patient");
         if (data.userId) sessionStorage.setItem("userId", data.userId);
@@ -112,9 +105,7 @@ const Auth = () => {
           try {
             const payload = JSON.parse(atob((data.token || "").split(".")[1] || ""));
             if (payload && payload.id) sessionStorage.setItem("userId", payload.id);
-          } catch (err) {
-            console.error("Error parsing token payload:", err);
-          }
+          } catch (err) { console.error(err); }
         }
 
         if (rememberMe) {
@@ -129,60 +120,26 @@ const Auth = () => {
         }
 
         setAuthSuccess(true);
+        const userInfo = {
+          name: (data.user?.firstName ? `${data.user.firstName} ${data.user.lastName || ''}`.trim() : null) ||
+            (formData.firstName ? `${formData.firstName} ${formData.lastName || ''}`.trim() : null) ||
+            (data.user?.email || formData.email).split('@')[0],
+          email: data.user?.email || formData.email
+        };
+        sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
+        if (rememberMe) localStorage.setItem("userInfo", JSON.stringify(userInfo));
 
-        // Store user info for display
-        if (data.user) {
-          const userInfo = {
-            name: data.user.firstName ? `${data.user.firstName} ${data.user.lastName || ''}`.trim() : data.user.email?.split('@')[0] || 'User',
-            email: data.user.email || formData.email
-          };
-          sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
-          if (rememberMe) {
-            localStorage.setItem("userInfo", JSON.stringify(userInfo));
-          }
-        } else {
-          // Fallback: use form data
-          const userInfo = {
-            name: formData.firstName ? `${formData.firstName} ${formData.lastName || ''}`.trim() : formData.email?.split('@')[0] || 'User',
-            email: formData.email
-          };
-          sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
-          if (rememberMe) {
-            localStorage.setItem("userInfo", JSON.stringify(userInfo));
-          }
-        }
-
-        // Check if scanner is already verified
-        let scannerVerified = false;
-        try {
-          const verificationData = localStorage.getItem("scannerVerified");
-          if (verificationData) {
-            const parsed = JSON.parse(verificationData);
-            scannerVerified = parsed.verified === true;
-          }
-        } catch (e) {
-          console.error("Error checking scanner verification:", e);
-        }
-
-        // Always redirect to scanner first (required step after login)
-        // Scanner will then redirect to dashboard after verification
-        const redirectPath = "/scanner";
-
-        // Delay navigation one tick so ProtectedRoute/readers see the sessionStorage token
         setTimeout(() => {
-          navigate(redirectPath, { replace: true });
-          // Trigger storage event to update header
+          navigate("/scanner", { replace: true });
           window.dispatchEvent(new Event('storage'));
-          // Force header to re-check auth
           window.dispatchEvent(new Event('localStorageChange'));
-        }, 20);
+        }, 500);
       } else {
         setAuthSuccess(false);
       }
     } catch (error) {
       setMessage("Something went wrong! Try again.");
       setAuthSuccess(false);
-      console.error("Login error:", error);
     } finally {
       setLoading(false);
     }
@@ -193,302 +150,200 @@ const Auth = () => {
     window.location.href = `${API_BASE}${provider}`;
   };
 
-  const features = [
-    {
-      icon: UserCheck,
-      title: "Online Doctor Consultation",
-      description: "Connect with top specialists 24/7",
-    },
-    {
-      icon: QrCode,
-      title: "Digital Health Records",
-      description: "Secure access to medical history",
-    },
-    {
-      icon: FlaskConical,
-      title: "Lab Tests at Home",
-      description: "Convenient diagnostic services",
-    },
-    {
-      icon: Bot,
-      title: "AI Health Assistant",
-      description: "24/7 medical guidance",
-    },
-    {
-      icon: Ambulance,
-      title: "Emergency Support",
-      description: "Quick medical assistance",
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 flex items-center justify-center p-4 antialiased">
-      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-        {/* Left - Brand & Features */}
-        <div className="hidden lg:flex flex-col justify-center bg-gradient-to-br from-[#008080] via-[#006666] to-[#004466] text-white rounded-3xl p-12 shadow-2xl overflow-hidden relative">
-          {/* Decorative Background Circles */}
-          <div className="absolute inset-0 opacity-10 pointer-events-none">
-            <div className="absolute top-0 left-0 w-40 h-40 bg-white rounded-full -translate-x-20 -translate-y-20"></div>
-            <div className="absolute top-1/2 right-0 w-32 h-32 bg-white rounded-full translate-x-16 -translate-y-1/2"></div>
-            <div className="absolute bottom-0 right-0 w-28 h-28 bg-white rounded-full translate-x-14 translate-y-14"></div>
+    <div className="h-screen w-full flex bg-white font-sans text-slate-900 overflow-hidden">
+
+      {/* Left Panel - Visual Branding (Desktop) - Adjusted padding */}
+      <div className={`hidden lg:flex w-5/12 relative overflow-hidden bg-slate-900 transition-all duration-1000 ease-out ${animate ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}`}>
+        {/* Abstract Background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-teal-900 to-slate-900"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+
+        {/* Branding Content */}
+        <div className="relative z-10 w-full h-full flex flex-col justify-between p-10">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center border border-white/10">
+              <Heart className="w-4 h-4 text-teal-400" fill="currentColor" />
+            </div>
+            <span className="text-lg font-bold text-white tracking-wide">AROGYAM</span>
           </div>
 
-          {/* Content */}
-          <div className="relative z-10">
-            {/* Brand Title */}
-            <div className="flex items-center mb-8">
-              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mr-4 shadow-lg">
-                <Heart className="w-8 h-8 text-white" fill="currentColor" />
-              </div>
-              <div>
-                <h2 className="text-4xl font-bold tracking-tight text-white mr-16">
-                  Welcome to Arogyam
-                </h2>
-                <p className="text-emerald-100 mt-2 text-lg">
-                  Better care, powered by AI — secure and always available.
-                </p>
-              </div>
-            </div>
-
-            {/* Features List */}
-            <div className="space-y-6 mt-8">
-              {features.map((feature, i) => (
-                <div key={i} className="flex items-start gap-4 group">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:bg-white/30 transition-colors duration-300">
-                    <feature.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg text-white mb-1">
-                      {feature.title}
-                    </h3>
-                    <p className="text-emerald-100 text-sm leading-relaxed">
-                      {feature.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Bottom Highlights */}
-            <div className="mt-10 pt-8 border-t border-white/20">
-              <div className="flex items-center gap-8 text-emerald-100">
-                <div className="flex items-center gap-3">
-                  <Shield className="w-5 h-5" />
-                  <span className="font-medium">Secure & Private</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5" />
-                  <span className="font-medium">Trusted by 50K+</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right - Authentication Form */}
-        <div
-          className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100"
-          style={{ WebkitTapHighlightColor: "transparent" }}
-        >
-          <div className="bg-gradient-to-br from-[#008080] via-[#006666] to-[#004466] text-white p-6 flex items-center justify-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#008080] via-[#006666] to-[#004466] opacity-90"></div>
-            <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center relative z-10">
-              <Heart className="w-7 h-7 text-white" fill="currentColor" />
-            </div>
-          </div>
-          <div
-            className="p-8 lg:p-10 text-slate-800"
-            style={{ WebkitTapHighlightColor: "transparent" }}
-          >
-            <div className="text-center mb-8">
-              <h3 className="text-3xl font-bold text-slate-800 mb-3">
-                {isSignup ? "Create Account" : "Welcome Back"}
-              </h3>
-              <p className="text-slate-600 leading-relaxed">
-                {isSignup
-                  ? "Join Arogyam and take control of your health journey with personalized care."
-                  : "Sign in to access your personalized health dashboard and continue your wellness journey."}
+          <div className="space-y-6 mb-12">
+            <div className="space-y-3">
+              <h1 className="text-4xl font-bold text-white leading-tight">
+                Healthcare <br />
+                <span className="text-teal-400">Reimagined.</span>
+              </h1>
+              <p className="text-slate-300 text-base max-w-sm leading-relaxed">
+                Experience the future of medical diagnostics and patient care with our AI-powered platform.
               </p>
             </div>
 
-            {message && (
-              <div
-                className={`mb-6 p-4 rounded-xl text-center font-medium ${
-                  authSuccess
-                    ? "bg-green-50 text-green-800 border border-green-200"
-                    : "bg-red-50 text-red-800 border border-red-200"
-                }`}
-              >
-                {message}
+            <div className="flex gap-2">
+              <div className="px-3 py-1.5 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 flex items-center gap-2 text-white/80 text-xs">
+                <Activity className="w-3 h-3 text-teal-400" />
+                <span>Real-time Monitoring</span>
+              </div>
+              <div className="px-3 py-1.5 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 flex items-center gap-2 text-white/80 text-xs">
+                <ShieldCheck className="w-3 h-3 text-teal-400" />
+                <span>Secure Data</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-slate-500 text-[10px] font-medium">
+            © 2024 Arogyam Health Systems. All rights reserved.
+          </div>
+        </div>
+      </div>
+
+      {/* Right Panel - Auth Form      {/* Right Side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-12 bg-surface-50 relative overflow-hidden">
+        {/* Subtle Background Glows */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-secondary-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+
+        <div className={`w-full max-w-[380px] space-y-5 transition-all duration-700 delay-300 bg-white/60 backdrop-blur-xl p-8 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 ${animate ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+
+          <div className="text-center">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-1">
+              {isSignup ? "Create an account" : "Welcome back"}
+            </h2>
+            <p className="text-slate-500 text-sm">
+              {isSignup ? "Enter your details to get started." : "Please enter your details to sign in."}
+            </p>
+          </div>
+
+          {message && (
+            <div className={`p-3 rounded-lg flex items-start gap-2 text-xs ${authSuccess ? 'bg-teal-50 text-teal-700 border border-teal-100' : 'bg-red-50 text-red-700 border border-red-100'
+              }`}>
+              {authSuccess ? <CheckCircle className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
+              <p>{message}</p>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+
+            {isSignup && (
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-700">First Name</label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all shadow-sm"
+                    placeholder="John"
+                  />
+                  {errors.firstName && <span className="text-[10px] text-red-500">{errors.firstName}</span>}
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-700">Last Name</label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all shadow-sm"
+                    placeholder="Doe"
+                  />
+                  {errors.lastName && <span className="text-[10px] text-red-500">{errors.lastName}</span>}
+                </div>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {isSignup && (
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <input
-                      type="text"
-                      name="firstName"
-                      placeholder="First Name"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500"
-                    />
-                    {errors.firstName && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.firstName}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <input
-                      type="text"
-                      name="lastName"
-                      placeholder="Last Name"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500"
-                    />
-                    {errors.lastName && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.lastName}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              <div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-700">Email</label>
+              <div className="relative">
                 <input
                   type="email"
                   name="email"
-                  placeholder="Email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all shadow-sm"
+                  placeholder="name@example.com"
                 />
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                )}
               </div>
+              {errors.email && <span className="text-[10px] text-red-500">{errors.email}</span>}
+            </div>
 
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-700">Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  placeholder="Password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all shadow-sm"
+                  placeholder="••••••••"
                 />
-                <span
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-400"
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
-                </span>
-                {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-                )}
               </div>
+              {errors.password && <span className="text-[10px] text-red-500">{errors.password}</span>}
+            </div>
 
-              <div className="flex items-center justify-between">
-                {/* accessible checkbox-toggle for "Remember me" */}
-                <label className="flex items-center gap-3 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="sr-only"
-                    aria-label="Remember me"
-                  />
-                  <div
-                    className={`w-10 h-6 rounded-full p-1 flex items-center transition-colors ${
-                      rememberMe ? "bg-emerald-600" : "bg-slate-200"
-                    }`}
-                    onClick={() => setRememberMe((v) => !v)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(ev) => { if (ev.key === " " || ev.key === "Enter") setRememberMe((v) => !v); }}
-                  >
-                    <div className={`w-4 h-4 bg-white rounded-full shadow transform transition-transform ${rememberMe ? "translate-x-4" : ""}`} />
-                  </div>
-                  <div className="text-sm text-slate-600">
-                    <div className="font-medium">Remember me</div>
-                    <div className="text-xs text-slate-400">Stay signed in on this device</div>
-                  </div>
-                </label>
-                {!isSignup && (
-                  <a
-                    href="#"
-                    className="text-sm text-emerald-600 hover:underline"
-                  >
-                    Forgot password?
-                  </a>
-                )}
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50"
-              >
-                {loading ? "Please wait..." : isSignup ? "Sign Up" : "Sign In"}
-              </button>
-            </form>
-
-            <div className="mt-6 text-center text-sm text-slate-500">
-              {isSignup ? (
-                <>
-                  Already have an account?{" "}
-                  <button
-                    onClick={() => setIsSignup(false)}
-                    className="text-emerald-600 font-medium hover:underline"
-                  >
-                    Sign In
-                  </button>
-                </>
-              ) : (
-                <>
-                  Don't have an account?{" "}
-                  <button
-                    onClick={() => setIsSignup(true)}
-                    className="text-emerald-600 font-medium hover:underline"
-                  >
-                    Sign Up
-                  </button>
-                </>
+            <div className="flex items-center justify-between pt-1">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-3.5 h-3.5 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                />
+                <span className="text-xs text-slate-600 font-medium">Remember me</span>
+              </label>
+              {!isSignup && (
+                <a href="#" className="text-xs font-semibold text-teal-600 hover:text-teal-700">Forgot password?</a>
               )}
             </div>
 
-            <div className="mt-6 flex items-center justify-center gap-4">
-              <button
-                onClick={() => handleSocialLogin("/auth/google")}
-                className="p-3 rounded-full bg-red-50 hover:bg-red-100 transition"
-              >
-                <Chrome className="w-5 h-5 text-red-500" />
-              </button>
-              <button
-                onClick={() => handleSocialLogin("/auth/facebook")}
-                className="p-3 rounded-full bg-emerald-50 hover:bg-emerald-100 transition"
-              >
-                <Facebook className="w-5 h-5 text-emerald-600" />
-              </button>
-              <button
-                onClick={() => handleSocialLogin("/auth/apple")}
-                className="p-3 rounded-full bg-black/10 hover:bg-black/20 transition"
-              >
-                <Apple className="w-5 h-5 text-black" />
-              </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-slate-900 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-md flex items-center justify-center gap-2"
+            >
+              {loading && <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+              {isSignup ? "Create account" : "Sign in"}
+              {!loading && <ArrowRight className="w-4 h-4" />}
+            </button>
+
+          </form>
+
+          <div className="relative pt-2">
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
+            <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
+              <span className="bg-white px-2 text-slate-400 font-medium">Or continue with</span>
             </div>
           </div>
+
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { icon: Chrome, path: "/auth/google" },
+              { icon: Apple, path: "/auth/apple" },
+              { icon: Facebook, path: "/auth/facebook" }
+            ].map((social, i) => (
+              <button
+                key={i}
+                onClick={() => handleSocialLogin(social.path)}
+                className="flex items-center justify-center py-2 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+              >
+                <social.icon className="w-4 h-4 text-slate-700" />
+              </button>
+            ))}
+          </div>
+
+          <p className="text-center text-xs text-slate-600 pt-2">
+            {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
+            <button onClick={() => setIsSignup(!isSignup)} className="font-bold text-teal-600 hover:text-teal-700 hover:underline">
+              {isSignup ? "Sign in" : "Sign up"}
+            </button>
+          </p>
+
         </div>
       </div>
+
     </div>
   );
 };
