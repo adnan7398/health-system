@@ -95,7 +95,7 @@ input[type="password"] {
   transition: background 0.3s;
 }
 
-button:hover {
+.btn:hover {
   background: #006666;
 }
 

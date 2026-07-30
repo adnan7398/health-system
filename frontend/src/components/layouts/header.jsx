@@ -18,6 +18,7 @@ import {
 } from "react-icons/fa";
 
 import LanguageSelector from "../language/LanguageSelector";
+import { ThemeToggle } from "../ui/theme-toggle";
 
 const Header = () => {
   const { t } = useTranslation();
@@ -110,7 +111,7 @@ const Header = () => {
   return (
     <nav
       className={`sticky top-0 z-50 transition-all duration-500 will-change-transform ${scrolled
-        ? "bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-b border-gray-100/50 py-3"
+        ? "bg-white/80 dark:bg-surface-950/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-b border-gray-100/50 dark:border-surface-800/50 py-3"
         : "bg-white/0 border-b border-transparent py-5"
         }`}
     >
@@ -121,13 +122,13 @@ const Header = () => {
             <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-primary-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary-500/20 group-hover:scale-105 transition-transform duration-300">
               <FaHeartbeat className="text-xl" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight font-heading group-hover:text-primary-700 transition-colors">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight font-heading group-hover:text-primary-700 dark:group-hover:text-primary-400 transition-colors">
               Arogyam
             </h1>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center bg-gray-50/50 rounded-full px-2 py-1 border border-gray-100/50 backdrop-blur-sm">
+          <div className="hidden lg:flex items-center bg-gray-50/50 dark:bg-surface-900/50 rounded-full px-2 py-1 border border-gray-100/50 dark:border-surface-800/50 backdrop-blur-sm">
             {navigationItems.map((item) => {
               const isActive = item.path === location.pathname;
               return (
@@ -157,6 +158,7 @@ const Header = () => {
 
           {/* User Actions */}
           <div className="hidden lg:flex items-center space-x-3">
+            <ThemeToggle />
             <LanguageSelector variant="icon" />
 
             {isAuthenticated ? (

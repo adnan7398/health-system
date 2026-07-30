@@ -1,7 +1,6 @@
 import {
   createBrowserRouter,
   RouterProvider,
-  Navigate,
 } from "react-router-dom";
 import React from "react";
 import AppLayout from "./components/layouts/app-layout";
@@ -41,7 +40,7 @@ import BreastCancer from "./components/pages/dashboard_doc/breastcancer";
 import Pneumonia from "./components/pages/dashboard_doc/pneumonia";
 import Pcod from "./components/pages/dashboard_doc/pcod";
 import Blogging from './components/pages/dashboard_pat/blogging';
-// import { BaseLoggger } from "html5-qrcode/esm/core";
+import NotFound from "./components/pages/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -160,7 +159,7 @@ const router = createBrowserRouter([
         path: "/pneumonia", 
         element: <ProtectedRoute><Pneumonia /></ProtectedRoute> 
       },
-      { path: "*", element: <Navigate to="/" replace /> },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);

@@ -5,7 +5,7 @@
     font-family: Arial, sans-serif;
 }
 
-h2 {
+.blog-container h2 {
     text-align: center;
     color: #333;
     font-size: 24px;
@@ -20,7 +20,7 @@ h2 {
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-h3 {
+.blog-container h3 {
     font-size: 18px;
     margin-bottom: 5px;
 }
